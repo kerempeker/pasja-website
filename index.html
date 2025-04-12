@@ -2,193 +2,201 @@
 <html lang="tr">
 
 <head>
-<meta charset="UTF-8">
-<title>Dijital Menü</title>
-<style>
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: black;
-  font-family: 'Arial', sans-serif;
-  color: white;
-}
+  <meta charset="UTF-8">
+  <title>Dijital Menü</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: black;
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
 
-video {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  z-index: -1; /* arkada duracak */
-  opacity: 0.4;
-  object-fit: cover;
-}
+    video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+      object-fit: cover;
+    }
 
-#logo {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 180px;
-  opacity: 0.8;
-  z-index: 9999; /* HER ŞEYİN ÜSTÜNDE */
-}
+    #menu {
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem;
+      box-sizing: border-box;
+      overflow: auto;
+      backdrop-filter: blur(5px);
+      height: 100vh;
+    }
 
-#menu {
-  display: flex;
-  justify-content: space-between;
-  padding: 2rem;
-  box-sizing: border-box;
-  overflow: auto;
-  backdrop-filter: blur(5px);
-  background: rgba(0, 0, 0, 0.4); /* ŞEFFAFLAŞTIR */
-  height: 100vh;
-  z-index: 10; /* videonun üstünde ama logonun altında */
-}
+    .column {
+      flex: 1;
+      padding: 0 1rem;
+    }
 
-.column {
-  flex: 1;
-  padding: 0 1rem;
-}
+    .kategori-baslik {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: orange;
+      text-align: center;
+      border-bottom: 2px solid orange;
+      padding-bottom: 0.3rem;
+    }
 
-.kategori-baslik {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: orange;
-  text-align: center;
-  border-bottom: 2px solid orange;
-  padding-bottom: 0.3rem;
-}
+    .header-row {
+      display: grid;
+      grid-template-columns: 1fr 70px 100px;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid white;
+      padding-bottom: 0.2rem;
+    }
 
-.header-row, .urun {
-  background-color: transparent; /* Arka planı da şeffaflaştır */
-}
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+    }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-}
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      margin-right: 5px;
+    }
 
-.legend-color {
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-  margin-right: 5px;
-}
+    .urun {
+      display: grid;
+      grid-template-columns: 1fr 70px 100px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 0.3rem;
+      font-size: 1.2rem;
+    }
 
-.cizili {
-  text-decoration: line-through;
-  color: #888;
-}
+    .cizili {
+      text-decoration: line-through;
+      color: #888;
+    }
 
-.new span:first-child::after {
-  content: ' 🆕';
-  color: orange;
-  margin-left: 6px;
-}
+    .new span:first-child::after {
+      content: ' 🆕';
+      color: orange;
+      margin-left: 6px;
+    }
 
-.thc-orani {
-  color: #00FFFF;
-  font-size: 1rem;
-  text-align: center;
-  white-space: nowrap;
-}
+    .thc-orani {
+      color: #00FFFF;
+      font-size: 1rem;
+      text-align: center;
+      white-space: nowrap;
+    }
+    #logo {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 180px;
+      opacity: 0.8;
+      z-index: 1;
+    }
 
-#legend-container {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 10px;
-  border-radius: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  z-index: 10;
-}
-
-</style>
+    #legend-container {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 
 <body>
-<video autoplay muted loop>
-  <source src="video.mp4" type="video/mp4">
-</video>
+  <video autoplay muted loop>
+    <source src="video.mp4" type="video/mp4">
+  </video>
 
+  <div id="menu"></div>
+  <div id="legend-container"></div>
+  <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
-<div id="menu"></div>
-<div id="legend-container"></div>
+  <script>
+    const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
+    const RENK_URL = MENU_URL + '?action=renkler';
+    const SIRA_URL = MENU_URL + '?action=sirala';
 
-<script>
-const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
-const RENK_URL = MENU_URL + '?action=renkler';
-const SIRA_URL = MENU_URL + '?action=sirala';
+    async function fetchData(url) {
+      const res = await fetch(url);
+      return res.json();
+    }
 
-async function fetchData(url) {
-  const res = await fetch(url);
-  return res.json();
-}
+    async function createMenu() {
+      const [menuData, renkler, siralamaData] = await Promise.all([
+        fetchData(MENU_URL),
+        fetchData(RENK_URL),
+        fetchData(SIRA_URL)
+      ]);
 
-async function createMenu() {
-  const [menuData, renkler, siralamaData] = await Promise.all([
-    fetchData(MENU_URL),
-    fetchData(RENK_URL),
-    fetchData(SIRA_URL)
-  ]);
+      const kategoriler = {};
+      const tumMarkalar = new Set();
+      siralamaData.forEach(k => kategoriler[k.kategori] = []);
 
-  const kategoriler = {};
-  const tumMarkalar = new Set();
-  siralamaData.sort((a, b) => a.sira_no - b.sira_no);
-  siralamaData.forEach(k => kategoriler[k.kategori] = []);
+      menuData.forEach(item => {
+        if (kategoriler[item.ana_kategori]) kategoriler[item.ana_kategori].push(item);
+        tumMarkalar.add(item.marka);
+      });
 
-  menuData.forEach(item => {
-    if (kategoriler[item.ana_kategori]) kategoriler[item.ana_kategori].push(item);
-    tumMarkalar.add(item.marka);
-  });
+      const menu = document.getElementById('menu');
+      menu.innerHTML = '';
 
-  const menu = document.getElementById('menu');
-  menu.innerHTML = '';
+      Object.keys(kategoriler).forEach((kategori) => {
+        const columnDiv = document.createElement('div');
+        columnDiv.className = 'column';
 
-  Object.keys(kategoriler).forEach((kategori) => {
-    const columnDiv = document.createElement('div');
-    columnDiv.className = 'column';
+        const kategoriBaslik = document.createElement('div');
+        kategoriBaslik.className = 'kategori-baslik';
+        kategoriBaslik.textContent = kategori;
+        columnDiv.appendChild(kategoriBaslik);
 
-    const kategoriBaslik = document.createElement('div');
-    kategoriBaslik.className = 'kategori-baslik';
-    kategoriBaslik.textContent = kategori;
-    columnDiv.appendChild(kategoriBaslik);
+        const headerRow = document.createElement('div');
+        headerRow.className = 'header-row';
+        headerRow.innerHTML = `<span>Ürün</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : '1 GR/5 GR'}</span>`;
+        columnDiv.appendChild(headerRow);
 
-    const headerRow = document.createElement('div');
-    headerRow.className = 'header-row';
-    headerRow.innerHTML = `<span>Ürün</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : '1 GR/5 GR'}</span>`;
-    columnDiv.appendChild(headerRow);
+        kategoriler[kategori].forEach(urun => {
+          const urunDiv = document.createElement('div');
+          urunDiv.className = `urun${urun.stok_var_mi === false ? ' cizili' : ''}${urun.yeni_mi ? ' new' : ''}`;
+          urunDiv.innerHTML = `
+            <span style="color:${renkler[urun.marka]}">${urun.urun_adi}</span>
+            <span class="thc-orani">${urun.thc_orani}</span>
+            <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
+          columnDiv.appendChild(urunDiv);
+        });
 
-    kategoriler[kategori].forEach(urun => {
-      const urunDiv = document.createElement('div');
-      urunDiv.className = `urun${urun.stok_var_mi === false ? ' cizili' : ''}${urun.yeni_mi ? ' new' : ''}`;
-      urunDiv.innerHTML = `
-        <span style="color:${renkler[urun.marka]}">${urun.urun_adi}</span>
-        <span class="thc-orani">${urun.thc_orani}</span>
-        <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
-      columnDiv.appendChild(urunDiv);
-    });
+        menu.appendChild(columnDiv);
+      });
 
-    menu.appendChild(columnDiv);
-  });
+      const legendContainer = document.getElementById('legend-container');
+      tumMarkalar.forEach(marka => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `<span class="legend-color" style="background-color:${renkler[marka] || '#fff'}"></span>${marka}`;
+        legendContainer.appendChild(legendItem);
+      });
+    }
 
-  const legendContainer = document.getElementById('legend-container');
-  tumMarkalar.forEach(marka => {
-    const legendItem = document.createElement('div');
-    legendItem.className = 'legend-item';
-    legendItem.innerHTML = `<span class="legend-color" style="background-color:${renkler[marka] || '#fff'}"></span>${marka}`;
-    legendContainer.appendChild(legendItem);
-  });
-}
-
-createMenu().catch(err => console.error('Menü oluşturulamadı:', err));
-</script>
+    createMenu().catch(err => console.error('Menü oluşturulamadı:', err));
+  </script>
 </body>
 
 </html>
