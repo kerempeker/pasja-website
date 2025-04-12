@@ -17,13 +17,13 @@
 
     body {
       margin: 0;
-      padding: 0;
+      /* Body'e padding-bottom ekleyerek en alttaki içeriğin galeri arkasında kaybolmamasını garantile */
+      /* Galeri yüksekliği (160px) + Ekstra boşluk (40px) = 200px */
+      padding: 0 0 200px 0;
       background-color: black;
       color: white;
       min-height: 100vh;
-      /* Body için flex kaldırıldı, normal akış */
-      /* padding-bottom: 180px; Galeri alanı için body'de boşluk bırak (opsiyonel) */
-      position: relative; /* Fixed elemanların referansı için */
+      position: relative;
     }
 
     /* ARKA PLAN VİDEO */
@@ -35,44 +35,48 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      z-index: -2; /* Galerinin de arkasında kalsın */
+      z-index: -1; /* En arkada */
       opacity: 0.35;
       object-fit: cover;
     }
 
-    /* ANA MENÜ ALANI (Artık #main-content yok, direkt #menu) */
+    /* ANA MENÜ ALANI */
     #menu {
-      /* Flex kaldırıldı, genişlik % veya max-width ile ayarlanabilir */
-      max-width: 1400px; /* Menünün maksimum genişliği */
-      margin: 0 auto; /* Ortala */
-      padding: 2rem 2rem 10rem 2rem; /* Alt padding galeriyle çakışmayı önler */
+      /* max-width kaldırıldı, kenar boşlukları padding ile */
+      /* margin kaldırıldı */
+      padding: 2rem 2rem 2rem 2rem; /* Alt padding body'den geliyor, burada azaltıldı */
       box-sizing: border-box;
-      /* Menü içeriği için kaydırma body'de olabilir veya burada max-height ile */
-      /* background-color: rgba(0, 0, 0, 0.65); Arka planı kaldırabiliriz, galeri altında olacak */
-      /* backdrop-filter: blur(10px); */
-      border-radius: 10px; /* Kenarları yuvarlak kalsın */
 
       /* Menü içindeki Sütunlar için Flexbox */
       display: flex;
       gap: 1.5rem; /* Sütunlar arası boşluk */
-      flex-wrap: wrap; /* Küçük ekranlarda alta geçsin (isteğe bağlı) */
+      flex-wrap: wrap; /* Gerektiğinde alta at */
     }
 
     /* Menü içindeki Sütunlar */
     .column {
-        flex: 1; /* Sütunlar eşit genişlesin */
-        min-width: 240px; /* Sütun minimum genişliği */
-        background-color: rgba(0, 0, 0, 0.65); /* Her sütuna ayrı arka plan */
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        flex: 1; /* Sütunlar alanı doldursun */
+        min-width: 240px;
+        /* Arka plan kaldırıldı, bütünlük için */
+        /* background-color: rgba(0, 0, 0, 0.65); */
+        /* backdrop-filter: blur(10px); */
+        /* padding: 1.5rem; */ /* Padding #menu'de veya burada olabilir */
+        /* border-radius: 8px; */
+        box-sizing: border-box;
+        /* margin-bottom: 1rem; */ /* Gap hallediyor */
+
+        /* İçeriğin daha iyi görünmesi için sütuna padding ekleyelim */
+        background-color: rgba(10, 10, 10, 0.7); /* Hafif sütun arka planı */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         padding: 1.5rem;
         border-radius: 8px;
-        box-sizing: border-box;
-        margin-bottom: 1rem; /* Sütunlar arasına dikey boşluk */
+        margin-bottom: 1rem; /* wrap olduğunda boşluk */
+
     }
 
     /* ---- MENÜ İÇİ STİLLERİ (Kategori Başlığı, Ürünler vs.) --- */
-    /* ... (Önceki koddan .kategori-baslik, .header-row, .urun vb. stilleri buraya kopyalanır) ... */
+    /* ... (Stiller aynı kalabilir, önceki koddan kopyalanır) ... */
     .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem; }
     .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; }
     .header-row span:nth-child(2), .header-row span:nth-child(3) { text-align: center; }
@@ -80,24 +84,27 @@
     .urun span:first-child { word-break: break-word; }
     .cizili { text-decoration: line-through; color: #777 !important; }
     .cizili span { color: #777 !important; text-decoration: line-through; }
-    .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; }
+    .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; /* DİKKAT: New-Icon.png yolu */ }
     .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; }
     .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; }
     /* ---- MENÜ İÇİ STİLLERİ SONU --- */
 
 
-    /* YENİ ALT GALERİ KONTEYNERİ */
+    /* ALT GALERİ KONTEYNERİ */
     #bottom-gallery {
       position: fixed; /* Ekrana göre sabit */
-      bottom: 65px; /* Legend/Logo'nun biraz üzerinde */
+      bottom: 0; /* Tam alta yapışık */
       left: 0;
       width: 100%;
-      height: 160px; /* Galeri yüksekliği (resim + boşluk) */
-      z-index: -1; /* Menü sütunlarının arkasında, videonun önünde */
-      overflow: hidden; /* Taşmaları engelle */
-      padding: 10px 0;
-      /* background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); Alt karartma efekti */
-      pointer-events: none; /* Arkadaki menüye tıklanabilmesi için */
+      height: 170px; /* Galeri yüksekliği (resim + boşluk + gradient) */
+      z-index: 5; /* Diğer içeriklerin üzerinde, ama logo/legend altında olabilir */
+      overflow: hidden;
+      padding: 10px 0; /* Dikey iç boşluk */
+      /* pointer-events: none; KALDIRILDI - Artık gerekmiyor */
+      /* Menü içeriğinden görsel olarak ayırmak için gradient */
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.7) 50%, transparent 100%);
+      backdrop-filter: blur(3px); /* Hafif genel bulanıklık */
+       -webkit-backdrop-filter: blur(3px);
     }
 
     /* Alt Galeri için Swiper Konteyneri */
@@ -106,66 +113,66 @@
         height: 100%;
     }
 
-    /* Alt Galeri Slaytları */
+    /* Alt Galeri Slaytları - Efektler ve Görünüm */
     #bottom-gallery .swiper-slide {
         width: 200px; /* Slayt genişliği */
-        height: 140px; /* Slayt yüksekliği */
-        text-align: center;
+        height: 130px; /* Slayt resim alanı yüksekliği */
         display: flex;
         justify-content: center;
         align-items: center;
-        transition: all 0.6s ease-in-out; /* Yumuşak geçiş */
+        transition: all 0.6s ease-in-out;
+        transform-style: preserve-3d; /* Daha pürüzsüz geçişler için */
 
         /* Varsayılan Stil: Bulanık ve Soluk */
         opacity: 0.4;
         filter: blur(4px);
-        transform: scale(0.85); /* Biraz küçük */
+        transform: scale(0.85);
     }
 
     /* Aktif Slayt (Ortadaki) */
     #bottom-gallery .swiper-slide-active {
         opacity: 1;
         filter: blur(0px);
-        transform: scale(1); /* Normal boyut */
-        z-index: 1; /* Üstte görünsün */
+        transform: scale(1);
     }
 
-    /* Aktifin Yanındakiler (Sağ ve Sol) */
+    /* Aktifin Yanındakiler (Sağ ve Sol) - Net */
     #bottom-gallery .swiper-slide-prev,
     #bottom-gallery .swiper-slide-next {
-        opacity: 1;
+        opacity: 0.9; /* Hafif soluk olabilir veya 1 */
         filter: blur(0px);
-        transform: scale(0.95); /* Ortadakinden hafif küçük */
-         z-index: 1; /* Üstte görünsün */
+        transform: scale(0.95);
     }
 
-     /* Daha uzaktaki slaytlar (Görünmelerini istemiyorsak display:none eklenebilir) */
+     /* Daha uzaktakiler (İsteğe bağlı: Tamamen gizlemek için) */
     #bottom-gallery .swiper-slide-prev.swiper-slide-prev,
     #bottom-gallery .swiper-slide-next.swiper-slide-next {
-       /* Opacity/Blur varsayılan değerleri alır */
-       /* display: none; Eğer sadece 3 tane görünsün isteniyorsa */
+       /* Varsayılan stiller zaten bulanık/soluk yapar */
+       /* visibility: hidden; */ /* Veya tamamen gizle */
     }
 
 
     /* Galeri içindeki resimler */
     #bottom-gallery .swiper-slide img {
         display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* Resimler tam görünsün, kırpılmasın */
+        width: 95%; /* Hafif iç boşluk */
+        height: 95%;
+        object-fit: cover; /* Resmi kaplasın */
         border-radius: 8px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        /* DİKKAT: Galeri resim yolları doğru olmalı! */
     }
 
 
-    /* LEGEND ve LOGO Konumlandırması (Aynı kalabilir) */
+    /* LEGEND ve LOGO Konumlandırması */
     #logo {
       position: fixed;
       bottom: 15px;
       left: 15px;
-      width: 130px;
+      width: 120px; /* Biraz daha küçük */
       opacity: 0.9;
       z-index: 10; /* En üstte */
+       /* DİKKAT: Pasja Review_1.png yolu */
     }
 
     #legend-container {
@@ -178,26 +185,24 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      z-index: 5; /* Logonun altında olabilir */
-      max-width: calc(100% - 180px);
+      z-index: 10; /* Logo ile aynı seviyede veya biraz altında */
+      max-width: calc(100% - 170px); /* Logonun üzerine gelmesin */
     }
 
-    .legend-item { display: flex; align-items: center; font-size: 0.85rem; }
-    .legend-color { width: 12px; height: 12px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
+    .legend-item { display: flex; align-items: center; font-size: 0.8rem; }
+    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
 
-    /* Scrollbar Stilleri (Webkit tarayıcılar için - Artık body için geçerli olabilir) */
-    /* Veya #menu'ye max-height verip overflow:auto yapılırsa aşağıdaki gibi kalır */
-    /* #menu::-webkit-scrollbar { ... } */
-    /* #menu::-webkit-scrollbar-track { ... } */
-    /* #menu::-webkit-scrollbar-thumb { ... } */
-    /* #menu::-webkit-scrollbar-thumb:hover { ... } */
+    /* Scrollbar Stilleri (Webkit - Body için) */
+    body::-webkit-scrollbar { width: 10px; }
+    body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+    body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+    body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
 
   </style>
 </head>
 
 <body>
   <video autoplay muted loop>
-    <!-- DİKKAT: video.mp4 yolu doğru olmalı! -->
     <source src="video.mp4" type="video/mp4">
     Tarayıcınız video etiketini desteklemiyor.
   </video>
@@ -208,12 +213,11 @@
       <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
   </div>
 
-  <!-- YENİ ALT GALERİ -->
+  <!-- ALT GALERİ -->
   <div id="bottom-gallery">
-      <div class="swiper-container gallery-swiper"> <!-- Swiper için farklı bir class ismi verdik -->
+      <div class="swiper-container gallery-swiper">
           <div class="swiper-wrapper">
-              <!-- Buraya Edibles/Joints vs. ürünlerinin resimlerini EKLE -->
-              <!-- ÖRNEKLER (Doğru resim yolları ile değiştir) -->
+              <!-- GALERİ İÇERİĞİ: KENDİ RESİMLERİNİZİ EKLEYİN -->
               <div class="swiper-slide"><img src="hash_cookies.png" alt="Hash Cookies"></div>
               <div class="swiper-slide"><img src="zowahh_joint.png" alt="Zowahh Joint"></div>
               <div class="swiper-slide"><img src="exodus_cheese_joint.png" alt="Exodus Cheese Joint"></div>
@@ -221,7 +225,9 @@
               <div class="swiper-slide"><img src="super_silver_haze_joint.png" alt="Super Silver Haze Joint"></div>
               <div class="swiper-slide"><img src="mimoza_joint.png" alt="Mimoza Joint"></div>
               <div class="swiper-slide"><img src="amnesia_joint.png" alt="Amnesia Joint"></div>
-              <!-- Diğer Edibles/Joints resimlerini buraya ekle... -->
+              <div class="swiper-slide"><img src="baska_bir_urun.png" alt="Başka Bir Ürün"></div>
+              <div class="swiper-slide"><img src="yeni_urun.png" alt="Yeni Ürün"></div>
+              <!-- İstedğiniz kadar slide ekleyebilirsiniz -->
           </div>
       </div>
   </div>
@@ -241,17 +247,18 @@
 
   <!-- Menü ve Swiper Başlatma Scripti -->
   <script>
+    // API URL'leri (Aynı)
     const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
 
     // Veri Çekme Fonksiyonu (Aynı)
-    async function fetchData(url) { /* ... Önceki kod ... */
-      try { const res = await fetch(url); if (!res.ok) { throw new Error(`HTTP error! status: ${res.status} for ${url}`); } return res.json(); } catch (error) { console.error("Fetch error:", error); throw error; }
-     }
+    async function fetchData(url) { /* ... önceki kod ... */
+       try { const res = await fetch(url); if (!res.ok) { throw new Error(`HTTP error! status: ${res.status} for ${url}`); } return res.json(); } catch (error) { console.error("Fetch error:", error); throw error; }
+    }
 
     // Menü Oluşturma Fonksiyonu (Aynı)
-    async function createMenu() { /* ... Önceki kod (menü içeriğini #menu içine oluşturur) ... */
+    async function createMenu() { /* ... önceki kod (menü içeriğini #menu içine oluşturur) ... */
         const menuContainer = document.getElementById('menu');
         const legendContainer = document.getElementById('legend-container');
         legendContainer.innerHTML = '';
@@ -261,7 +268,7 @@
             const kategoriler = {}; const tumMarkalar = new Set(); siralamaData.forEach(k => kategoriler[k.kategori] = []);
             menuData.forEach(item => { if (kategoriler.hasOwnProperty(item.ana_kategori)) { kategoriler[item.ana_kategori].push(item); if (item.marka) { tumMarkalar.add(item.marka); } } else { console.warn(`Sıralama bilgisinde olmayan kategori: ${item.ana_kategori}`); } });
             const sutunGruplari = {}; siralamaData.forEach(k => { const sutun = k.sutun_no; if (!sutunGruplari[sutun]) sutunGruplari[sutun] = []; if (kategoriler.hasOwnProperty(k.kategori)) { sutunGruplari[sutun].push({ kategori: k.kategori, sira_no: k.sira_no }); if (kategoriler[k.kategori].length === 0){ console.log(`"${k.kategori}" kat. ürün yok.`); } } });
-            menuContainer.innerHTML = '';
+            menuContainer.innerHTML = ''; // Önceki içeriği temizle
             Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sutun => { const columnDiv = document.createElement('div'); columnDiv.className = 'column'; const kategorilerBuSutun = sutunGruplari[sutun].sort((a, b) => a.sira_no - b.sira_no); kategorilerBuSutun.forEach(({ kategori }) => { const kategoriBaslik = document.createElement('div'); kategoriBaslik.className = 'kategori-baslik'; kategoriBaslik.textContent = kategori; columnDiv.appendChild(kategoriBaslik); const headerRow = document.createElement('div'); headerRow.className = 'header-row'; let priceHeader = '1 GR/5 GR'; if (kategori === 'JOINTS') priceHeader = '1 ST/5 ST'; else if (kategori === 'EDIBLES') priceHeader = 'Price'; headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${priceHeader}</span>`; columnDiv.appendChild(headerRow); if (kategoriler[kategori] && kategoriler[kategori].length > 0) { kategoriler[kategori].forEach(urun => { const urunDiv = document.createElement('div'); let classes = 'urun'; if (urun.stok_var_mi === false) classes += ' cizili'; if (urun.yeni_mi === true) classes += ' new'; urunDiv.className = classes; let fiyatHtml = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`; if (kategori === 'EDIBLES') { fiyatHtml = `${urun.fiyat_1gr || '-'}€`; } const thcText = urun.thc_orani ? urun.thc_orani : '-'; const markaRenk = renkler[urun.marka] || 'white'; urunDiv.innerHTML = `<span style="color:${markaRenk}">${urun.urun_adi || 'İsimsiz Ürün'}</span><span class="thc-orani">${thcText}</span><span>${fiyatHtml}</span>`; columnDiv.appendChild(urunDiv); }); } else { const noProductDiv = document.createElement('div'); noProductDiv.textContent = 'Yakında...'; noProductDiv.style.textAlign = 'center'; noProductDiv.style.padding = '1rem 0'; noProductDiv.style.fontSize = '0.9rem'; noProductDiv.style.color = '#aaa'; columnDiv.appendChild(noProductDiv); } }); menuContainer.appendChild(columnDiv); });
             legendContainer.innerHTML = ''; const sortedMarkalar = Array.from(tumMarkalar).sort(); sortedMarkalar.forEach(marka => { const legendItem = document.createElement('div'); legendItem.className = 'legend-item'; const markaRenk = renkler[marka] || '#999999'; legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRenk};"></span>${marka}`; legendContainer.appendChild(legendItem); });
         } catch (error) { console.error('Menü oluşturulamadı:', error); menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. <br><small>${error.message}</small></div>`; }
@@ -271,20 +278,19 @@
     // Sayfa yüklendiğinde Swiper'ı başlat ve Menüyü oluştur
     document.addEventListener('DOMContentLoaded', function () {
         // Alt Galeri Swiper Başlatma
-        var gallerySwiper = new Swiper('.gallery-swiper', { // HTML'deki class ile eşleşmeli
-            effect: 'slide', // veya 'coverflow' gibi başka efektler denenebilir
-            grabCursor: false, // Sürüklemeyi engelle
-            centeredSlides: true, // Aktif slayt ortada
-            slidesPerView: 'auto', // Slayt genişliğine göre otomatik ayarla
-            // slidesPerView: 5, // Veya sabit sayıda slayt göster (CSS'i buna göre ayarla)
-            loop: true, // Sonsuz döngü
-            spaceBetween: 15, // Slaytlar arası boşluk
+        var gallerySwiper = new Swiper('.gallery-swiper', {
+            effect: 'slide',
+            grabCursor: false,
+            centeredSlides: true,
+            slidesPerView: 'auto', // Genişliğe göre slayt sığdır
+            loop: true,
+            // slidesPerGroup: 1, // Aynı anda kaç slayt döneceği
+            spaceBetween: 10, // Slaytlar arası daha az boşluk
             autoplay: {
-                delay: 3000, // 3 saniyede bir değişsin
-                disableOnInteraction: true, // Elle müdahale olursa dursun (gerçi touch move kapalı)
+                delay: 3500, // Hız ayarı
+                disableOnInteraction: true, // Elle dokunulursa dursun (gerçi dokunma kapalı)
             },
             allowTouchMove: false, // Dokunmatik kaydırmayı kapat
-            // Navigation/Pagination istenmiyor
         });
 
         // Menüyü oluştur
