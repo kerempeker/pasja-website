@@ -218,7 +218,7 @@ async function createMenu() {
 
       const headerRow = document.createElement('div');
       headerRow.className = 'header-row';
-      headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : kategori === 'EDIBLES' ? '' : '1 GR/5 GR'}</span>`;
+      headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : kategori === 'EDIBLES' ? 'Price' : '1 GR/5 GR'}</span>`;
 
       columnDiv.appendChild(headerRow);
 
