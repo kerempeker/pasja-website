@@ -149,6 +149,7 @@
 
       const kategoriler = {};
       const tumMarkalar = new Set();
+      siralamaData.sort((a, b) => a.sira_no - b.sira_no);
       siralamaData.forEach(k => kategoriler[k.kategori] = []);
 
       menuData.forEach(item => {
