@@ -11,13 +11,11 @@
       background-color: black;
       font-family: 'Arial', sans-serif;
       color: white;
-      /* position: relative; /* Absolute konumlandırılmış çocuklar için referans noktası olabilir, şimdilik gerekli değil */
     }
 
     body {
       overflow-y: auto;
-      /* --- DEĞİŞİKLİK: Alttaki manuel resimler için daha fazla boşluk --- */
-      padding-bottom: 250px; /* Manuel resimler ve logo/lejant için yeterli alan */
+      padding-bottom: 250px;
     }
 
     #bg-video {
@@ -29,7 +27,7 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      z-index: -1;
+      z-index: -1; /* En arkada */
       opacity: 0.4;
       object-fit: cover;
     }
@@ -42,14 +40,19 @@
       overflow-x: auto;
       backdrop-filter: blur(5px);
       position: relative;
-      z-index: 1;
-      margin-bottom: 2rem; /* Menü ile sayfanın altı arasına biraz boşluk */
+      z-index: 1; /* Video üzerinde */
+      margin-bottom: 2rem;
+      /* --- ÖNEMLİ DÜZELTME: Video görünürlüğü için --- */
+      background-color: transparent; /* Veya rgba(0,0,0,0.1) gibi hafif opak */
+      /* --- --- */
     }
 
     .column {
       flex: 1;
       padding: 0 1rem;
       min-width: 250px;
+      /* Sütunların arka planının opak olmadığından emin olun (genellikle varsayılan olarak şeffaftır) */
+      /* background-color: transparent; */ /* Gerekirse ekleyin */
     }
 
     .kategori-baslik {
@@ -117,7 +120,7 @@
       left: 20px;
       width: 150px;
       opacity: 0.8;
-      z-index: 10;
+      z-index: 10; /* En üstte */
     }
 
     #legend-container {
@@ -130,7 +133,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      z-index: 10;
+      z-index: 10; /* En üstte */
       max-height: 150px;
       overflow-y: auto;
     }
@@ -148,39 +151,33 @@
       border: 1px solid #555;
     }
 
-    /* --- DEĞİŞİKLİK: Manuel Olarak Konumlandırılan Resimler için Stiller --- */
     .manual-image {
-      position: absolute; /* Manuel konumlandırma için */
-      width: clamp(150px, 20vw, 180px); /* Boyut (ayarlanabilir) */
+      position: absolute;
+      width: clamp(150px, 20vw, 180px);
       height: auto;
-      max-height: 160px; /* Yükseklik sınırı (ayarlanabilir) */
+      max-height: 160px;
       object-fit: contain;
       padding: 5px;
       background-color: rgba(0, 0, 0, 0.6);
       border-radius: 10px;
-      z-index: 5; /* Video üzerinde, logo/lejant altında */
+      z-index: 5; /* Menü üzerinde, logo/lejant altında */
     }
 
-    /* --- BURADAKİ bottom, left, right DEĞERLERİNİ DEĞİŞTİREREK KONUMLARI AYARLAYIN --- */
     #img-zowahh {
-      /* Örnek Konum: Sol alt köşe civarı (logo üstü) */
-      bottom: 50px; /* Alttan uzaklık */
-      left: 220px;  /* Soldan uzaklık (logonun sağına) */
+      bottom: 50px;
+      left: 220px;
     }
 
     #img-aardactig {
-       /* Örnek Konum: Alt orta */
-      bottom: 50px; /* Alttan uzaklık */
-      left: 50%; /* Ekranın ortasına hizala */
-      transform: translateX(-50%); /* Tam olarak yatayda ortala */
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     #img-joints {
-      /* Örnek Konum: Sağ alt köşe civarı (lejant üstü) */
-      bottom: 50px; /* Alttan uzaklık */
-      right: 220px; /* Sağdan uzaklık (lejantın soluna) */
+      bottom: 50px;
+      right: 220px;
     }
-    /* --- KONUM AYARLAMA BİTİŞİ --- */
 
   </style>
 </head>
@@ -196,11 +193,9 @@
     <!-- Menü içeriği JavaScript ile buraya eklenecek -->
   </div>
 
-  <!-- --- DEĞİŞİKLİK: Resimler doğrudan body içine, ID'leri ile eklendi --- -->
   <img id="img-zowahh" class="manual-image" src="zowahh.png" alt="Zowahh">
   <img id="img-aardactig" class="manual-image" src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
   <img id="img-joints" class="manual-image" src="joints.png" alt="Joints">
-  <!-- --- --- -->
 
   <div id="legend-container">
     <!-- Lejant içeriği JavaScript ile buraya eklenecek -->
@@ -209,8 +204,7 @@
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
   <script>
-    // JavaScript kodunda herhangi bir değişiklik yapmaya gerek yok.
-    // Önceki haliyle aynı kalabilir.
+    // JavaScript aynı kalabilir
     const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
