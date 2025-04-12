@@ -8,37 +8,47 @@
     body, html {
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      /* overflow: hidden; - Menü içeriği taşarsa kaydırma çubuğu çıkması için kaldırıldı */
       background-color: black;
       font-family: 'Arial', sans-serif;
       color: white;
+      /* overflow-y: auto; body'de zaten vardı, burada gereksiz */
     }
 
-    video {
+    /* Video Stilleri */
+    #bg-video { /* Videoya bir ID vermek daha iyi olabilir */
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       min-width: 100%;
       min-height: 100%;
+      width: auto; /* object-fit:cover ile birlikte orantıyı korur */
+      height: auto; /* object-fit:cover ile birlikte orantıyı korur */
       z-index: -1;
       opacity: 0.4;
-      object-fit: cover;
+      object-fit: cover; /* Videonun kapsayıcıyı doldurmasını sağlar */
     }
 
+    /* Menü ve İçerik Stilleri */
     #menu {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-between; /* Sütunları aralıklı dağıt */
       padding: 2rem;
       box-sizing: border-box;
-      overflow: auto;
+      overflow-x: auto; /* Yatayda çok sütun olursa kaydırma */
+      overflow-y: hidden; /* Dikey kaydırmayı body'ye bırak */
       backdrop-filter: blur(5px);
-      height: 100vh;
+      /* height: 100vh; - İçerik taşarsa sorun olabilir, kaldırıldı */
+      min-height: calc(100vh - 250px); /* Alt resimler ve boşluk için yer bırak */
+      position: relative; /* z-index ve diğer konumlandırmalar için */
+      z-index: 1; /* Video üzerinde olması için */
     }
 
     .column {
-      flex: 1;
+      flex: 1; /* Sütunların eşit genişlikte olmasını sağlar */
       padding: 0 1rem;
+      min-width: 250px; /* Sütunların çok daralmasını engelle */
     }
 
     .kategori-baslik {
@@ -53,33 +63,27 @@
 
     .header-row {
       display: grid;
-      grid-template-columns: 1fr 70px 100px;
+      grid-template-columns: 1fr 70px 100px; /* Sütun genişlikleri */
       font-size: 1rem;
+      font-weight: bold; /* Başlıkları kalın yapalım */
       margin-bottom: 0.5rem;
       border-bottom: 1px solid white;
       padding-bottom: 0.2rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin-right: 1rem;
-    }
-
-    .legend-color {
-      width: 10px;
-      height: 10px;
-      display: inline-block;
-      margin-right: 5px;
+      gap: 10px; /* Sütunlar arası boşluk */
+      align-items: center; /* Dikey hizalama */
     }
 
     .urun {
       display: grid;
-      grid-template-columns: 1fr 70px 100px;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 0.3rem;
+      grid-template-columns: 1fr 70px 100px; /* Sütun genişlikleri */
+      gap: 10px; /* Sütunlar arası boşluk */
+      align-items: center; /* Dikey hizalama */
+      margin-bottom: 0.5rem; /* Ürünler arası boşluk */
       font-size: 1.2rem;
+    }
+
+    .urun span {
+       word-break: break-word; /* Uzun ürün isimleri için kelime bölme */
     }
 
     .cizili {
@@ -87,9 +91,14 @@
       color: #888;
     }
 
+    /* Yeni İkonu */
     .new span:first-child::after {
       content: "";
       display: inline-block;
+      /* --- HATA 1: Dosya Yolu ---
+         'New-Icon.png' dosyasının bu HTML dosyasıyla aynı klasörde veya
+         doğru göreceli yolda olduğundan emin olun.
+         Örnek: Eğer 'images' klasöründeyse 'images/New-Icon.png' olmalı. */
       background-image: url('New-Icon.png');
       background-size: contain;
       background-repeat: no-repeat;
@@ -101,64 +110,116 @@
 
 
     .thc-orani {
-      color: #00FFFF;
+      color: #00FFFF; /* Cyan */
       font-size: 1rem;
       text-align: center;
-      white-space: nowrap;
+      white-space: nowrap; /* Oranın tek satırda kalması */
     }
+
+    /* Logo */
     #logo {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      width: 180px;
+      width: 150px; /* Biraz küçültüldü */
       opacity: 0.8;
-      z-index: 1;
+      z-index: 10; /* Diğer her şeyin üzerinde olması için */
     }
+
+    /* Resim Sırası */
     #image-row {
       display: flex;
-      justify-content: space-around;
-      margin-top: 2rem;
-      padding: 1rem 2rem;
+      justify-content: space-around; /* Resimleri aralıklı dağıt */
+      align-items: center; /* Dikeyde ortala */
+      padding: 1rem 2rem; /* Kenar boşlukları */
+      position: relative; /* z-index için */
+      z-index: 1; /* Menünün altında kalmaması için */
+      background-color: rgba(0, 0, 0, 0.3); /* Hafif bir arka plan */
+      flex-wrap: wrap; /* Küçük ekranlarda alt satıra geç */
+      gap: 15px; /* Resimler arası boşluk */
+      margin-top: 1rem; /* Menü ile arasına boşluk */
     }
 
     #image-row img {
-      max-width: 100%;
+      /* max-width: 100%; */ /* Flexbox içinde gereksiz olabilir */
+      width: clamp(150px, 25vw, 200px); /* Esnek genişlik */
       height: auto;
-      max-height: 200px;
-      object-fit: contain;
+      max-height: 180px; /* Yükseklik sınırı */
+      object-fit: contain; /* Resmin tamamı görünsün */
       border: 2px solid red;
       padding: 5px;
       background-color: rgba(0, 0, 0, 0.6);
       border-radius: 10px;
     }
 
+    /* Lejant */
     #legend-container {
       position: fixed;
       right: 20px;
       bottom: 20px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px;
+      background: rgba(0, 0, 0, 0.7); /* Biraz daha belirgin arka plan */
+      padding: 10px 15px;
       border-radius: 8px;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column; /* Markaları alt alta sırala */
+      gap: 5px; /* Öğeler arası boşluk */
+      z-index: 10; /* Diğer her şeyin üzerinde */
+      max-height: 150px; /* Çok fazla marka olursa kaydırma */
+      overflow-y: auto; /* Gerekirse dikey kaydırma */
     }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      /* margin-right: 1rem; - flex-direction: column olduğu için gereksiz */
+    }
+
+    .legend-color {
+      width: 12px; /* Biraz büyütüldü */
+      height: 12px; /* Biraz büyütüldü */
+      display: inline-block;
+      margin-right: 8px; /* Boşluk artırıldı */
+      border: 1px solid #555; /* Kenarlık ekle */
+    }
+
   </style>
 </head>
 
 <body style="margin: 0; padding: 0; overflow-y: auto; background-color: black; font-family: 'Arial', sans-serif; color: white;">
-  <video autoplay muted loop>
+
+  <!-- --- HATA 2: Video Dosya Yolu ---
+       'video.mp4' dosyasının bu HTML dosyasıyla aynı klasörde veya
+       doğru göreceli yolda olduğundan emin olun.
+       Ayrıca dosyanın bozuk olmadığından ve tarayıcının desteklediği bir formatta (MP4 genellikle iyidir)
+       olduğundan emin olun. -->
+  <video id="bg-video" autoplay muted loop playsinline> <!-- playsinline mobil için eklendi -->
     <source src="video.mp4" type="video/mp4">
+    Tarayıcınız video etiketini desteklemiyor.
   </video>
 
-  <div id="menu"></div>
+  <div id="menu">
+    <!-- Menü içeriği JavaScript ile buraya eklenecek -->
+  </div>
 
   <div id="image-row">
+    <!-- --- HATA 3, 4, 5: Resim Dosya Yolları ---
+         'zowahh.png', 'aardactig_bio_amnesia.png', 'joints.png' dosyalarının
+         bu HTML dosyasıyla aynı klasörde veya doğru göreceli yolda
+         olduğundan emin olun.
+         Örnek: Eğer 'images' klasöründeyse 'images/zowahh.png' olmalı. -->
     <img src="zowahh.png" alt="Zowahh">
     <img src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
     <img src="joints.png" alt="Joints">
   </div>
 
-  <div id="legend-container"></div>
+  <div id="legend-container">
+    <!-- Lejant içeriği JavaScript ile buraya eklenecek -->
+  </div>
+
+  <!-- --- HATA 6: Logo Dosya Yolu ---
+       'Pasja Review_1.png' dosyasının bu HTML dosyasıyla aynı klasörde veya
+       doğru göreceli yolda olduğundan emin olun.
+       Örnek: Eğer 'images' klasöründeyse 'images/Pasja Review_1.png' olmalı. -->
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
   <script>
@@ -166,32 +227,91 @@
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
 
+    // Veri çekme fonksiyonu (hata yönetimi eklendi)
     async function fetchData(url) {
-      const res = await fetch(url);
-      return res.json();
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status} for ${url}`);
+        }
+        return await res.json();
+      } catch (error) {
+        console.error("Veri çekme hatası:", error);
+        // Hata durumunda boş veri döndürerek uygulamanın tamamen çökmesini engelle
+        if (url.includes('action=renkler')) return {};
+        if (url.includes('action=sirala')) return [];
+        return []; // Ana menü verisi için
+      }
     }
 
     async function createMenu() {
+      // Verileri paralel olarak çek
       const [menuData, renkler, siralamaData] = await Promise.all([
         fetchData(MENU_URL),
         fetchData(RENK_URL),
         fetchData(SIRA_URL)
       ]);
 
+      // Veri gelip gelmediğini kontrol et
+      if (!menuData || menuData.length === 0) {
+        console.error("Menü verisi alınamadı veya boş.");
+        // Kullanıcıya bilgi verilebilir
+         document.getElementById('menu').innerHTML = '<p style="text-align:center; font-size:1.5rem; color:red;">Menü yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>';
+        return; // Fonksiyondan çık
+      }
+
       const kategoriler = {};
       const tumMarkalar = new Set();
-      siralamaData.sort((a, b) => a.sira_no - b.sira_no);
-      siralamaData.forEach(k => kategoriler[k.kategori] = []);
 
+      // Sıralama verisine göre kategorileri başlat
+      // Sıralama verisi yoksa veya hatalıysa, kategorileri ilk üründen itibaren oluştur
+      if (siralamaData && siralamaData.length > 0) {
+         siralamaData.sort((a, b) => a.sira_no - b.sira_no);
+         siralamaData.forEach(k => {
+             if (k.kategori) { // Kategori adı var mı kontrol et
+                 kategoriler[k.kategori] = [];
+             }
+         });
+      }
+
+
+      // Ürünleri kategorilere ayır ve markaları topla
       menuData.forEach(item => {
-        if (kategoriler[item.ana_kategori]) kategoriler[item.ana_kategori].push(item);
-        tumMarkalar.add(item.marka);
+        // Eğer sıralamada olmayan bir kategori gelirse, onu da ekle
+        if (item.ana_kategori && !kategoriler[item.ana_kategori]) {
+            kategoriler[item.ana_kategori] = [];
+        }
+        // Sadece tanımlı kategorilere ekle
+        if (kategoriler[item.ana_kategori]) {
+            kategoriler[item.ana_kategori].push(item);
+        }
+        if (item.marka) { // Marka var mı kontrol et
+             tumMarkalar.add(item.marka);
+        }
       });
 
-      const menu = document.getElementById('menu');
-      menu.innerHTML = '';
+      const menuDiv = document.getElementById('menu');
+      menuDiv.innerHTML = ''; // Eski içeriği temizle
 
-      Object.keys(kategoriler).forEach((kategori) => {
+      // Sıralanmış kategori sırasına göre veya objenin kendi sırasına göre sütunları oluştur
+      const kategoriSirasi = siralamaData && siralamaData.length > 0
+                           ? siralamaData.map(k => k.kategori).filter(k => k && kategoriler[k]) // Sıralamadan gelen ve ürün içeren kategoriler
+                           : Object.keys(kategoriler); // Veriden gelen sıra
+
+       // Sıralamada olmayan ama veri de olan kategorileri sona ekle
+       Object.keys(kategoriler).forEach(kategori => {
+           if (!kategoriSirasi.includes(kategori)) {
+               kategoriSirasi.push(kategori);
+           }
+       });
+
+
+      kategoriSirasi.forEach((kategori) => {
+        // Kategoride ürün yoksa sütun oluşturma
+        if (!kategoriler[kategori] || kategoriler[kategori].length === 0) {
+            return;
+        }
+
         const columnDiv = document.createElement('div');
         columnDiv.className = 'column';
 
@@ -202,32 +322,60 @@
 
         const headerRow = document.createElement('div');
         headerRow.className = 'header-row';
-        headerRow.innerHTML = `<span>Ürün</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : '1 GR/5 GR'}</span>`;
+        // Kategoriye özel başlık
+        const fiyatBaslik = kategori.toUpperCase() === 'JOINTS' ? '1 ST / 5 ST' : '1 GR / 5 GR';
+        headerRow.innerHTML = `<span>Ürün</span><span>THC</span><span>${fiyatBaslik}</span>`;
         columnDiv.appendChild(headerRow);
 
+        // Ürünleri (varsa) ekle
         kategoriler[kategori].forEach(urun => {
           const urunDiv = document.createElement('div');
-          urunDiv.className = `urun${urun.stok_var_mi === false ? ' cizili' : ''}${urun.yeni_mi ? ' new' : ''}`;
+          // Stok ve yenilik durumuna göre class ekle
+          let classList = 'urun';
+          if (urun.stok_var_mi === false || urun.stok_var_mi === 'FALSE' || urun.stok_var_mi === 'false') {
+             classList += ' cizili';
+          }
+          if (urun.yeni_mi === true || urun.yeni_mi === 'TRUE' || urun.yeni_mi === 'true') {
+            classList += ' new';
+          }
+          urunDiv.className = classList;
+
+          // Renkler objesi ve marka var mı kontrol et
+          const markaRengi = (renkler && renkler[urun.marka]) ? renkler[urun.marka] : 'white'; // Renk yoksa beyaz
+
           urunDiv.innerHTML = `
-            <span style="color:${renkler[urun.marka]}">${urun.urun_adi}</span>
-            <span class="thc-orani">${urun.thc_orani}</span>
+            <span style="color:${markaRengi}">${urun.urun_adi || 'İsimsiz Ürün'}</span>
+            <span class="thc-orani">${urun.thc_orani || '-'}%</span> <!-- % işareti eklendi -->
             <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
           columnDiv.appendChild(urunDiv);
         });
 
-        menu.appendChild(columnDiv);
+        menuDiv.appendChild(columnDiv);
       });
 
+      // Lejantı oluştur
       const legendContainer = document.getElementById('legend-container');
-      tumMarkalar.forEach(marka => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'legend-item';
-        legendItem.innerHTML = `<span class="legend-color" style="background-color:${renkler[marka] || '#fff'}"></span>${marka}`;
-        legendContainer.appendChild(legendItem);
+      legendContainer.innerHTML = ''; // Eski içeriği temizle
+      // Markaları alfabetik sırala
+      const siraliMarkalar = Array.from(tumMarkalar).sort();
+
+      siraliMarkalar.forEach(marka => {
+         // Renkler objesi var mı kontrol et
+         const markaRengi = (renkler && renkler[marka]) ? renkler[marka] : '#fff'; // Renk yoksa beyaz
+         const legendItem = document.createElement('div');
+         legendItem.className = 'legend-item';
+         legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRengi};"></span>${marka}`;
+         legendContainer.appendChild(legendItem);
       });
     }
 
-    createMenu().catch(err => console.error('Menü oluşturulamadı:', err));
+    // Menüyü oluştur ve olası hataları yakala
+    createMenu().catch(err => {
+        console.error('Menü oluşturma sırasında beklenmeyen bir hata oluştu:', err);
+        // Kullanıcıya genel bir hata mesajı gösterilebilir
+        document.getElementById('menu').innerHTML = '<p style="text-align:center; font-size:1.5rem; color:red;">Menü yüklenirken bir sorun oluştu.</p>';
+    });
+
   </script>
 </body>
 
