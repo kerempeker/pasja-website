@@ -171,61 +171,81 @@
       return res.json();
     }
 
-    async function createMenu() {
-      const [menuData, renkler, siralamaData] = await Promise.all([
-        fetchData(MENU_URL),
-        fetchData(RENK_URL),
-        fetchData(SIRA_URL)
-      ]);
+async function createMenu() {
+  const [menuData, renkler, siralamaData] = await Promise.all([
+    fetchData(MENU_URL),
+    fetchData(RENK_URL),
+    fetchData(SIRA_URL)
+  ]);
 
-      const kategoriler = {};
-      const tumMarkalar = new Set();
-      siralamaData.sort((a, b) => a.sira_no - b.sira_no);
-      siralamaData.forEach(k => kategoriler[k.kategori] = []);
+  // 1. Kategorileri hazırlayalım
+  const kategoriler = {};
+  const tumMarkalar = new Set();
+  siralamaData.forEach(k => kategoriler[k.kategori] = []);
 
-      menuData.forEach(item => {
-        if (kategoriler[item.ana_kategori]) kategoriler[item.ana_kategori].push(item);
-        tumMarkalar.add(item.marka);
-      });
-
-      const menu = document.getElementById('menu');
-      menu.innerHTML = '';
-
-      Object.keys(kategoriler).forEach((kategori) => {
-        const columnDiv = document.createElement('div');
-        columnDiv.className = 'column';
-
-        const kategoriBaslik = document.createElement('div');
-        kategoriBaslik.className = 'kategori-baslik';
-        kategoriBaslik.textContent = kategori;
-        columnDiv.appendChild(kategoriBaslik);
-
-        const headerRow = document.createElement('div');
-        headerRow.className = 'header-row';
-        headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : '1 GR/5 GR'}</span>`;
-        columnDiv.appendChild(headerRow);
-
-        kategoriler[kategori].forEach(urun => {
-          const urunDiv = document.createElement('div');
-          urunDiv.className = `urun${urun.stok_var_mi === false ? ' cizili' : ''}${urun.yeni_mi ? ' new' : ''}`;
-          urunDiv.innerHTML = `
-            <span style="color:${renkler[urun.marka]}">${urun.urun_adi}</span>
-            <span class="thc-orani">${urun.thc_orani}</span>
-            <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
-          columnDiv.appendChild(urunDiv);
-        });
-
-        menu.appendChild(columnDiv);
-      });
-
-      const legendContainer = document.getElementById('legend-container');
-      tumMarkalar.forEach(marka => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'legend-item';
-        legendItem.innerHTML = `<span class="legend-color" style="background-color:${renkler[marka] || '#fff'}"></span>${marka}`;
-        legendContainer.appendChild(legendItem);
-      });
+  menuData.forEach(item => {
+    if (kategoriler[item.ana_kategori]) {
+      kategoriler[item.ana_kategori].push(item);
+      tumMarkalar.add(item.marka);
     }
+  });
+
+  // 2. Kategorileri sütun numarasına göre grupla
+  const sutunGruplari = {};
+  siralamaData.forEach(k => {
+    const sutun = k.sutun_no;
+    if (!sutunGruplari[sutun]) sutunGruplari[sutun] = [];
+    sutunGruplari[sutun].push({
+      kategori: k.kategori,
+      sira_no: k.sira_no
+    });
+  });
+
+  // 3. Menü DOM'unu oluştur
+  const menu = document.getElementById('menu');
+  menu.innerHTML = '';
+
+  Object.keys(sutunGruplari).sort((a, b) => a - b).forEach(sutun => {
+    const columnDiv = document.createElement('div');
+    columnDiv.className = 'column';
+
+    const kategorilerBuSutun = sutunGruplari[sutun].sort((a, b) => a.sira_no - b.sira_no);
+    kategorilerBuSutun.forEach(({ kategori }) => {
+      const kategoriBaslik = document.createElement('div');
+      kategoriBaslik.className = 'kategori-baslik';
+      kategoriBaslik.textContent = kategori;
+      columnDiv.appendChild(kategoriBaslik);
+
+      const headerRow = document.createElement('div');
+      headerRow.className = 'header-row';
+      headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${kategori === 'JOINTS' ? '1 ST/5 ST' : '1 GR/5 GR'}</span>`;
+      columnDiv.appendChild(headerRow);
+
+      kategoriler[kategori].forEach(urun => {
+        const urunDiv = document.createElement('div');
+        urunDiv.className = `urun${urun.stok_var_mi === false ? ' cizili' : ''}${urun.yeni_mi ? ' new' : ''}`;
+        urunDiv.innerHTML = `
+          <span style="color:${renkler[urun.marka]}">${urun.urun_adi}</span>
+          <span class="thc-orani">${urun.thc_orani}</span>
+          <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
+        columnDiv.appendChild(urunDiv);
+      });
+    });
+
+    menu.appendChild(columnDiv);
+  });
+
+  // 4. Marka legend'larını oluştur
+  const legendContainer = document.getElementById('legend-container');
+  legendContainer.innerHTML = '';
+  tumMarkalar.forEach(marka => {
+    const legendItem = document.createElement('div');
+    legendItem.className = 'legend-item';
+    legendItem.innerHTML = `<span class="legend-color" style="background-color:${renkler[marka] || '#fff'}"></span>${marka}`;
+    legendContainer.appendChild(legendItem);
+  });
+}
+
 
     createMenu().catch(err => console.error('Menü oluşturulamadı:', err));
   </script>
