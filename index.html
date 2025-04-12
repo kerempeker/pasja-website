@@ -17,9 +17,7 @@
 
     body {
       margin: 0;
-      /* Body'e padding-bottom ekleyerek en alttaki içeriğin galeri arkasında kaybolmamasını garantile */
-      /* Galeri yüksekliği (160px) + Ekstra boşluk (40px) = 200px */
-      padding: 0 0 200px 0;
+      padding: 0 0 200px 0; /* Alt padding galeri için */
       background-color: black;
       color: white;
       min-height: 100vh;
@@ -35,48 +33,44 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      z-index: -1; /* En arkada */
+      z-index: -1;
       opacity: 0.35;
       object-fit: cover;
     }
 
     /* ANA MENÜ ALANI */
     #menu {
-      /* max-width kaldırıldı, kenar boşlukları padding ile */
-      /* margin kaldırıldı */
-      padding: 2rem 2rem 2rem 2rem; /* Alt padding body'den geliyor, burada azaltıldı */
+      padding: 2rem; /* Kenar boşlukları */
       box-sizing: border-box;
+      /* Menüye genel bir arka plan (isteğe bağlı) */
+      background-color: rgba(10, 10, 10, 0.6); /* Hafif genel arka plan */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px; /* Köşeleri yuvarla */
+      margin: 2rem; /* Üst/Alt/Sağ/Sol dış boşluk */
+
 
       /* Menü içindeki Sütunlar için Flexbox */
       display: flex;
-      gap: 1.5rem; /* Sütunlar arası boşluk */
-      flex-wrap: wrap; /* Gerektiğinde alta at */
+      gap: 2rem; /* Sütunlar arası boşluk */
+      flex-wrap: wrap;
     }
 
     /* Menü içindeki Sütunlar */
     .column {
-        flex: 1; /* Sütunlar alanı doldursun */
+        flex: 1; /* Eşit genişlesin */
         min-width: 240px;
-        /* Arka plan kaldırıldı, bütünlük için */
-        /* background-color: rgba(0, 0, 0, 0.65); */
-        /* backdrop-filter: blur(10px); */
-        /* padding: 1.5rem; */ /* Padding #menu'de veya burada olabilir */
+        /* Sütunlardan arka planlar KALDIRILDI */
+        /* background-color: rgba(10, 10, 10, 0.7); */
+        /* backdrop-filter: blur(8px); */
+        /* padding: 1.5rem; */ /* Padding #menu'ye taşındı */
         /* border-radius: 8px; */
+        /* margin-bottom: 1rem; */
         box-sizing: border-box;
-        /* margin-bottom: 1rem; */ /* Gap hallediyor */
-
-        /* İçeriğin daha iyi görünmesi için sütuna padding ekleyelim */
-        background-color: rgba(10, 10, 10, 0.7); /* Hafif sütun arka planı */
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 1rem; /* wrap olduğunda boşluk */
-
     }
 
     /* ---- MENÜ İÇİ STİLLERİ (Kategori Başlığı, Ürünler vs.) --- */
-    /* ... (Stiller aynı kalabilir, önceki koddan kopyalanır) ... */
+    /* Stillerde değişiklik yok, olduğu gibi kalıyor */
     .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem; }
     .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; }
     .header-row span:nth-child(2), .header-row span:nth-child(3) { text-align: center; }
@@ -92,28 +86,30 @@
 
     /* ALT GALERİ KONTEYNERİ */
     #bottom-gallery {
-      position: fixed; /* Ekrana göre sabit */
-      bottom: 0; /* Tam alta yapışık */
-      left: 0;
-      width: 100%;
-      height: 170px; /* Galeri yüksekliği (resim + boşluk + gradient) */
-      z-index: 5; /* Diğer içeriklerin üzerinde, ama logo/legend altında olabilir */
+      position: fixed;
+      bottom: 0;
+      /* Soldan %25 boşluk bırak (INDICA/HYBRIDE sütunu kadar) */
+      left: 25%;
+      /* Genişliği kalan %75 yap (SATIVA, HASH, JOINTS sütunları) */
+      width: 75%;
+      height: 170px; /* Galeri yüksekliği */
+      z-index: 5;
       overflow: hidden;
-      padding: 10px 0; /* Dikey iç boşluk */
-      /* pointer-events: none; KALDIRILDI - Artık gerekmiyor */
-      /* Menü içeriğinden görsel olarak ayırmak için gradient */
+      padding: 10px 0;
+      /* Arka plan gradient */
       background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.7) 50%, transparent 100%);
-      backdrop-filter: blur(3px); /* Hafif genel bulanıklık */
-       -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      box-sizing: border-box; /* Padding/border genişliğe dahil edilsin */
     }
 
-    /* Alt Galeri için Swiper Konteyneri */
+    /* Swiper Konteyner (Galeri içinde %100 yer kaplar) */
     #bottom-gallery .swiper-container {
         width: 100%;
         height: 100%;
     }
 
-    /* Alt Galeri Slaytları - Efektler ve Görünüm */
+    /* Alt Galeri Slaytları - Efektler ve Görünüm (Aynı kalabilir) */
     #bottom-gallery .swiper-slide {
         width: 200px; /* Slayt genişliği */
         height: 130px; /* Slayt resim alanı yüksekliği */
@@ -121,46 +117,23 @@
         justify-content: center;
         align-items: center;
         transition: all 0.6s ease-in-out;
-        transform-style: preserve-3d; /* Daha pürüzsüz geçişler için */
-
-        /* Varsayılan Stil: Bulanık ve Soluk */
-        opacity: 0.4;
-        filter: blur(4px);
-        transform: scale(0.85);
+        transform-style: preserve-3d;
+        opacity: 0.4; filter: blur(4px); transform: scale(0.85); /* Varsayılan: Bulanık */
     }
-
-    /* Aktif Slayt (Ortadaki) */
-    #bottom-gallery .swiper-slide-active {
-        opacity: 1;
-        filter: blur(0px);
-        transform: scale(1);
-    }
-
-    /* Aktifin Yanındakiler (Sağ ve Sol) - Net */
+    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); /* Ortadaki: Net */ }
     #bottom-gallery .swiper-slide-prev,
-    #bottom-gallery .swiper-slide-next {
-        opacity: 0.9; /* Hafif soluk olabilir veya 1 */
-        filter: blur(0px);
-        transform: scale(0.95);
-    }
-
-     /* Daha uzaktakiler (İsteğe bağlı: Tamamen gizlemek için) */
+    #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); /* Yanlardakiler: Net */ }
     #bottom-gallery .swiper-slide-prev.swiper-slide-prev,
-    #bottom-gallery .swiper-slide-next.swiper-slide-next {
-       /* Varsayılan stiller zaten bulanık/soluk yapar */
-       /* visibility: hidden; */ /* Veya tamamen gizle */
-    }
+    #bottom-gallery .swiper-slide-next.swiper-slide-next { /* Daha uzaktakiler bulanık kalır */ }
 
-
-    /* Galeri içindeki resimler */
+    /* Galeri içindeki resimler (Aynı kalabilir) */
     #bottom-gallery .swiper-slide img {
         display: block;
-        width: 95%; /* Hafif iç boşluk */
-        height: 95%;
-        object-fit: cover; /* Resmi kaplasın */
+        width: 95%; height: 95%;
+        object-fit: cover;
         border-radius: 8px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        /* DİKKAT: Galeri resim yolları doğru olmalı! */
+        /* DİKKAT: Galeri resim yolları */
     }
 
 
@@ -169,9 +142,9 @@
       position: fixed;
       bottom: 15px;
       left: 15px;
-      width: 120px; /* Biraz daha küçük */
+      width: 120px;
       opacity: 0.9;
-      z-index: 10; /* En üstte */
+      z-index: 10; /* Galeri ve menünün üzerinde */
        /* DİKKAT: Pasja Review_1.png yolu */
     }
 
@@ -185,14 +158,14 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      z-index: 10; /* Logo ile aynı seviyede veya biraz altında */
-      max-width: calc(100% - 170px); /* Logonun üzerine gelmesin */
+      z-index: 10; /* Galeri ve menünün üzerinde */
+      max-width: calc(70% - 40px); /* Galerinin sağ kısmına sığsın, logoya yer kalsın */
     }
 
     .legend-item { display: flex; align-items: center; font-size: 0.8rem; }
     .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
 
-    /* Scrollbar Stilleri (Webkit - Body için) */
+    /* Scrollbar Stilleri (Webkit - Body için - Aynı kalabilir) */
     body::-webkit-scrollbar { width: 10px; }
     body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
     body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
@@ -227,7 +200,7 @@
               <div class="swiper-slide"><img src="amnesia_joint.png" alt="Amnesia Joint"></div>
               <div class="swiper-slide"><img src="baska_bir_urun.png" alt="Başka Bir Ürün"></div>
               <div class="swiper-slide"><img src="yeni_urun.png" alt="Yeni Ürün"></div>
-              <!-- İstedğiniz kadar slide ekleyebilirsiniz -->
+              <!-- ... -->
           </div>
       </div>
   </div>
@@ -245,19 +218,19 @@
   <!-- Swiper JS Kütüphanesi (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Menü ve Swiper Başlatma Scripti -->
+  <!-- Menü ve Swiper Başlatma Scripti (JavaScript'te değişiklik yok) -->
   <script>
-    // API URL'leri (Aynı)
+    // API URL'leri
     const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
 
-    // Veri Çekme Fonksiyonu (Aynı)
+    // Veri Çekme Fonksiyonu
     async function fetchData(url) { /* ... önceki kod ... */
        try { const res = await fetch(url); if (!res.ok) { throw new Error(`HTTP error! status: ${res.status} for ${url}`); } return res.json(); } catch (error) { console.error("Fetch error:", error); throw error; }
     }
 
-    // Menü Oluşturma Fonksiyonu (Aynı)
+    // Menü Oluşturma Fonksiyonu
     async function createMenu() { /* ... önceki kod (menü içeriğini #menu içine oluşturur) ... */
         const menuContainer = document.getElementById('menu');
         const legendContainer = document.getElementById('legend-container');
@@ -274,7 +247,6 @@
         } catch (error) { console.error('Menü oluşturulamadı:', error); menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. <br><small>${error.message}</small></div>`; }
     }
 
-
     // Sayfa yüklendiğinde Swiper'ı başlat ve Menüyü oluştur
     document.addEventListener('DOMContentLoaded', function () {
         // Alt Galeri Swiper Başlatma
@@ -282,21 +254,19 @@
             effect: 'slide',
             grabCursor: false,
             centeredSlides: true,
-            slidesPerView: 'auto', // Genişliğe göre slayt sığdır
+            slidesPerView: 'auto',
             loop: true,
-            // slidesPerGroup: 1, // Aynı anda kaç slayt döneceği
-            spaceBetween: 10, // Slaytlar arası daha az boşluk
+            spaceBetween: 10,
             autoplay: {
-                delay: 3500, // Hız ayarı
-                disableOnInteraction: true, // Elle dokunulursa dursun (gerçi dokunma kapalı)
+                delay: 3500,
+                disableOnInteraction: true,
             },
-            allowTouchMove: false, // Dokunmatik kaydırmayı kapat
+            allowTouchMove: false,
         });
 
         // Menüyü oluştur
         createMenu();
     });
-
   </script>
 </body>
 </html>
