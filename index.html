@@ -8,47 +8,50 @@
     body, html {
       margin: 0;
       padding: 0;
-      /* overflow: hidden; - Menü içeriği taşarsa kaydırma çubuğu çıkması için kaldırıldı */
       background-color: black;
       font-family: 'Arial', sans-serif;
       color: white;
-      /* overflow-y: auto; body'de zaten vardı, burada gereksiz */
+    }
+
+    /* --- Body stiline dikey scroll ve altta boşluk eklendi --- */
+    body {
+      overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
+      padding-bottom: 100px; /* Alttaki sabit öğeler için boşluk */
     }
 
     /* Video Stilleri */
-    #bg-video { /* Videoya bir ID vermek daha iyi olabilir */
+    #bg-video {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       min-width: 100%;
       min-height: 100%;
-      width: auto; /* object-fit:cover ile birlikte orantıyı korur */
-      height: auto; /* object-fit:cover ile birlikte orantıyı korur */
-      z-index: -1;
+      width: auto;
+      height: auto;
+      z-index: -1; /* En arkada */
       opacity: 0.4;
-      object-fit: cover; /* Videonun kapsayıcıyı doldurmasını sağlar */
+      object-fit: cover;
     }
 
     /* Menü ve İçerik Stilleri */
     #menu {
       display: flex;
-      justify-content: space-between; /* Sütunları aralıklı dağıt */
+      justify-content: space-between;
       padding: 2rem;
       box-sizing: border-box;
       overflow-x: auto; /* Yatayda çok sütun olursa kaydırma */
-      overflow-y: hidden; /* Dikey kaydırmayı body'ye bırak */
+      /* overflow-y: hidden; - Kaldırıldı, yükseklik içeriğe göre ayarlanacak */
       backdrop-filter: blur(5px);
-      /* height: 100vh; - İçerik taşarsa sorun olabilir, kaldırıldı */
-      min-height: calc(100vh - 250px); /* Alt resimler ve boşluk için yer bırak */
-      position: relative; /* z-index ve diğer konumlandırmalar için */
+      /* min-height kaldırıldı, yükseklik dinamik olacak */
+      position: relative; /* z-index ve backdrop-filter için */
       z-index: 1; /* Video üzerinde olması için */
     }
 
     .column {
-      flex: 1; /* Sütunların eşit genişlikte olmasını sağlar */
+      flex: 1;
       padding: 0 1rem;
-      min-width: 250px; /* Sütunların çok daralmasını engelle */
+      min-width: 250px;
     }
 
     .kategori-baslik {
@@ -63,27 +66,27 @@
 
     .header-row {
       display: grid;
-      grid-template-columns: 1fr 70px 100px; /* Sütun genişlikleri */
+      grid-template-columns: 1fr 70px 100px;
       font-size: 1rem;
-      font-weight: bold; /* Başlıkları kalın yapalım */
+      font-weight: bold;
       margin-bottom: 0.5rem;
       border-bottom: 1px solid white;
       padding-bottom: 0.2rem;
-      gap: 10px; /* Sütunlar arası boşluk */
-      align-items: center; /* Dikey hizalama */
+      gap: 10px;
+      align-items: center;
     }
 
     .urun {
       display: grid;
-      grid-template-columns: 1fr 70px 100px; /* Sütun genişlikleri */
-      gap: 10px; /* Sütunlar arası boşluk */
-      align-items: center; /* Dikey hizalama */
-      margin-bottom: 0.5rem; /* Ürünler arası boşluk */
+      grid-template-columns: 1fr 70px 100px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 0.5rem;
       font-size: 1.2rem;
     }
 
     .urun span {
-       word-break: break-word; /* Uzun ürün isimleri için kelime bölme */
+       word-break: break-word;
     }
 
     .cizili {
@@ -91,15 +94,10 @@
       color: #888;
     }
 
-    /* Yeni İkonu */
     .new span:first-child::after {
       content: "";
       display: inline-block;
-      /* --- HATA 1: Dosya Yolu ---
-         'New-Icon.png' dosyasının bu HTML dosyasıyla aynı klasörde veya
-         doğru göreceli yolda olduğundan emin olun.
-         Örnek: Eğer 'images' klasöründeyse 'images/New-Icon.png' olmalı. */
-      background-image: url('New-Icon.png');
+      background-image: url('New-Icon.png'); /* Bu dosyanın var olduğundan emin olun */
       background-size: contain;
       background-repeat: no-repeat;
       width: 42px;
@@ -108,45 +106,45 @@
       vertical-align: middle;
     }
 
-
     .thc-orani {
-      color: #00FFFF; /* Cyan */
+      color: #00FFFF;
       font-size: 1rem;
       text-align: center;
-      white-space: nowrap; /* Oranın tek satırda kalması */
+      white-space: nowrap;
     }
 
     /* Logo */
     #logo {
-      position: fixed;
+      position: fixed; /* Viewport'a göre sabit */
       bottom: 20px;
       left: 20px;
-      width: 150px; /* Biraz küçültüldü */
+      width: 150px;
       opacity: 0.8;
-      z-index: 10; /* Diğer her şeyin üzerinde olması için */
+      z-index: 10; /* En üstte */
     }
 
     /* Resim Sırası */
     #image-row {
       display: flex;
-      justify-content: space-around; /* Resimleri aralıklı dağıt */
-      align-items: center; /* Dikeyde ortala */
-      padding: 1rem 2rem; /* Kenar boşlukları */
-      position: relative; /* z-index için */
-      z-index: 1; /* Menünün altında kalmaması için */
-      background-color: rgba(0, 0, 0, 0.3); /* Hafif bir arka plan */
-      flex-wrap: wrap; /* Küçük ekranlarda alt satıra geç */
-      gap: 15px; /* Resimler arası boşluk */
-      margin-top: 1rem; /* Menü ile arasına boşluk */
+      justify-content: space-around;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: relative; /* Akış içinde, ama z-index için */
+      z-index: 1; /* Menü ile aynı seviyede, video üzerinde */
+      background-color: rgba(0, 0, 0, 0.3);
+      flex-wrap: wrap;
+      gap: 15px;
+      /* --- DEĞİŞİKLİK: Menünün altına boşluk bırakmak için margin-top eklendi --- */
+      margin-top: 50px; /* Menü içeriği bittikten sonraki boşluk */
     }
 
     #image-row img {
-      /* max-width: 100%; */ /* Flexbox içinde gereksiz olabilir */
-      width: clamp(150px, 25vw, 200px); /* Esnek genişlik */
+      width: clamp(150px, 25vw, 200px);
       height: auto;
-      max-height: 180px; /* Yükseklik sınırı */
-      object-fit: contain; /* Resmin tamamı görünsün */
-      border: 2px solid red;
+      max-height: 180px;
+      object-fit: contain;
+      /* --- DEĞİŞİKLİK: Kırmızı çerçeve kaldırıldı --- */
+      /* border: 2px solid red; */
       padding: 5px;
       background-color: rgba(0, 0, 0, 0.6);
       border-radius: 10px;
@@ -154,46 +152,40 @@
 
     /* Lejant */
     #legend-container {
-      position: fixed;
+      position: fixed; /* Viewport'a göre sabit */
       right: 20px;
       bottom: 20px;
-      background: rgba(0, 0, 0, 0.7); /* Biraz daha belirgin arka plan */
+      background: rgba(0, 0, 0, 0.7);
       padding: 10px 15px;
       border-radius: 8px;
       display: flex;
-      flex-direction: column; /* Markaları alt alta sırala */
-      gap: 5px; /* Öğeler arası boşluk */
-      z-index: 10; /* Diğer her şeyin üzerinde */
-      max-height: 150px; /* Çok fazla marka olursa kaydırma */
-      overflow-y: auto; /* Gerekirse dikey kaydırma */
+      flex-direction: column;
+      gap: 5px;
+      z-index: 10; /* En üstte */
+      max-height: 150px;
+      overflow-y: auto;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      /* margin-right: 1rem; - flex-direction: column olduğu için gereksiz */
     }
 
     .legend-color {
-      width: 12px; /* Biraz büyütüldü */
-      height: 12px; /* Biraz büyütüldü */
+      width: 12px;
+      height: 12px;
       display: inline-block;
-      margin-right: 8px; /* Boşluk artırıldı */
-      border: 1px solid #555; /* Kenarlık ekle */
+      margin-right: 8px;
+      border: 1px solid #555;
     }
 
   </style>
 </head>
 
-<body style="margin: 0; padding: 0; overflow-y: auto; background-color: black; font-family: 'Arial', sans-serif; color: white;">
+<body> <!-- style etiketi kaldırıldı, CSS içine taşındı -->
 
-  <!-- --- HATA 2: Video Dosya Yolu ---
-       'video.mp4' dosyasının bu HTML dosyasıyla aynı klasörde veya
-       doğru göreceli yolda olduğundan emin olun.
-       Ayrıca dosyanın bozuk olmadığından ve tarayıcının desteklediği bir formatta (MP4 genellikle iyidir)
-       olduğundan emin olun. -->
-  <video id="bg-video" autoplay muted loop playsinline> <!-- playsinline mobil için eklendi -->
-    <source src="video.mp4" type="video/mp4">
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="video.mp4" type="video/mp4"> <!-- Bu dosyanın var olduğundan emin olun -->
     Tarayıcınız video etiketini desteklemiyor.
   </video>
 
@@ -202,11 +194,7 @@
   </div>
 
   <div id="image-row">
-    <!-- --- HATA 3, 4, 5: Resim Dosya Yolları ---
-         'zowahh.png', 'aardactig_bio_amnesia.png', 'joints.png' dosyalarının
-         bu HTML dosyasıyla aynı klasörde veya doğru göreceli yolda
-         olduğundan emin olun.
-         Örnek: Eğer 'images' klasöründeyse 'images/zowahh.png' olmalı. -->
+    <!-- Bu resim dosyalarının var olduğundan emin olun -->
     <img src="zowahh.png" alt="Zowahh">
     <img src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
     <img src="joints.png" alt="Joints">
@@ -216,10 +204,7 @@
     <!-- Lejant içeriği JavaScript ile buraya eklenecek -->
   </div>
 
-  <!-- --- HATA 6: Logo Dosya Yolu ---
-       'Pasja Review_1.png' dosyasının bu HTML dosyasıyla aynı klasörde veya
-       doğru göreceli yolda olduğundan emin olun.
-       Örnek: Eğer 'images' klasöründeyse 'images/Pasja Review_1.png' olmalı. -->
+  <!-- Bu logo dosyasının var olduğundan emin olun -->
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
   <script>
@@ -227,7 +212,6 @@
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
 
-    // Veri çekme fonksiyonu (hata yönetimi eklendi)
     async function fetchData(url) {
       try {
         const res = await fetch(url);
@@ -237,77 +221,63 @@
         return await res.json();
       } catch (error) {
         console.error("Veri çekme hatası:", error);
-        // Hata durumunda boş veri döndürerek uygulamanın tamamen çökmesini engelle
         if (url.includes('action=renkler')) return {};
         if (url.includes('action=sirala')) return [];
-        return []; // Ana menü verisi için
+        return [];
       }
     }
 
     async function createMenu() {
-      // Verileri paralel olarak çek
       const [menuData, renkler, siralamaData] = await Promise.all([
         fetchData(MENU_URL),
         fetchData(RENK_URL),
         fetchData(SIRA_URL)
       ]);
 
-      // Veri gelip gelmediğini kontrol et
       if (!menuData || menuData.length === 0) {
         console.error("Menü verisi alınamadı veya boş.");
-        // Kullanıcıya bilgi verilebilir
          document.getElementById('menu').innerHTML = '<p style="text-align:center; font-size:1.5rem; color:red;">Menü yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>';
-        return; // Fonksiyondan çık
+        return;
       }
 
       const kategoriler = {};
       const tumMarkalar = new Set();
 
-      // Sıralama verisine göre kategorileri başlat
-      // Sıralama verisi yoksa veya hatalıysa, kategorileri ilk üründen itibaren oluştur
       if (siralamaData && siralamaData.length > 0) {
          siralamaData.sort((a, b) => a.sira_no - b.sira_no);
          siralamaData.forEach(k => {
-             if (k.kategori) { // Kategori adı var mı kontrol et
+             if (k.kategori) {
                  kategoriler[k.kategori] = [];
              }
          });
       }
 
-
-      // Ürünleri kategorilere ayır ve markaları topla
       menuData.forEach(item => {
-        // Eğer sıralamada olmayan bir kategori gelirse, onu da ekle
         if (item.ana_kategori && !kategoriler[item.ana_kategori]) {
             kategoriler[item.ana_kategori] = [];
         }
-        // Sadece tanımlı kategorilere ekle
         if (kategoriler[item.ana_kategori]) {
             kategoriler[item.ana_kategori].push(item);
         }
-        if (item.marka) { // Marka var mı kontrol et
+        if (item.marka) {
              tumMarkalar.add(item.marka);
         }
       });
 
       const menuDiv = document.getElementById('menu');
-      menuDiv.innerHTML = ''; // Eski içeriği temizle
+      menuDiv.innerHTML = '';
 
-      // Sıralanmış kategori sırasına göre veya objenin kendi sırasına göre sütunları oluştur
       const kategoriSirasi = siralamaData && siralamaData.length > 0
-                           ? siralamaData.map(k => k.kategori).filter(k => k && kategoriler[k]) // Sıralamadan gelen ve ürün içeren kategoriler
-                           : Object.keys(kategoriler); // Veriden gelen sıra
+                           ? siralamaData.map(k => k.kategori).filter(k => k && kategoriler[k])
+                           : Object.keys(kategoriler);
 
-       // Sıralamada olmayan ama veri de olan kategorileri sona ekle
        Object.keys(kategoriler).forEach(kategori => {
            if (!kategoriSirasi.includes(kategori)) {
                kategoriSirasi.push(kategori);
            }
        });
 
-
       kategoriSirasi.forEach((kategori) => {
-        // Kategoride ürün yoksa sütun oluşturma
         if (!kategoriler[kategori] || kategoriler[kategori].length === 0) {
             return;
         }
@@ -322,15 +292,12 @@
 
         const headerRow = document.createElement('div');
         headerRow.className = 'header-row';
-        // Kategoriye özel başlık
         const fiyatBaslik = kategori.toUpperCase() === 'JOINTS' ? '1 ST / 5 ST' : '1 GR / 5 GR';
         headerRow.innerHTML = `<span>Ürün</span><span>THC</span><span>${fiyatBaslik}</span>`;
         columnDiv.appendChild(headerRow);
 
-        // Ürünleri (varsa) ekle
         kategoriler[kategori].forEach(urun => {
           const urunDiv = document.createElement('div');
-          // Stok ve yenilik durumuna göre class ekle
           let classList = 'urun';
           if (urun.stok_var_mi === false || urun.stok_var_mi === 'FALSE' || urun.stok_var_mi === 'false') {
              classList += ' cizili';
@@ -340,12 +307,11 @@
           }
           urunDiv.className = classList;
 
-          // Renkler objesi ve marka var mı kontrol et
-          const markaRengi = (renkler && renkler[urun.marka]) ? renkler[urun.marka] : 'white'; // Renk yoksa beyaz
+          const markaRengi = (renkler && renkler[urun.marka]) ? renkler[urun.marka] : 'white';
 
           urunDiv.innerHTML = `
             <span style="color:${markaRengi}">${urun.urun_adi || 'İsimsiz Ürün'}</span>
-            <span class="thc-orani">${urun.thc_orani || '-'}%</span> <!-- % işareti eklendi -->
+            <span class="thc-orani">${urun.thc_orani || '-'}%</span>
             <span>${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€</span>`;
           columnDiv.appendChild(urunDiv);
         });
@@ -353,26 +319,31 @@
         menuDiv.appendChild(columnDiv);
       });
 
-      // Lejantı oluştur
       const legendContainer = document.getElementById('legend-container');
-      legendContainer.innerHTML = ''; // Eski içeriği temizle
-      // Markaları alfabetik sırala
+      legendContainer.innerHTML = '';
       const siraliMarkalar = Array.from(tumMarkalar).sort();
 
       siraliMarkalar.forEach(marka => {
-         // Renkler objesi var mı kontrol et
-         const markaRengi = (renkler && renkler[marka]) ? renkler[marka] : '#fff'; // Renk yoksa beyaz
+         const markaRengi = (renkler && renkler[marka]) ? renkler[marka] : '#fff';
          const legendItem = document.createElement('div');
          legendItem.className = 'legend-item';
          legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRengi};"></span>${marka}`;
          legendContainer.appendChild(legendItem);
       });
+
+       // --- İSTEĞE BAĞLI: Menü yüklendikten sonra resimlerin konumunu ayarlama ---
+       // Mevcut CSS (`margin-top`) ile bu genellikle gereksizdir,
+       // ancak çok kesin bir konumlandırma istenirse kullanılabilir.
+       /*
+       const imageRow = document.getElementById('image-row');
+       if (menuDiv.offsetHeight > 0) { // Menünün yüksekliği hesaplanabildiyse
+           imageRow.style.marginTop = `50px`; // veya menuDiv.offsetHeight + 50 + 'px'; gibi hesaplamalar
+       }
+       */
     }
 
-    // Menüyü oluştur ve olası hataları yakala
     createMenu().catch(err => {
         console.error('Menü oluşturma sırasında beklenmeyen bir hata oluştu:', err);
-        // Kullanıcıya genel bir hata mesajı gösterilebilir
         document.getElementById('menu').innerHTML = '<p style="text-align:center; font-size:1.5rem; color:red;">Menü yüklenirken bir sorun oluştu.</p>';
     });
 
