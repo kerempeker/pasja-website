@@ -4,45 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Dijital Menü</title>
-  <!-- Swiper JS CSS Kütüphanesi ARTIK GEREKLİ DEĞİL -->
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" /> -->
+  <!-- Swiper JS CSS (Galeri yok ama kalsın, belki sonra eklenir) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <style>
-    /* TEMEL SAYFA STİLLERİ - Orijinal Hali */
-    html { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: black; }
+    /* === CSS Başlangıcı (Dokunulmadı) === */
+    html { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: black; /* Video yüklenemezse */ }
     body {
       margin: 0;
-      padding: 0; /* Padding'i kaldırıyoruz, menü kendi padding'ini yönetecek */
+      padding: 0 0 60px 0; /* Alt padding sadece logo/legend için */
       background-color: transparent; color: white; min-height: 100vh; position: relative;
     }
-
-    /* ARKA PLAN VİDEO */
     video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; /* Video görünürlüğü */ object-fit: cover; }
-
-    /* ANA MENÜ ALANI */
     #menu {
-        padding: 2rem; /* Kenar boşlukları */
-        box-sizing: border-box;
-        margin: 2rem auto; /* Ortala ve dış boşluk ver */
-        /* Arka plan yok */
-        /* background-color: rgba(10, 10, 10, 0.6); */
-        /* backdrop-filter: blur(10px); */
-        border-radius: 12px;
-
-        /* Sütunlar için Flexbox */
-        display: flex;
-        gap: 2rem; /* Sütunlar arası boşluk */
-        flex-wrap: wrap; /* Gerektiğinde alta atsın */
-        max-width: 1400px; /* Menünün genişliğini sınırlayabiliriz */
+        padding: 2rem; box-sizing: border-box; margin: 2rem auto; /* Arka plan yok */ border-radius: 12px;
+        display: flex; gap: 2rem; flex-wrap: wrap; max-width: 1400px;
     }
-
-    /* Menü içindeki Sütunlar */
-    .column {
-        flex: 1; /* Eşit genişlesin */
-        min-width: 240px; /* Minimum genişlik */
-        box-sizing: border-box;
-    }
-
-    /* ---- MENÜ İÇİ STİLLERİ --- */
+    .column { flex: 1; min-width: 240px; box-sizing: border-box; }
     .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
     .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
     .header-row span:nth-child(2), .header-row span:nth-child(3) { text-align: center; }
@@ -53,170 +30,120 @@
     .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); /* DİKKAT: New-Icon.png yolu */ }
     .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; }
     .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; }
-    /* ---- MENÜ İÇİ STİLLERİ SONU --- */
-
-    /* GALERİ İLE İLGİLİ TÜM STİLLER KALDIRILDI */
-
-    /* LEGEND ve LOGO */
+    /* Galeri Stilleri Kaldırıldı */
     #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; /* DİKKAT: Pasja Review_1.png yolu */ }
     #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(100% - 170px); }
     .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
     .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
-
-    /* Scrollbar Stilleri */
     body::-webkit-scrollbar { width: 10px; }
     body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
     body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
     body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
-
+    /* === CSS Sonu === */
   </style>
 </head>
 
 <body>
   <video autoplay muted loop>
-    <!-- DİKKAT: video.mp4 yolu -->
-    <source src="video.mp4" type="video/mp4">
-    Tarayıcınız video etiketini desteklemiyor.
+    <source src="video.mp4" type="video/mp4"> Tarayıcınız video etiketini desteklemiyor.
   </video>
-
-  <!-- ANA MENÜ KONTEYNERİ -->
-  <div id="menu">
-      <!-- Menü içeriği JavaScript ile buraya eklenecek -->
-      <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
-  </div>
-
-  <!-- ALT GALERİ HTML KODU TAMAMEN KALDIRILDI -->
-
-  <!-- Legend -->
-  <div id="legend-container">
-      <!-- Legend içeriği JavaScript ile buraya eklenecek -->
-  </div>
-
-  <!-- Logo -->
+  <div id="menu"> /* Yükleniyor mesajı... */ </div>
+  <!-- Galeri HTML yok -->
+  <div id="legend-container"></div>
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
-  <!-- Swiper JS Kütüphanesi ARTIK GEREKLİ DEĞİL -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> -->
-
+  <!-- Swiper JS yok -->
   <!-- === JAVASCRIPT BAŞLANGICI === -->
   <script>
-    // --- Otomatik Yenileme için Değişkenler ---
+    // --- Otomatik Yenileme Değişkenleri ---
     let currentDataVersion = null;
-    const CHECK_INTERVAL = 60000; // 1 dakika
+    const CHECK_INTERVAL = 60000;
     // -----------------------------------------
 
-    // --- API URL'leri (YENİ KULLANICI URL'Sİ İLE) ---
-    const BASE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaPxpFGU00KFSL36lqdM6VDU8zVup5A6uEI33Tv1b1vYSJTaH3hxHZw8kVRgbUCYrr/exec'; // SON VERİLEN URL
-    const MENU_URL = BASE_SCRIPT_URL; // Action olmadan varsayılan ürünleri çeker
+    // --- API URL'leri (YENİ URL) ---
+    const BASE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaPxpFGU00KFSL36lqdM6VDU8zVup5A6uEI33Tv1b1vYSJTaH3hxHZw8kVRgbUCYrr/exec';
+    const MENU_URL = BASE_SCRIPT_URL;
     const RENK_URL = BASE_SCRIPT_URL + '?action=renkler';
     const SIRA_URL = BASE_SCRIPT_URL + '?action=sirala';
-    const VERSION_URL = BASE_SCRIPT_URL + '?action=version'; // Sürüm kontrolü için
+    const VERSION_URL = BASE_SCRIPT_URL + '?action=version';
     // ----------------------------------------------
 
-    // Veri Çekme Fonksiyonu (Orijinal Hali)
+    // Veri Çekme Fonksiyonu
     async function fetchData(url) {
-       try {
-           const res = await fetch(url);
-           if (!res.ok) {
-               let errorText = `HTTP error! status: ${res.status}`;
-               try { const errorBody = await res.json(); if (errorBody && errorBody.error) { errorText += ` - ${errorBody.error}`; } } catch (e) {}
-               throw new Error(errorText + ` for ${url}`);
-           }
-           return res.json();
-       } catch (error) {
-           console.error("Fetch error:", error);
-           throw error;
-       }
+       try { const res = await fetch(url); if (!res.ok) { let errorText = `HTTP error! status: ${res.status}`; try { const errorBody = await res.json(); if (errorBody && errorBody.error) { errorText += ` - ${errorBody.error}`; } } catch (e) {} throw new Error(errorText + ` for ${url}`); } return res.json(); } catch (error) { console.error("Fetch error:", error); throw error; }
     }
 
-
-    // Menü Oluşturma Fonksiyonu (Otomatik Yenileme Entegreli)
+    // Menü Oluşturma Fonksiyonu (Debug Logları Eklendi)
     async function createMenu(isUpdate = false) {
         const menuContainer = document.getElementById('menu');
         const legendContainer = document.getElementById('legend-container');
-
-        if (!isUpdate) {
-            menuContainer.innerHTML = '<div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>';
-            legendContainer.innerHTML = '';
-        } else {
-            console.log("Değişiklik algılandı, menü güncelleniyor...");
-        }
+        if (!isUpdate) { menuContainer.innerHTML = '<div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>'; legendContainer.innerHTML = ''; } else { console.log("Menü güncelleniyor..."); }
 
         try {
-            // Versiyon dahil tüm veriyi çek
-            const [menuData, renkler, siralamaData, versionData] = await Promise.all([
-                fetchData(MENU_URL), fetchData(RENK_URL), fetchData(SIRA_URL), fetchData(VERSION_URL)
-            ]);
+            const [menuData, renkler, siralamaData, versionData] = await Promise.all([ fetchData(MENU_URL), fetchData(RENK_URL), fetchData(SIRA_URL), fetchData(VERSION_URL) ]);
 
-            // Veri formatını kontrol et
-            if (!Array.isArray(menuData) || typeof renkler !== 'object' || renkler === null || Array.isArray(renkler) ||
-                !Array.isArray(siralamaData) ||
-                typeof versionData !== 'object' || versionData === null || versionData.version === undefined ) {
-                console.error("Hatalı API Yanıtları:", { menuData, renkler, siralamaData, versionData });
-                throw new Error("API'den gelen veriler veya sürüm bilgisi beklenen formatta değil.");
+            // Veri kontrolü
+            if (!Array.isArray(menuData) || typeof renkler !== 'object' || renkler === null || Array.isArray(renkler) || !Array.isArray(siralamaData) || typeof versionData !== 'object' || versionData === null || versionData.version === undefined ) {
+                console.error("Hatalı API Yanıtları:", { menuData, renkler, siralamaData, versionData }); throw new Error("API'den gelen veriler veya sürüm bilgisi beklenen formatta değil.");
             }
+            currentDataVersion = versionData.version; console.log("Mevcut Veri Sürümü:", currentDataVersion);
 
-            // Sürümü kaydet
-            currentDataVersion = versionData.version;
-            console.log("Mevcut Veri Sürümü:", currentDataVersion);
-
-            // ------ Orijinal Menü Oluşturma Mantığı (Dokunulmadı) ------
+            // ------ Menü Oluşturma Mantığı Başlangıcı ------
             const kategoriler = {}; const tumMarkalar = new Set(); siralamaData.forEach(k => kategoriler[k.kategori] = []);
             menuData.forEach(item => { if (kategoriler.hasOwnProperty(item.ana_kategori)) { kategoriler[item.ana_kategori].push(item); if (item.marka) { tumMarkalar.add(item.marka); } } });
-            const sutunGruplari = {}; siralamaData.forEach(k => { const sutun = k.sutun_no; if (!sutunGruplari[sutun]) sutunGruplari[sutun] = []; if (kategoriler.hasOwnProperty(k.kategori)) { sutunGruplari[sutun].push({ kategori: k.kategori, sira_no: k.sira_no }); } });
+
+            // *** DEBUG: Sıralama verisini ve gruplamayı logla ***
+            console.log("Apps Script'ten Gelen Sıralama Verisi (siralamaData):", JSON.parse(JSON.stringify(siralamaData))); // Kopyasını logla
+            const sutunGruplari = {};
+            siralamaData.forEach(k => {
+                const sutun = k.sutun_no;
+                if (!sutunGruplari[sutun]) sutunGruplari[sutun] = [];
+                if (kategoriler.hasOwnProperty(k.kategori)) {
+                    sutunGruplari[sutun].push({ kategori: k.kategori, sira_no: k.sira_no });
+                }
+            });
+            console.log("JavaScript Tarafından Gruplanan Sütunlar (sutunGruplari):", JSON.parse(JSON.stringify(sutunGruplari))); // Kopyasını logla
+             // *** DEBUG SONU ***
+
             menuContainer.innerHTML = '';
-            Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sutun => { const columnDiv = document.createElement('div'); columnDiv.className = 'column'; const kategorilerBuSutun = sutunGruplari[sutun].sort((a, b) => a.sira_no - b.sira_no); kategorilerBuSutun.forEach(({ kategori }) => { const kategoriBaslik = document.createElement('div'); kategoriBaslik.className = 'kategori-baslik'; kategoriBaslik.textContent = kategori; columnDiv.appendChild(kategoriBaslik); const headerRow = document.createElement('div'); headerRow.className = 'header-row'; let priceHeader = '1 GR/5 GR'; if (kategori === 'JOINTS') priceHeader = '1 ST/5 ST'; else if (kategori === 'EDIBLES') priceHeader = 'Price'; headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${priceHeader}</span>`; columnDiv.appendChild(headerRow); if (kategoriler[kategori] && kategoriler[kategori].length > 0) { kategoriler[kategori].forEach(urun => { const urunDiv = document.createElement('div'); let classes = 'urun'; if (urun.stok_var_mi === false) classes += ' cizili'; if (urun.yeni_mi === true) classes += ' new'; urunDiv.className = classes; let fiyatHtml = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`; if (kategori === 'EDIBLES') { fiyatHtml = `${urun.fiyat_1gr || '-'}€`; } const thcText = urun.thc_orani ? urun.thc_orani : '-'; const markaRenk = renkler[urun.marka] || 'white'; urunDiv.innerHTML = `<span style="color:${markaRenk}">${urun.urun_adi || 'İsimsiz Ürün'}</span><span class="thc-orani">${thcText}</span><span>${fiyatHtml}</span>`; columnDiv.appendChild(urunDiv); }); } else { const noProductDiv = document.createElement('div'); noProductDiv.textContent = 'Yakında...'; noProductDiv.style.textAlign = 'center'; noProductDiv.style.padding = '1rem 0'; noProductDiv.style.fontSize = '0.9rem'; noProductDiv.style.color = '#aaa'; columnDiv.appendChild(noProductDiv); } }); menuContainer.appendChild(columnDiv); });
-            // Legend oluşturma (Sadece ilk yüklemede veya boşsa)
-            if (!isUpdate || legendContainer.innerHTML === '') {
-                legendContainer.innerHTML = ''; const sortedMarkalar = Array.from(tumMarkalar).sort(); sortedMarkalar.forEach(marka => { const legendItem = document.createElement('div'); legendItem.className = 'legend-item'; const markaRenk = renkler[marka] || '#999999'; legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRenk};"></span>${marka}`; legendContainer.appendChild(legendItem); });
-            }
-            // ------ Orijinal Menü Oluşturma Mantığı Sonu ------
+            // Sütunları oluştur
+            Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sutun => {
+                console.log(`Sütun ${sutun} oluşturuluyor.`); // DEBUG
+                const columnDiv = document.createElement('div');
+                columnDiv.className = 'column';
+                const kategorilerBuSutun = sutunGruplari[sutun].sort((a, b) => a.sira_no - b.sira_no);
+                console.log(`Sütun ${sutun} Kategorileri:`, kategorilerBuSutun.map(k=>k.kategori)); // DEBUG
+
+                kategorilerBuSutun.forEach(({ kategori }) => {
+                    // ... (Kategori başlığı ve ürünleri ekleme - aynı kod) ...
+                     const kategoriBaslik = document.createElement('div'); kategoriBaslik.className = 'kategori-baslik'; kategoriBaslik.textContent = kategori; columnDiv.appendChild(kategoriBaslik);
+                     const headerRow = document.createElement('div'); headerRow.className = 'header-row'; let priceHeader = '1 GR/5 GR'; if (kategori === 'JOINTS') priceHeader = '1 ST/5 ST'; else if (kategori === 'EDIBLES') priceHeader = 'Price'; headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${priceHeader}</span>`; columnDiv.appendChild(headerRow);
+                     if (kategoriler[kategori] && kategoriler[kategori].length > 0) { kategoriler[kategori].forEach(urun => { const urunDiv = document.createElement('div'); let classes = 'urun'; if (urun.stok_var_mi === false) classes += ' cizili'; if (urun.yeni_mi === true) classes += ' new'; urunDiv.className = classes; let fiyatHtml = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`; if (kategori === 'EDIBLES') { fiyatHtml = `${urun.fiyat_1gr || '-'}€`; } const thcText = urun.thc_orani ? urun.thc_orani : '-'; const markaRenk = renkler[urun.marka] || 'white'; urunDiv.innerHTML = `<span style="color:${markaRenk}">${urun.urun_adi || 'İsimsiz Ürün'}</span><span class="thc-orani">${thcText}</span><span>${fiyatHtml}</span>`; columnDiv.appendChild(urunDiv); }); } else { const noProductDiv = document.createElement('div'); noProductDiv.textContent = 'Yakında...'; noProductDiv.style.textAlign = 'center'; noProductDiv.style.padding = '1rem 0'; noProductDiv.style.fontSize = '0.9rem'; noProductDiv.style.color = '#aaa'; columnDiv.appendChild(noProductDiv); }
+                });
+                menuContainer.appendChild(columnDiv);
+            });
+            // Legend oluşturma
+            if (!isUpdate || legendContainer.innerHTML === '') { legendContainer.innerHTML = ''; const sortedMarkalar = Array.from(tumMarkalar).sort(); sortedMarkalar.forEach(marka => { const legendItem = document.createElement('div'); legendItem.className = 'legend-item'; const markaRenk = renkler[marka] || '#999999'; legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRenk};"></span>${marka}`; legendContainer.appendChild(legendItem); }); }
+            // ------ Menü Oluşturma Mantığı Sonu ------
 
         } catch (error) {
             console.error('Menü oluşturulamadı/güncellenemedi:', error);
-            // Hata mesajını ekranda göster
             menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%; background: rgba(0,0,0,0.7); border-radius: 8px;">Menü yüklenirken bir hata oluştu.<br><small>${error.message}</small></div>`;
-            currentDataVersion = null; // Hata durumunda kontrolü durdur
+            currentDataVersion = null;
         }
     }
 
-
-    // --- YENİ: Güncellemeleri Kontrol Eden Fonksiyon ---
+    // Güncellemeleri Kontrol Eden Fonksiyon
     async function checkForUpdates() {
-        if (currentDataVersion === null) { return; } // Sürüm yoksa kontrol etme
+        if (currentDataVersion === null) { return; }
         console.log(`Güncellemeler kontrol ediliyor... (Mevcut Sürüm: ${currentDataVersion})`);
-        try {
-            const versionData = await fetchData(VERSION_URL);
-            if (versionData && versionData.version !== undefined && versionData.version !== null) {
-                if (String(versionData.version) !== String(currentDataVersion)) {
-                    console.log(`Yeni sürüm bulundu! Eski: ${currentDataVersion}, Yeni: ${versionData.version}. Menü güncelleniyor...`);
-                    await createMenu(true); // Güncelleme modunda menüyü yeniden oluştur
-                }
-            } else {
-                 console.warn("Sürüm bilgisi alınamadı veya format hatalı. Alınan:", versionData);
-            }
-        } catch (error) {
-            console.error("Sürüm kontrolü sırasında hata:", error);
-        }
+        try { const versionData = await fetchData(VERSION_URL); if (versionData && versionData.version !== undefined && versionData.version !== null) { if (String(versionData.version) !== String(currentDataVersion)) { console.log(`Yeni sürüm bulundu! Eski: ${currentDataVersion}, Yeni: ${versionData.version}. Menü güncelleniyor...`); await createMenu(true); } } else { console.warn("Sürüm bilgisi alınamadı veya format hatalı. Alınan:", versionData); } } catch (error) { console.error("Sürüm kontrolü sırasında hata:", error); }
     }
-    // ----------------------------------------------
-
 
     // Sayfa yüklendiğinde
     document.addEventListener('DOMContentLoaded', function () {
-        // --- SWIPER BAŞLATMA KODU KALDIRILDI ---
-        // Orijinal kodda galeri yoktu, bu yüzden Swiper başlatma kodu da yok.
-
-        // Menüyü ilk kez oluştur
-        createMenu().then(() => {
-             // SADECE ilk yükleme BAŞARILIYSA (currentDataVersion null değilse) interval'i başlat
-             if (currentDataVersion !== null) {
-                setInterval(checkForUpdates, CHECK_INTERVAL);
-                console.log(`Otomatik güncelleme kontrolü her ${CHECK_INTERVAL / 1000} saniyede bir başlatıldı.`);
-             } else {
-                 console.error("İlk menü yüklemesi başarısız olduğu için otomatik kontrol başlatılamadı.");
-             }
-        });
+        // Swiper Başlatma Yok
+        createMenu().then(() => { if (currentDataVersion !== null) { setInterval(checkForUpdates, CHECK_INTERVAL); console.log(`Otomatik güncelleme kontrolü her ${CHECK_INTERVAL / 1000} saniyede bir başlatıldı.`); } else { console.error("İlk menü yüklemesi başarısız olduğu için otomatik kontrol başlatılamadı."); } });
     });
   </script>
   <!-- === JAVASCRIPT SONU === -->
