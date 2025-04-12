@@ -114,6 +114,23 @@
       opacity: 0.8;
       z-index: 1;
     }
+    #image-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+    }
+
+    #image-row img {
+      max-width: 100%;
+      height: auto;
+      max-height: 200px;
+      object-fit: contain;
+      border: 2px solid red;
+      padding: 5px;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+    }
 
     #legend-container {
       position: fixed;
@@ -128,12 +145,19 @@
   </style>
 </head>
 
-<body>
+<body style="margin: 0; padding: 0; overflow-y: auto; background-color: black; font-family: 'Arial', sans-serif; color: white;">
   <video autoplay muted loop>
     <source src="video.mp4" type="video/mp4">
   </video>
 
   <div id="menu"></div>
+
+  <div id="image-row">
+    <img src="zowahh.png" alt="Zowahh">
+    <img src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
+    <img src="joints.png" alt="Joints">
+  </div>
+
   <div id="legend-container"></div>
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
