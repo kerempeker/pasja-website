@@ -11,15 +11,15 @@
       background-color: black;
       font-family: 'Arial', sans-serif;
       color: white;
+      /* position: relative; /* Absolute konumlandırılmış çocuklar için referans noktası olabilir, şimdilik gerekli değil */
     }
 
-    /* --- Body stiline dikey scroll ve altta boşluk eklendi --- */
     body {
-      overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
-      padding-bottom: 100px; /* Alttaki sabit öğeler için boşluk */
+      overflow-y: auto;
+      /* --- DEĞİŞİKLİK: Alttaki manuel resimler için daha fazla boşluk --- */
+      padding-bottom: 250px; /* Manuel resimler ve logo/lejant için yeterli alan */
     }
 
-    /* Video Stilleri */
     #bg-video {
       position: fixed;
       top: 50%;
@@ -29,23 +29,21 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      z-index: -1; /* En arkada */
+      z-index: -1;
       opacity: 0.4;
       object-fit: cover;
     }
 
-    /* Menü ve İçerik Stilleri */
     #menu {
       display: flex;
       justify-content: space-between;
       padding: 2rem;
       box-sizing: border-box;
-      overflow-x: auto; /* Yatayda çok sütun olursa kaydırma */
-      /* overflow-y: hidden; - Kaldırıldı, yükseklik içeriğe göre ayarlanacak */
+      overflow-x: auto;
       backdrop-filter: blur(5px);
-      /* min-height kaldırıldı, yükseklik dinamik olacak */
-      position: relative; /* z-index ve backdrop-filter için */
-      z-index: 1; /* Video üzerinde olması için */
+      position: relative;
+      z-index: 1;
+      margin-bottom: 2rem; /* Menü ile sayfanın altı arasına biraz boşluk */
     }
 
     .column {
@@ -97,7 +95,7 @@
     .new span:first-child::after {
       content: "";
       display: inline-block;
-      background-image: url('New-Icon.png'); /* Bu dosyanın var olduğundan emin olun */
+      background-image: url('New-Icon.png');
       background-size: contain;
       background-repeat: no-repeat;
       width: 42px;
@@ -113,46 +111,17 @@
       white-space: nowrap;
     }
 
-    /* Logo */
     #logo {
-      position: fixed; /* Viewport'a göre sabit */
+      position: fixed;
       bottom: 20px;
       left: 20px;
       width: 150px;
       opacity: 0.8;
-      z-index: 10; /* En üstte */
+      z-index: 10;
     }
 
-    /* Resim Sırası */
-    #image-row {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 1rem 2rem;
-      position: relative; /* Akış içinde, ama z-index için */
-      z-index: 1; /* Menü ile aynı seviyede, video üzerinde */
-      background-color: rgba(0, 0, 0, 0.3);
-      flex-wrap: wrap;
-      gap: 15px;
-      /* --- DEĞİŞİKLİK: Menünün altına boşluk bırakmak için margin-top eklendi --- */
-      margin-top: 50px; /* Menü içeriği bittikten sonraki boşluk */
-    }
-
-    #image-row img {
-      width: clamp(150px, 25vw, 200px);
-      height: auto;
-      max-height: 180px;
-      object-fit: contain;
-      /* --- DEĞİŞİKLİK: Kırmızı çerçeve kaldırıldı --- */
-      /* border: 2px solid red; */
-      padding: 5px;
-      background-color: rgba(0, 0, 0, 0.6);
-      border-radius: 10px;
-    }
-
-    /* Lejant */
     #legend-container {
-      position: fixed; /* Viewport'a göre sabit */
+      position: fixed;
       right: 20px;
       bottom: 20px;
       background: rgba(0, 0, 0, 0.7);
@@ -161,7 +130,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      z-index: 10; /* En üstte */
+      z-index: 10;
       max-height: 150px;
       overflow-y: auto;
     }
@@ -179,13 +148,47 @@
       border: 1px solid #555;
     }
 
+    /* --- DEĞİŞİKLİK: Manuel Olarak Konumlandırılan Resimler için Stiller --- */
+    .manual-image {
+      position: absolute; /* Manuel konumlandırma için */
+      width: clamp(150px, 20vw, 180px); /* Boyut (ayarlanabilir) */
+      height: auto;
+      max-height: 160px; /* Yükseklik sınırı (ayarlanabilir) */
+      object-fit: contain;
+      padding: 5px;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      z-index: 5; /* Video üzerinde, logo/lejant altında */
+    }
+
+    /* --- BURADAKİ bottom, left, right DEĞERLERİNİ DEĞİŞTİREREK KONUMLARI AYARLAYIN --- */
+    #img-zowahh {
+      /* Örnek Konum: Sol alt köşe civarı (logo üstü) */
+      bottom: 50px; /* Alttan uzaklık */
+      left: 220px;  /* Soldan uzaklık (logonun sağına) */
+    }
+
+    #img-aardactig {
+       /* Örnek Konum: Alt orta */
+      bottom: 50px; /* Alttan uzaklık */
+      left: 50%; /* Ekranın ortasına hizala */
+      transform: translateX(-50%); /* Tam olarak yatayda ortala */
+    }
+
+    #img-joints {
+      /* Örnek Konum: Sağ alt köşe civarı (lejant üstü) */
+      bottom: 50px; /* Alttan uzaklık */
+      right: 220px; /* Sağdan uzaklık (lejantın soluna) */
+    }
+    /* --- KONUM AYARLAMA BİTİŞİ --- */
+
   </style>
 </head>
 
-<body> <!-- style etiketi kaldırıldı, CSS içine taşındı -->
+<body>
 
   <video id="bg-video" autoplay muted loop playsinline>
-    <source src="video.mp4" type="video/mp4"> <!-- Bu dosyanın var olduğundan emin olun -->
+    <source src="video.mp4" type="video/mp4">
     Tarayıcınız video etiketini desteklemiyor.
   </video>
 
@@ -193,21 +196,21 @@
     <!-- Menü içeriği JavaScript ile buraya eklenecek -->
   </div>
 
-  <div id="image-row">
-    <!-- Bu resim dosyalarının var olduğundan emin olun -->
-    <img src="zowahh.png" alt="Zowahh">
-    <img src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
-    <img src="joints.png" alt="Joints">
-  </div>
+  <!-- --- DEĞİŞİKLİK: Resimler doğrudan body içine, ID'leri ile eklendi --- -->
+  <img id="img-zowahh" class="manual-image" src="zowahh.png" alt="Zowahh">
+  <img id="img-aardactig" class="manual-image" src="aardactig_bio_amnesia.png" alt="Aardactig Bio Amnesia">
+  <img id="img-joints" class="manual-image" src="joints.png" alt="Joints">
+  <!-- --- --- -->
 
   <div id="legend-container">
     <!-- Lejant içeriği JavaScript ile buraya eklenecek -->
   </div>
 
-  <!-- Bu logo dosyasının var olduğundan emin olun -->
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
   <script>
+    // JavaScript kodunda herhangi bir değişiklik yapmaya gerek yok.
+    // Önceki haliyle aynı kalabilir.
     const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
@@ -330,24 +333,13 @@
          legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRengi};"></span>${marka}`;
          legendContainer.appendChild(legendItem);
       });
-
-       // --- İSTEĞE BAĞLI: Menü yüklendikten sonra resimlerin konumunu ayarlama ---
-       // Mevcut CSS (`margin-top`) ile bu genellikle gereksizdir,
-       // ancak çok kesin bir konumlandırma istenirse kullanılabilir.
-       /*
-       const imageRow = document.getElementById('image-row');
-       if (menuDiv.offsetHeight > 0) { // Menünün yüksekliği hesaplanabildiyse
-           imageRow.style.marginTop = `50px`; // veya menuDiv.offsetHeight + 50 + 'px'; gibi hesaplamalar
-       }
-       */
     }
 
     createMenu().catch(err => {
         console.error('Menü oluşturma sırasında beklenmeyen bir hata oluştu:', err);
         document.getElementById('menu').innerHTML = '<p style="text-align:center; font-size:1.5rem; color:red;">Menü yüklenirken bir sorun oluştu.</p>';
     });
-
   </script>
-</body>
 
+</body>
 </html>
