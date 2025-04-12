@@ -4,110 +4,125 @@
 <head>
   <meta charset="UTF-8">
   <title>Dijital Menü</title>
+  <!-- Swiper JS CSS Kütüphanesi (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <style>
     /* TEMEL SAYFA STİLLERİ */
     html {
       margin: 0;
       padding: 0;
       font-family: 'Arial', sans-serif;
-      background-color: black; /* html'e de vermek iyi olabilir */
+      background-color: black;
     }
 
     body {
       margin: 0;
       padding: 0;
-      /* overflow: hidden; KALDIRILDI - Kaydırmayı engelliyordu */
-      overflow-y: auto; /* Dikey kaydırmayı etkinleştir */
-      background-color: black;
+      background-color: black; /* Arka planı yine de ayarlayalım */
       color: white;
-      min-height: 100vh; /* İçerik az olsa bile body'nin en az ekran kadar olmasını sağlar */
+      min-height: 100vh;
+      overflow: hidden; /* Sayfanın kendisi kaymasın, içerikler kendi içinde kaysın */
+      display: flex;
+      flex-direction: column;
     }
 
     /* ARKA PLAN VİDEO */
     video {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
       min-width: 100%;
       min-height: 100%;
-      width: auto; /* Oranları korumak için */
-      height: auto; /* Oranları korumak için */
+      width: auto;
+      height: auto;
       z-index: -1;
-      opacity: 0.4;
+      opacity: 0.35; /* Video görünürlüğü */
       object-fit: cover;
     }
 
-    /* ANA MENÜ ALANI */
-    #menu {
-      display: flex;
-      justify-content: space-between; /* Sütunları yay */
-      padding: 2rem;
-      box-sizing: border-box;
-      /* overflow: auto; KALDIRILDI - Artık body kaydıracak */
-      /* height: 100vh; KALDIRILDI/DEĞİŞTİRİLDİ - Resimlerin görünmesi için ya kaldırılır ya da azaltılır */
-      min-height: calc(100vh - 4rem); /* Menünün en az ekran yüksekliği kadar olmasını sağlar (padding düşüldü), ama daha uzun olabilir */
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px); /* Tarayıcı uyumluluğu için */
-      gap: 1rem; /* Sütunlar arasına boşluk */
+    /* ANA İÇERİK KONTEYNERİ (Menü + Galeri) */
+    #main-content {
+        display: flex;
+        flex-grow: 1; /* Body içinde kalan tüm alanı kaplasın */
+        padding: 2rem;
+        gap: 2rem; /* Menü ve galeri arası boşluk */
+        align-items: flex-start; /* Öğeleri yukarı hizala */
+        /* background-color: rgba(0, 0, 0, 0.1); */ /* İsteğe bağlı genel arka plan */
+        /* backdrop-filter: blur(2px); */
     }
 
-    /* SÜTUNLAR */
+    /* ANA MENÜ ALANI (Sol Taraf) */
+    #menu {
+      flex: 3; /* Genişliğin çoğunu alsın (oran: ~3/4) */
+      box-sizing: border-box;
+      max-height: calc(100vh - 4rem); /* Yüksekliği ekranla sınırla (padding düşüldü) */
+      overflow-y: auto; /* Menü içeriği taşarsa KAYDIRMA ÇUBUĞU ÇIKSIN */
+      background-color: rgba(0, 0, 0, 0.65); /* ŞEFFAF ARKA PLAN (Video görünsün) */
+      backdrop-filter: blur(10px); /* Bulanıklık efekti */
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 1.5rem; /* İç boşluk */
+
+      /* Menü içindeki Sütunlar için Flexbox */
+      display: flex;
+      gap: 1.5rem; /* Sütunlar arası boşluk */
+    }
+
+    /* Menü içindeki Sütunlar */
     .column {
-      flex: 1; /* Sütunların eşit genişlemesi */
-      /* padding: 0 1rem; #menu'deki gap ile değiştirildi */
-      min-width: 200px; /* Sütunların çok daralmasını engelle */
+        flex: 1; /* Sütunlar eşit genişlesin */
+        min-width: 220px; /* Sütun minimum genişliği */
     }
 
     /* KATEGORİ BAŞLIĞI */
     .kategori-baslik {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem; /* Biraz daha boşluk */
       color: orange;
       text-align: center;
       border-bottom: 2px solid orange;
-      padding-bottom: 0.3rem;
+      padding-bottom: 0.4rem;
     }
 
     /* ÜRÜN LİSTESİ BAŞLIK SATIRI */
     .header-row {
       display: grid;
-      grid-template-columns: auto 70px 100px; /* auto ile ürün adı daha esnek */
-      gap: 10px; /* Ürün satırındaki boşlukla aynı */
-      font-size: 1rem;
-      font-weight: bold; /* Başlıkları kalın yapalım */
-      margin-bottom: 0.5rem;
-      border-bottom: 1px solid white;
-      padding-bottom: 0.2rem;
-      align-items: center; /* Dikey hizalama */
+      grid-template-columns: auto 70px 100px;
+      gap: 10px;
+      font-size: 0.9rem; /* Biraz küçültebiliriz */
+      font-weight: bold;
+      margin-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5); /* Daha soluk çizgi */
+      padding-bottom: 0.3rem;
+      align-items: center;
     }
     .header-row span:nth-child(2), /* THC başlığı */
     .header-row span:nth-child(3) { /* Fiyat başlığı */
-        text-align: center; /* Başlıkları ortala */
+        text-align: center;
     }
 
      /* ÜRÜN SATIRI */
     .urun {
       display: grid;
-      grid-template-columns: auto 70px 100px; /* auto ile ürün adı daha esnek */
+      grid-template-columns: auto 70px 100px;
       gap: 10px;
       align-items: center;
-      margin-bottom: 0.3rem;
-      font-size: 1.2rem; /* Biraz küçülttüm, isteğe bağlı */
+      margin-bottom: 0.4rem;
+      font-size: 1.1rem;
     }
 
     .urun span:first-child { /* Ürün adı */
-       word-break: break-word; /* Uzun isimler sığmazsa kırılsın */
+       word-break: break-word;
     }
 
     /* STOKTA YOK */
     .cizili {
       text-decoration: line-through;
-      color: #888;
+      color: #777 !important; /* Rengi biraz daha belirgin yapalım */
     }
     .cizili span { /* Çizili ürünün tüm spanları gri olsun */
-        color: #888 !important; /* Renk kodunu ezer */
+        color: #777 !important; /* Renk kodunu ezer */
         text-decoration: line-through;
     }
 
@@ -119,12 +134,11 @@
       background-image: url('New-Icon.png');
       background-size: contain;
       background-repeat: no-repeat;
-      width: 35px;  /* İkon boyutunu ayarla */
-      height: 25px; /* İkon boyutunu ayarla */
+      width: 32px;
+      height: 22px;
       margin-left: 6px;
-      vertical-align: middle; /* İkonu metinle hizala */
+      vertical-align: middle;
     }
-
 
     /* THC ORANI */
     .thc-orani {
@@ -136,91 +150,101 @@
 
     /* FİYAT */
     .urun span:last-child {
-        text-align: center; /* Fiyatları ortala */
-        font-size: 1rem;   /* Fiyat fontunu biraz küçülttüm */
-        white-space: nowrap; /* Fiyatların tek satırda kalmasını sağla */
+        text-align: center;
+        font-size: 1rem;
+        white-space: nowrap;
     }
 
-    /* LOGO */
-    #logo {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 150px; /* Boyut ayarı */
-      opacity: 0.8;
-      z-index: 10; /* Diğer fixed elementlerden (legend) önde olabilir */
-      /* DİKKAT: 'Pasja Review_1.png' dosyasının yolu doğru olmalı! */
+    /* CAROUSEL KONTEYNERİ (Sağ Taraf) */
+    #carousel-container {
+        flex: 1; /* Daha az yer kaplasın (oran: ~1/4) */
+        padding-top: 1rem;
+        max-width: 300px; /* Maksimum genişlik */
+        margin: 0 auto; /* Ortalama */
+        position: relative; /* Swiper navigasyonu için gerekebilir */
     }
 
-    /* RESİM SATIRI */
-    #image-row {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; /* Kartları yukarı hizala */
-      gap: 2rem;
-      margin-top: 2rem; /* Menü ile arasına boşluk */
-      margin-bottom: 80px; /* Legend ile çakışmaması için altta boşluk */
-      padding: 1rem 2rem;
-      flex-wrap: wrap; /* Sığmazsa alta geçsin */
+    /* Swiper Stilleri */
+    .swiper {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        overflow: hidden;
     }
 
-    /* RESİM KARTI */
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        padding-bottom: 1rem; /* Altta boşluk bırak (pagination için gerekirse) */
+    }
+
+    /* RESİM KARTI (Carousel içinde) */
     .image-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: rgba(30, 30, 30, 0.7); /* Biraz daha belirgin arka plan */
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 10px;
-      width: 180px;
-      backdrop-filter: blur(3px); /* Kartlara da hafif bulanıklık */
-      -webkit-backdrop-filter: blur(3px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: center;
-    }
-
-    .image-card:hover {
-      transform: translateY(-5px) scale(1.03); /* Hafif yukarı kalksın */
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgba(30, 30, 30, 0.85); /* Arka planı biraz daha belirgin */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px;
+        width: 90%; /* Slide içinde biraz kenar boşluğu */
+        max-width: 250px;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        margin: 1rem auto; /* Dikeyde ortalama */
     }
 
     .image-card img {
       width: 100%;
-      height: 120px; /* Sabit yükseklik verelim */
+      height: 150px;
       border-radius: 8px;
-      object-fit: cover; /* Resimler kırpılsın ama oranı korunsun */
-      margin-bottom: 0.5rem; /* Resimle yazı arasına boşluk */
+      object-fit: cover;
+      margin-bottom: 1rem;
       /* DİKKAT: Kartlardaki resim yolları doğru olmalı! */
     }
 
     .image-card span {
-      margin-top: 0.5rem;
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #eee;
+      font-weight: bold;
     }
 
-    /* LEGEND */
+    /* LEGEND ve LOGO Konumlandırması */
+    #logo {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      width: 130px;
+      opacity: 0.8;
+      z-index: 10;
+      /* DİKKAT: 'Pasja Review_1.png' dosyasının yolu doğru olmalı! */
+    }
+
     #legend-container {
       position: fixed;
-      right: 20px;
-      bottom: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px 15px;
+      right: 15px;
+      bottom: 15px;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 8px 12px;
       border-radius: 8px;
       display: flex;
-      flex-wrap: wrap; /* Sığmazsa alta geçsin */
-      gap: 10px; /* Öğeler arası boşluk */
-      z-index: 5; /* Logonun arkasında olabilir */
-      max-width: calc(100% - 200px); /* Logonun üzerine taşmasın (logo genişliği + boşluk) */
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 5;
+      max-width: calc(100% - 180px); /* Logonun üzerine gelmesin */
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      /* margin-right: 1rem; gap ile değiştirildi */
-      font-size: 0.9rem; /* Biraz küçülttüm */
+      font-size: 0.85rem;
     }
 
     .legend-color {
@@ -228,54 +252,108 @@
       height: 12px;
       display: inline-block;
       margin-right: 5px;
-      border-radius: 3px; /* Hafif yuvarlak köşe */
-      border: 1px solid rgba(255, 255, 255, 0.5); /* Kenarlık */
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
+
+    /* Scrollbar Stilleri (Webkit tarayıcılar için - Opsiyonel) */
+    #menu::-webkit-scrollbar {
+      width: 8px;
+    }
+    #menu::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 5px 0; /* Başta ve sonda boşluk */
+    }
+    #menu::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 165, 0, 0.6); /* Turuncu scrollbar */
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    #menu::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 165, 0, 0.8);
+    }
+
   </style>
 </head>
 
-<body> <!-- Inline stil kaldırıldı, CSS'e taşındı -->
+<body>
   <video autoplay muted loop>
     <!-- DİKKAT: video.mp4 yolu doğru olmalı! -->
     <source src="video.mp4" type="video/mp4">
     Tarayıcınız video etiketini desteklemiyor.
   </video>
 
-  <div id="menu">
-      <!-- Menü içeriği JavaScript ile buraya eklenecek -->
-      Yükleniyor... <!-- Başlangıçta bir mesaj göstermek iyi olabilir -->
-  </div>
+  <!-- ANA İÇERİK KONTEYNERİ -->
+  <div id="main-content">
+      <!-- Sol Taraf: Menü -->
+      <div id="menu">
+          <!-- Menü içeriği JavaScript ile buraya eklenecek -->
+          <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
+      </div>
 
-  <div id="image-row">
-    <!-- Resim kartları statik veya dinamik olarak eklenebilir -->
-    <div class="image-card">
-      <!-- DİKKAT: zowahh.png yolu doğru olmalı! -->
-      <img src="zowahh.png" alt="Zowahh">
-      <span>Zowahh</span>
-    </div>
-    <div class="image-card">
-       <!-- DİKKAT: aardactig_bio_amnesia.png yolu doğru olmalı! -->
-      <img src="aardactig_bio_amnesia.png" alt="Amnesia">
-      <span>Aardachtig Bio Amnesia</span>
-    </div>
-    <div class="image-card">
-       <!-- DİKKAT: joints.png yolu doğru olmalı! -->
-      <img src="joints.png" alt="Joints">
-      <span>Classic Joints</span>
-    </div>
-  </div>
+      <!-- Sağ Taraf: Carousel -->
+      <div id="carousel-container">
+          <div class="swiper mySwiper">
+              <div class="swiper-wrapper">
+                  <!-- Swiper Slide'ları (Resim Kartları) -->
+                  <div class="swiper-slide">
+                      <div class="image-card">
+                          <img src="zowahh.png" alt="Zowahh">
+                          <span>Zowahh</span>
+                      </div>
+                  </div>
+                  <div class="swiper-slide">
+                      <div class="image-card">
+                          <img src="aardactig_bio_amnesia.png" alt="Amnesia">
+                          <span>Aardachtig Bio Amnesia</span>
+                      </div>
+                  </div>
+                  <div class="swiper-slide">
+                      <div class="image-card">
+                          <img src="joints.png" alt="Classic Joints">
+                          <span>Classic Joints</span>
+                      </div>
+                  </div>
+                  <!-- Buraya daha fazla ürün resmi için slide ekleyebilirsin -->
+                  <!-- Örnek:
+                  <div class="swiper-slide">
+                      <div class="image-card">
+                          <img src="baska_urun.png" alt="Başka Ürün">
+                          <span>Başka Ürün</span>
+                      </div>
+                  </div>
+                   -->
+              </div>
+              <!-- İsteğe bağlı: Swiper navigasyon/pagination -->
+              <!-- <div class="swiper-pagination"></div> -->
+              <!-- <div class="swiper-button-next"></div> -->
+              <!-- <div class="swiper-button-prev"></div> -->
+          </div>
+      </div>
+      <!-- // Carousel Konteyneri Sonu -->
 
+  </div> <!-- // Ana İçerik Konteyneri Sonu -->
+
+  <!-- Legend -->
   <div id="legend-container">
       <!-- Legend içeriği JavaScript ile buraya eklenecek -->
   </div>
 
+  <!-- Logo -->
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
 
+  <!-- Swiper JS Kütüphanesi (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Menü ve Swiper Başlatma Scripti -->
   <script>
     const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const RENK_URL = MENU_URL + '?action=renkler';
     const SIRA_URL = MENU_URL + '?action=sirala';
 
+    // Veri Çekme Fonksiyonu
     async function fetchData(url) {
       try {
         const res = await fetch(url);
@@ -285,16 +363,17 @@
         return res.json();
       } catch (error) {
         console.error("Fetch error:", error);
-        // Belki kullanıcıya bir hata mesajı göstermek istersin
-        throw error; // Hatanın yukarıya iletilmesi için
+        throw error;
       }
     }
 
+    // Menü Oluşturma Fonksiyonu
     async function createMenu() {
       const menuContainer = document.getElementById('menu');
       const legendContainer = document.getElementById('legend-container');
-      menuContainer.innerHTML = 'Menü yükleniyor...'; // Yükleme mesajı
-      legendContainer.innerHTML = ''; // Legend'ı temizle
+      // Yükleniyor mesajını temizlemeden önce içeriği hazırlayalım
+      // menuContainer.innerHTML = 'Menü yükleniyor...';
+      legendContainer.innerHTML = '';
 
       try {
           const [menuData, renkler, siralamaData] = await Promise.all([
@@ -303,22 +382,20 @@
             fetchData(SIRA_URL)
           ]);
 
-          // Veri doğrulaması (isteğe bağlı ama önerilir)
+          // Veri doğrulaması
           if (!Array.isArray(menuData) || !renkler || typeof renkler !== 'object' || !Array.isArray(siralamaData)) {
               throw new Error("API'den gelen veriler beklenen formatta değil.");
           }
 
-          // 1. Kategorileri hazırlayalım
+          // 1. Kategorileri hazırla
           const kategoriler = {};
           const tumMarkalar = new Set();
-          // Önce siralamaData'dan tüm kategorileri ekleyelim ki sıra garanti olsun
           siralamaData.forEach(k => kategoriler[k.kategori] = []);
 
           menuData.forEach(item => {
-            // Sadece sıralamada tanımlı kategorilere ait ürünleri ekle
             if (kategoriler.hasOwnProperty(item.ana_kategori)) {
               kategoriler[item.ana_kategori].push(item);
-              if (item.marka) { // Marka boş değilse ekle
+              if (item.marka) {
                  tumMarkalar.add(item.marka);
               }
             } else {
@@ -331,26 +408,22 @@
           siralamaData.forEach(k => {
             const sutun = k.sutun_no;
             if (!sutunGruplari[sutun]) sutunGruplari[sutun] = [];
-            // Sadece içinde ürün olan kategorileri sütuna ekle
-            if (kategoriler[k.kategori] && kategoriler[k.kategori].length > 0) {
+            // Kategori sıralama listesinde varsa (içi boş olsa bile) sütuna ekle
+            if (kategoriler.hasOwnProperty(k.kategori)) {
                  sutunGruplari[sutun].push({
                     kategori: k.kategori,
                     sira_no: k.sira_no
                 });
-            } else if (kategoriler[k.kategori]) {
-                // Kategori var ama içi boşsa, yine de sütuna ekle (başlık görünmesi için)
-                 sutunGruplari[sutun].push({
-                    kategori: k.kategori,
-                    sira_no: k.sira_no
-                });
-                 console.log(`"${k.kategori}" kategorisi için ürün bulunamadı.`);
+                 if (kategoriler[k.kategori].length === 0){
+                    console.log(`"${k.kategori}" kategorisi için ürün bulunamadı (ama başlık gösterilecek).`);
+                 }
             }
           });
 
           // 3. Menü DOM'unu oluştur
-          menuContainer.innerHTML = ''; // Eski içeriği veya yükleniyor mesajını temizle
+          menuContainer.innerHTML = ''; // Menü içeriğini temizle
 
-          Object.keys(sutunGruplari).sort((a, b) => a - b).forEach(sutun => {
+          Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sutun => {
             const columnDiv = document.createElement('div');
             columnDiv.className = 'column';
 
@@ -364,45 +437,42 @@
 
               const headerRow = document.createElement('div');
               headerRow.className = 'header-row';
-              // Başlık içeriğini belirle
-              let priceHeader = '1 GR/5 GR'; // Varsayılan
+              let priceHeader = '1 GR/5 GR';
               if (kategori === 'JOINTS') priceHeader = '1 ST/5 ST';
               else if (kategori === 'EDIBLES') priceHeader = 'Price';
               headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${priceHeader}</span>`;
               columnDiv.appendChild(headerRow);
 
-              // Ürünleri işle (eğer varsa)
+              // Ürünleri işle
               if (kategoriler[kategori] && kategoriler[kategori].length > 0) {
                   kategoriler[kategori].forEach(urun => {
                       const urunDiv = document.createElement('div');
-                      // Stok ve yeni durumuna göre class ekle
                       let classes = 'urun';
                       if (urun.stok_var_mi === false) classes += ' cizili';
                       if (urun.yeni_mi === true) classes += ' new';
                       urunDiv.className = classes;
 
-                      // Fiyat gösterimini kategoriye göre ayarla (opsiyonel, mevcut hali de çalışabilir)
                       let fiyatHtml = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
                       if (kategori === 'EDIBLES') {
-                          // Eğer edibles için sadece tek fiyat varsa (örn. fiyat_1gr)
-                           fiyatHtml = `${urun.fiyat_1gr || '-'}€`; // Sadece ilk fiyatı göster
-                           // VEYA eğer API'de 'fiyat' diye tek alan varsa: fiyatHtml = `${urun.fiyat || '-'}€`;
+                           fiyatHtml = `${urun.fiyat_1gr || '-'}€`;
+                           // VEYA API'de 'fiyat' alanı varsa: fiyatHtml = `${urun.fiyat || '-'}€`;
                       }
-                      // THC Oranını kontrol et, yoksa '-' göster
                       const thcText = urun.thc_orani ? urun.thc_orani : '-';
+                      const markaRenk = renkler[urun.marka] || 'white'; // Fallback renk
 
                       urunDiv.innerHTML = `
-                      <span style="color:${renkler[urun.marka] || 'white'}">${urun.urun_adi || 'İsimsiz Ürün'}</span>
+                      <span style="color:${markaRenk}">${urun.urun_adi || 'İsimsiz Ürün'}</span>
                       <span class="thc-orani">${thcText}</span>
                       <span>${fiyatHtml}</span>`;
                       columnDiv.appendChild(urunDiv);
                   });
               } else {
-                 // Ürün yoksa mesaj gösterilebilir (isteğe bağlı)
+                 // Ürün yoksa mesaj
                  const noProductDiv = document.createElement('div');
-                 noProductDiv.textContent = 'Yakında eklenecek...';
+                 noProductDiv.textContent = 'Yakında...';
                  noProductDiv.style.textAlign = 'center';
                  noProductDiv.style.padding = '1rem 0';
+                 noProductDiv.style.fontSize = '0.9rem';
                  noProductDiv.style.color = '#aaa';
                  columnDiv.appendChild(noProductDiv);
               }
@@ -412,27 +482,49 @@
           }); // Sütun döngüsü sonu
 
           // 4. Marka legend'larını oluştur
-          legendContainer.innerHTML = ''; // Temizle
-          // Sıralı bir legend için Set'i Array'e çevirip sıralayabiliriz
+          legendContainer.innerHTML = '';
           const sortedMarkalar = Array.from(tumMarkalar).sort();
 
           sortedMarkalar.forEach(marka => {
             const legendItem = document.createElement('div');
             legendItem.className = 'legend-item';
-            // Renk yoksa varsayılan bir renk (örn. gri) ata
-            const markaRenk = renkler[marka] || '#999999';
+            const markaRenk = renkler[marka] || '#999999'; // Renk yoksa gri
             legendItem.innerHTML = `<span class="legend-color" style="background-color:${markaRenk};"></span>${marka}`;
             legendContainer.appendChild(legendItem);
           });
 
       } catch (error) {
           console.error('Menü oluşturulamadı:', error);
-          menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem;">Menü yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin. <br><small>${error.message}</small></div>`;
+          menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. <br><small>${error.message}</small></div>`;
       }
     }
 
-    // Menüyü oluştur
-    createMenu();
+    // Sayfa yüklendiğinde Swiper'ı başlat ve Menüyü oluştur
+    document.addEventListener('DOMContentLoaded', function () {
+        // Swiper Başlatma
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true, // Sonsuz döngü
+            autoplay: {
+                delay: 4000, // 4 saniyede bir değişsin
+                disableOnInteraction: false, // Elle kaydırınca durmasın
+            },
+            // İsteğe Bağlı: Sayfalama noktaları
+            /* pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            }, */
+            // İsteğe Bağlı: İleri/Geri okları
+            /* navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            }, */
+        });
+
+        // Menüyü oluştur
+        createMenu(); // Hata yakalama zaten içinde var
+    });
 
   </script>
 </body>
