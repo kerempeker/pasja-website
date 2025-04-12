@@ -12,13 +12,13 @@
       margin: 0;
       padding: 0;
       font-family: 'Arial', sans-serif;
-      background-color: black;
+      background-color: black; /* Video yüklenemezse diye */
     }
 
     body {
       margin: 0;
       padding: 0 0 200px 0; /* Alt padding galeri için */
-      background-color: black;
+      background-color: transparent; /* Body arka planı şeffaf olsun */
       color: white;
       min-height: 100vh;
       position: relative;
@@ -34,7 +34,7 @@
       width: auto;
       height: auto;
       z-index: -1;
-      opacity: 0.35;
+      opacity: 0.4; /* Video görünürlüğünü ayarla */
       object-fit: cover;
     }
 
@@ -42,12 +42,12 @@
     #menu {
       padding: 2rem; /* Kenar boşlukları */
       box-sizing: border-box;
-      /* Menüye genel bir arka plan (isteğe bağlı) */
-      background-color: rgba(10, 10, 10, 0.6); /* Hafif genel arka plan */
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 12px; /* Köşeleri yuvarla */
-      margin: 2rem; /* Üst/Alt/Sağ/Sol dış boşluk */
+      /* Arka plan ve bulanıklık KALDIRILDI */
+      /* background-color: rgba(10, 10, 10, 0.6); */
+      /* backdrop-filter: blur(10px); */
+      /* -webkit-backdrop-filter: blur(10px); */
+      border-radius: 12px; /* İsteğe bağlı */
+      margin: 2rem; /* Dış boşluklar */
 
 
       /* Menü içindeki Sütunlar için Flexbox */
@@ -56,113 +56,52 @@
       flex-wrap: wrap;
     }
 
-    /* Menü içindeki Sütunlar */
+    /* Menü içindeki Sütunlar (Arka plansız) */
     .column {
-        flex: 1; /* Eşit genişlesin */
+        flex: 1;
         min-width: 240px;
-        /* Sütunlardan arka planlar KALDIRILDI */
-        /* background-color: rgba(10, 10, 10, 0.7); */
-        /* backdrop-filter: blur(8px); */
-        /* padding: 1.5rem; */ /* Padding #menu'ye taşındı */
-        /* border-radius: 8px; */
-        /* margin-bottom: 1rem; */
         box-sizing: border-box;
+        /* Okunabilirlik için metinlere hafif gölge eklenebilir */
+        /* text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); */
     }
 
     /* ---- MENÜ İÇİ STİLLERİ (Kategori Başlığı, Ürünler vs.) --- */
-    /* Stillerde değişiklik yok, olduğu gibi kalıyor */
-    .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem; }
-    .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; }
+    /* Okunabilirlik için başlıklara gölge */
+    .kategori-baslik {
+        font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Başlığa gölge */
+     }
+    .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
     .header-row span:nth-child(2), .header-row span:nth-child(3) { text-align: center; }
-    .urun { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; align-items: center; margin-bottom: 0.4rem; font-size: 1.1rem; }
+    .urun { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; align-items: center; margin-bottom: 0.4rem; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); } /* Ürünlere de gölge */
     .urun span:first-child { word-break: break-word; }
-    .cizili { text-decoration: line-through; color: #777 !important; }
-    .cizili span { color: #777 !important; text-decoration: line-through; }
-    .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; /* DİKKAT: New-Icon.png yolu */ }
-    .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; }
-    .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; }
+    .cizili { text-decoration: line-through; color: #777 !important; text-shadow: none !important; } /* Çizili olana gölge yok */
+    .cizili span { color: #777 !important; text-decoration: line-through; text-shadow: none !important; }
+    .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); /* İkona da hafif gölge */ }
+    .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; /* Gölge ürün satırından geliyor */ }
+    .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; /* Gölge ürün satırından geliyor */ }
     /* ---- MENÜ İÇİ STİLLERİ SONU --- */
 
 
-    /* ALT GALERİ KONTEYNERİ */
+    /* ALT GALERİ KONTEYNERİ (Aynı kalabilir) */
     #bottom-gallery {
-      position: fixed;
-      bottom: 0;
-      /* Soldan %25 boşluk bırak (INDICA/HYBRIDE sütunu kadar) */
-      left: 25%;
-      /* Genişliği kalan %75 yap (SATIVA, HASH, JOINTS sütunları) */
-      width: 75%;
-      height: 170px; /* Galeri yüksekliği */
-      z-index: 5;
-      overflow: hidden;
-      padding: 10px 0;
-      /* Arka plan gradient */
+      position: fixed; bottom: 0; left: 25%; width: 75%; height: 170px; z-index: 5;
+      overflow: hidden; padding: 10px 0;
       background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.7) 50%, transparent 100%);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      box-sizing: border-box; /* Padding/border genişliğe dahil edilsin */
+      backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      box-sizing: border-box;
     }
-
-    /* Swiper Konteyner (Galeri içinde %100 yer kaplar) */
-    #bottom-gallery .swiper-container {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Alt Galeri Slaytları - Efektler ve Görünüm (Aynı kalabilir) */
-    #bottom-gallery .swiper-slide {
-        width: 200px; /* Slayt genişliği */
-        height: 130px; /* Slayt resim alanı yüksekliği */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: all 0.6s ease-in-out;
-        transform-style: preserve-3d;
-        opacity: 0.4; filter: blur(4px); transform: scale(0.85); /* Varsayılan: Bulanık */
-    }
-    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); /* Ortadaki: Net */ }
-    #bottom-gallery .swiper-slide-prev,
-    #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); /* Yanlardakiler: Net */ }
-    #bottom-gallery .swiper-slide-prev.swiper-slide-prev,
-    #bottom-gallery .swiper-slide-next.swiper-slide-next { /* Daha uzaktakiler bulanık kalır */ }
-
-    /* Galeri içindeki resimler (Aynı kalabilir) */
-    #bottom-gallery .swiper-slide img {
-        display: block;
-        width: 95%; height: 95%;
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        /* DİKKAT: Galeri resim yolları */
-    }
+    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
+    #bottom-gallery .swiper-slide { width: 200px; height: 130px; display: flex; justify-content: center; align-items: center; transition: all 0.6s ease-in-out; transform-style: preserve-3d; opacity: 0.4; filter: blur(4px); transform: scale(0.85); }
+    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
+    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
+    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* DİKKAT: Galeri resim yolları */ }
 
 
-    /* LEGEND ve LOGO Konumlandırması */
-    #logo {
-      position: fixed;
-      bottom: 15px;
-      left: 15px;
-      width: 120px;
-      opacity: 0.9;
-      z-index: 10; /* Galeri ve menünün üzerinde */
-       /* DİKKAT: Pasja Review_1.png yolu */
-    }
-
-    #legend-container {
-      position: fixed;
-      right: 15px;
-      bottom: 15px;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      z-index: 10; /* Galeri ve menünün üzerinde */
-      max-width: calc(70% - 40px); /* Galerinin sağ kısmına sığsın, logoya yer kalsın */
-    }
-
-    .legend-item { display: flex; align-items: center; font-size: 0.8rem; }
+    /* LEGEND ve LOGO Konumlandırması (Aynı kalabilir) */
+    #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; /* DİKKAT: Pasja Review_1.png yolu */ }
+    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px); }
+    .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Legend yazısına da gölge */ }
     .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
 
     /* Scrollbar Stilleri (Webkit - Body için - Aynı kalabilir) */
@@ -176,6 +115,7 @@
 
 <body>
   <video autoplay muted loop>
+    <!-- DİKKAT: video.mp4 yolu -->
     <source src="video.mp4" type="video/mp4">
     Tarayıcınız video etiketini desteklemiyor.
   </video>
@@ -190,7 +130,7 @@
   <div id="bottom-gallery">
       <div class="swiper-container gallery-swiper">
           <div class="swiper-wrapper">
-              <!-- GALERİ İÇERİĞİ: KENDİ RESİMLERİNİZİ EKLEYİN -->
+              <!-- GALERİ İÇERİĞİ -->
               <div class="swiper-slide"><img src="hash_cookies.png" alt="Hash Cookies"></div>
               <div class="swiper-slide"><img src="zowahh_joint.png" alt="Zowahh Joint"></div>
               <div class="swiper-slide"><img src="exodus_cheese_joint.png" alt="Exodus Cheese Joint"></div>
@@ -251,16 +191,9 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Alt Galeri Swiper Başlatma
         var gallerySwiper = new Swiper('.gallery-swiper', {
-            effect: 'slide',
-            grabCursor: false,
-            centeredSlides: true,
-            slidesPerView: 'auto',
-            loop: true,
-            spaceBetween: 10,
-            autoplay: {
-                delay: 3500,
-                disableOnInteraction: true,
-            },
+            effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
+            loop: true, spaceBetween: 10,
+            autoplay: { delay: 3500, disableOnInteraction: true, },
             allowTouchMove: false,
         });
 
