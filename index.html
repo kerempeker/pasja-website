@@ -11,8 +11,7 @@
     html { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: black; /* Video yüklenemezse */ }
     body {
       margin: 0;
-      /* Alt Padding Güncellendi */
-      padding: 0 0 260px 0; /* Önceki değeri koruduk */
+      padding: 0 0 260px 0; /* Alt padding galeri için (Önceki değeri koruduk) */
       background-color: transparent; color: white; min-height: 100vh; position: relative;
     }
 
@@ -124,58 +123,93 @@
   <!-- Swiper JS Kütüphanesi (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Menü ve Swiper Başlatma Scripti -->
+  <!-- Menü ve Swiper Başlatma Scripti (Otomatik Yenileme Eklendi) -->
   <script>
-    // --- Otomatik Yenileme için Eklentiler ---
-    let currentDataVersion = null;
-    const CHECK_INTERVAL = 60000; // 1 dakikada bir kontrol
-    const VERSION_URL = 'https://script.google.com/macros/s/AKfycbzaPxpFGU00KFSL36lqdM6VDU8zVup5A6uEI33Tv1b1vYSJTaH3hxHZw8kVRgbUCYrr/exec'; // Script URL'niz ve action=version
+    // --- Otomatik Yenileme için Değişkenler ---
+    let currentDataVersion = null; // Mevcut veri sürümünü tutar
+    const CHECK_INTERVAL = 60000; // Kontrol aralığı (milisaniye, örn: 60000 = 1 dakika)
     // -----------------------------------------
 
-    // Mevcut API URL'leri
-    const MENU_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec'; // Ana URL (action olmadan)
-    const RENK_URL = MENU_URL + '?action=renkler';
-    const SIRA_URL = MENU_URL + '?action=sirala';
+    // --- API URL'leri (YENİ URL KULLANILARAK) ---
+    const BASE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaPxpFGU00KFSL36lqdM6VDU8zVup5A6uEI33Tv1b1vYSJTaH3hxHZw8kVRgbUCYrr/exec'; // YENİ URL
+    const MENU_URL = BASE_SCRIPT_URL; // Ana URL (action olmadan varsayılanı getirir)
+    const RENK_URL = BASE_SCRIPT_URL + '?action=renkler';
+    const SIRA_URL = BASE_SCRIPT_URL + '?action=sirala';
+    const VERSION_URL = BASE_SCRIPT_URL + '?action=version'; // Sürüm kontrolü için URL
+    // ----------------------------------------------
 
     // Veri Çekme Fonksiyonu (Değişiklik Yok)
     async function fetchData(url) {
-       try { const res = await fetch(url); if (!res.ok) { throw new Error(`HTTP error! status: ${res.status} for ${url}`); } return res.json(); } catch (error) { console.error("Fetch error:", error); throw error; }
+       try {
+           const res = await fetch(url);
+           // Ağ hatalarını veya Apps Script'in döndürdüğü HTTP hatalarını yakala
+           if (!res.ok) {
+                // Sunucudan gelen hata mesajını almaya çalış (eğer varsa)
+                let errorText = `HTTP error! status: ${res.status}`;
+                try {
+                    const errorBody = await res.json(); // Veya res.text()
+                    if (errorBody && errorBody.error) {
+                        errorText += ` - ${errorBody.error}`;
+                    }
+                } catch (e) { /* Hata mesajı parse edilemedi */ }
+                throw new Error(errorText + ` for ${url}`);
+           }
+           return res.json();
+        } catch (error) {
+            console.error("Fetch error:", error);
+            throw error; // Hatanın yukarıya iletilmesi için
+        }
     }
 
+
     // Menü Oluşturma Fonksiyonu (Otomatik Yenileme Entegrasyonu ile)
-    async function createMenu(isUpdate = false) { // isUpdate parametresi eklendi
+    async function createMenu(isUpdate = false) {
         const menuContainer = document.getElementById('menu');
         const legendContainer = document.getElementById('legend-container');
 
-        if (!isUpdate) { // Sadece ilk yüklemede mesaj göster
+        if (!isUpdate) {
             menuContainer.innerHTML = '<div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>';
-            legendContainer.innerHTML = ''; // İlk yüklemede legend'ı temizle
+            legendContainer.innerHTML = '';
         } else {
             console.log("Değişiklik algılandı, menü güncelleniyor...");
         }
 
         try {
-            // Promise.all ile TÜM veriyi (versiyon dahil) çek
+            // Tüm veriyi çek (VERSION_URL dahil)
             const [menuData, renkler, siralamaData, versionData] = await Promise.all([
-                fetchData(MENU_URL), // Action olmadan varsayılan ürünleri çeker (Apps Script'teki doGet'e göre)
+                fetchData(MENU_URL),
                 fetchData(RENK_URL),
                 fetchData(SIRA_URL),
-                fetchData(VERSION_URL) // Versiyonu çek
+                fetchData(VERSION_URL)
             ]);
 
-            // Veri ve versiyon kontrolü
-            if (!Array.isArray(menuData) || !renkler || typeof renkler !== 'object' || !Array.isArray(siralamaData) || !versionData || versionData.version === undefined) {
+            // --- KONTROL: Veri formatını doğrula ---
+            // Burada Apps Script hata döndürürse (örn: {error: "..."}), typeof kontrolü yetmeyebilir.
+            // Daha sağlam kontrol: Hem türü kontrol et hem de beklenen yapıyı.
+            if (!Array.isArray(menuData) || typeof renkler !== 'object' || renkler === null || Array.isArray(renkler) || // renkler bir obje olmalı, null veya array değil
+                !Array.isArray(siralamaData) ||
+                typeof versionData !== 'object' || versionData === null || versionData.version === undefined // versionData bir obje olmalı ve 'version' içermeli
+            ) {
+                // Hatayı daha detaylı loglayalım
+                console.error("Hatalı API Yanıtları:");
+                console.error("menuData (Array olmalı):", menuData);
+                console.error("renkler (Obje olmalı):", renkler);
+                console.error("siralamaData (Array olmalı):", siralamaData);
+                console.error("versionData (Obje ve {version:..} içermeli):", versionData);
                 throw new Error("API'den gelen veriler veya sürüm bilgisi beklenen formatta değil.");
             }
+            // --- KONTROL SONU ---
+
 
             // Mevcut sürümü kaydet/güncelle
-            currentDataVersion = versionData.version;
+            currentDataVersion = versionData.version; // Artık versionData.version'ın var olduğunu biliyoruz
             console.log("Mevcut Veri Sürümü:", currentDataVersion);
+
 
             // ------ Mevcut Menü Oluşturma Mantığı (Değişiklik Yok) ------
             const kategoriler = {}; const tumMarkalar = new Set(); siralamaData.forEach(k => kategoriler[k.kategori] = []);
-            menuData.forEach(item => { if (kategoriler.hasOwnProperty(item.ana_kategori)) { kategoriler[item.ana_kategori].push(item); if (item.marka) { tumMarkalar.add(item.marka); } } else { console.warn(`Sıralama bilgisinde olmayan kategori: ${item.ana_kategori}`); } });
-            const sutunGruplari = {}; siralamaData.forEach(k => { const sutun = k.sutun_no; if (!sutunGruplari[sutun]) sutunGruplari[sutun] = []; if (kategoriler.hasOwnProperty(k.kategori)) { sutunGruplari[sutun].push({ kategori: k.kategori, sira_no: k.sira_no }); if (kategoriler[k.kategori].length === 0){ console.log(`"${k.kategori}" kat. ürün yok.`); } } });
+            menuData.forEach(item => { if (kategoriler.hasOwnProperty(item.ana_kategori)) { kategoriler[item.ana_kategori].push(item); if (item.marka) { tumMarkalar.add(item.marka); } } else { /* console.warn(`Sıralama bilgisinde olmayan kategori: ${item.ana_kategori}`); */ } }); // uyarıyı kapatabiliriz
+            const sutunGruplari = {}; siralamaData.forEach(k => { const sutun = k.sutun_no; if (!sutunGruplari[sutun]) sutunGruplari[sutun] = []; if (kategoriler.hasOwnProperty(k.kategori)) { sutunGruplari[sutun].push({ kategori: k.kategori, sira_no: k.sira_no }); /* if (kategoriler[k.kategori].length === 0){ console.log(`"${k.kategori}" kat. ürün yok.`); } */ } }); // logu kapatabiliriz
             menuContainer.innerHTML = ''; // İçeriği temizle
             Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sutun => { const columnDiv = document.createElement('div'); columnDiv.className = 'column'; const kategorilerBuSutun = sutunGruplari[sutun].sort((a, b) => a.sira_no - b.sira_no); kategorilerBuSutun.forEach(({ kategori }) => { const kategoriBaslik = document.createElement('div'); kategoriBaslik.className = 'kategori-baslik'; kategoriBaslik.textContent = kategori; columnDiv.appendChild(kategoriBaslik); const headerRow = document.createElement('div'); headerRow.className = 'header-row'; let priceHeader = '1 GR/5 GR'; if (kategori === 'JOINTS') priceHeader = '1 ST/5 ST'; else if (kategori === 'EDIBLES') priceHeader = 'Price'; headerRow.innerHTML = `<span>Product</span><span>THC</span><span>${priceHeader}</span>`; columnDiv.appendChild(headerRow); if (kategoriler[kategori] && kategoriler[kategori].length > 0) { kategoriler[kategori].forEach(urun => { const urunDiv = document.createElement('div'); let classes = 'urun'; if (urun.stok_var_mi === false) classes += ' cizili'; if (urun.yeni_mi === true) classes += ' new'; urunDiv.className = classes; let fiyatHtml = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`; if (kategori === 'EDIBLES') { fiyatHtml = `${urun.fiyat_1gr || '-'}€`; } const thcText = urun.thc_orani ? urun.thc_orani : '-'; const markaRenk = renkler[urun.marka] || 'white'; urunDiv.innerHTML = `<span style="color:${markaRenk}">${urun.urun_adi || 'İsimsiz Ürün'}</span><span class="thc-orani">${thcText}</span><span>${fiyatHtml}</span>`; columnDiv.appendChild(urunDiv); }); } else { const noProductDiv = document.createElement('div'); noProductDiv.textContent = 'Yakında...'; noProductDiv.style.textAlign = 'center'; noProductDiv.style.padding = '1rem 0'; noProductDiv.style.fontSize = '0.9rem'; noProductDiv.style.color = '#aaa'; columnDiv.appendChild(noProductDiv); } }); menuContainer.appendChild(columnDiv); });
             // Sadece güncelleme DEĞİLSE veya legend boşsa legend'ı tekrar doldur
@@ -190,27 +224,31 @@
                     legendContainer.appendChild(legendItem);
                 });
             }
-            // ------ Menü Oluşturma Mantığı Sonu ------
+             // ------ Menü Oluşturma Mantığı Sonu ------
 
         } catch (error) {
             console.error('Menü oluşturulamadı/güncellenemedi:', error);
-            menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. <br><small>${error.message}</small></div>`;
+            menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%; background: rgba(0,0,0,0.7); border-radius: 8px;">Menü yüklenirken bir hata oluştu.<br><small>${error.message}</small></div>`;
             currentDataVersion = null; // Hata durumunda bir sonraki kontrolde tekrar yüklemeyi dene
         }
     }
 
+
     // --- YENİ: Güncellemeleri Kontrol Eden Fonksiyon ---
     async function checkForUpdates() {
-        // currentDataVersion null ise (ilk yükleme başarısız olduysa) kontrol etme
         if (currentDataVersion === null) {
-            console.log("Mevcut sürüm bilinmiyor veya ilk yükleme başarısız, kontrol atlanıyor.");
+            console.log("Mevcut sürüm bilinmiyor (ilk yükleme başarısız olabilir), kontrol atlanıyor.");
+            // İsteğe bağlı: Eğer currentDataVersion null ise tekrar yüklemeyi tetikle?
+            // await createMenu();
             return;
         }
         console.log(`Güncellemeler kontrol ediliyor... (Mevcut Sürüm: ${currentDataVersion})`);
         try {
             const versionData = await fetchData(VERSION_URL);
-            if (versionData && versionData.version !== undefined) {
-                // Sürüm değişmiş mi diye KONTROL ET (Tür dönüşümüne dikkat et, ikisi de string veya sayı olmalı)
+
+            // --- KONTROL: versionData ve içindeki version alanı geçerli mi? ---
+            if (versionData && versionData.version !== undefined && versionData.version !== null) {
+                 // Sürüm değişmiş mi kontrolü (String olarak karşılaştır)
                 if (String(versionData.version) !== String(currentDataVersion)) {
                     console.log(`Yeni sürüm bulundu! Eski: ${currentDataVersion}, Yeni: ${versionData.version}. Menü güncelleniyor...`);
                     await createMenu(true); // Menüyü güncelleme modunda yeniden oluştur
@@ -218,10 +256,12 @@
                      console.log("Veri güncel.");
                 }
             } else {
-                 console.warn("Sürüm bilgisi alınamadı veya format hatalı.");
+                 // Hata detayını logla
+                 console.warn("Sürüm bilgisi alınamadı veya format hatalı. Alınan:", versionData);
             }
         } catch (error) {
             console.error("Sürüm kontrolü sırasında hata:", error);
+            // Hata durumunda sonraki kontrolü bekleriz
         }
     }
     // ----------------------------------------------
@@ -239,7 +279,6 @@
 
         // Menüyü ilk kez oluştur ve BAŞARILI olursa otomatik kontrolü başlat
         createMenu().then(() => {
-             // Sadece ilk yükleme BAŞARILIYSA interval'i başlat
              if (currentDataVersion !== null) {
                 setInterval(checkForUpdates, CHECK_INTERVAL);
                 console.log(`Otomatik güncelleme kontrolü her ${CHECK_INTERVAL / 1000} saniyede bir başlatıldı.`);
