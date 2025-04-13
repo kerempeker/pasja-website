@@ -161,7 +161,7 @@
                 if (urun.stok_var_mi === false) cls += ' cizili';
                 if (urun.yeni_mi === true) cls += ' new';
                 div.className = cls;
-                let fiyat = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}`;
+                let fiyat = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
                 if (kategori === 'EDIBLES') fiyat = `${urun.fiyat_1gr || '-'}€`;
                 const thc = urun.thc_orani || '-';
                 const renk = renkler[urun.marka] || 'white';
