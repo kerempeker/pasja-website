@@ -3,232 +3,623 @@
 <head>
   <meta charset="UTF-8">
   <title>Dijital Menü</title>
+  <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <style>
-    html { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: black; }
+    /* --- Global Styles --- */
+    html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif; /* Basic, readable font */
+      background-color: black; /* Fallback background */
+      box-sizing: border-box; /* Easier layout calculations */
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
     body {
       margin: 0;
-      padding: 0 0 260px 0;
-      background-color: transparent; color: white; min-height: 100vh; position: relative;
+      /* Add padding-bottom to prevent content from hiding behind fixed elements */
+      padding: 0 0 200px 0; /* Adjusted padding for gallery + legend */
+      background-color: transparent; /* Show video background */
+      color: white; /* Default text color */
+      min-height: 100vh;
+      position: relative; /* Needed for absolute/fixed children context if required */
     }
-    video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
-    #menu { padding: 2rem; box-sizing: border-box; border-radius: 12px; margin: 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
-    .column { flex: 1; min-width: 240px; box-sizing: border-box; }
-    .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: orange; text-align: center; border-bottom: 2px solid orange; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
-    .header-row { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.5); padding-bottom: 0.3rem; align-items: center; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
-    .header-row span:nth-child(2), .header-row span:nth-child(3) { text-align: center; }
-    .urun { display: grid; grid-template-columns: auto 70px 100px; gap: 10px; align-items: center; margin-bottom: 0.4rem; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
-    .urun span:first-child { word-break: break-word; }
-    .cizili { text-decoration: line-through; color: #777 !important; text-shadow: none !important; }
-    .cizili span { color: #777 !important; text-decoration: line-through; text-shadow: none !important; }
-    .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); }
-    .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; }
-    .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; }
+
+    /* --- Video Background --- */
+    #video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1; /* Behind everything else */
+      opacity: 0.3; /* Make it subtle */
+      object-fit: cover; /* Cover the screen without distortion */
+    }
+
+    /* --- Menu Layout --- */
+    #menu {
+      padding: 2rem; /* Spacing around the menu */
+      border-radius: 12px; /* Optional rounded corners */
+      margin: 2rem auto; /* Center menu horizontally, provide top/bottom margin */
+      display: flex;
+      gap: 2.5rem; /* Space between columns */
+      flex-wrap: wrap; /* Allow columns to wrap on smaller screens */
+      justify-content: center; /* Center columns if they don't fill the width */
+      max-width: 1600px; /* Limit maximum width for very large screens */
+    }
+
+    .column {
+      flex: 1; /* Allow columns to grow */
+      min-width: 300px; /* Minimum width before wrapping */
+      max-width: 450px; /* Maximum width per column */
+    }
+
+    /* --- Category & Items --- */
+    .kategori-baslik {
+      font-size: 1.9rem; /* Larger category title */
+      font-weight: bold;
+      margin-bottom: 1rem; /* Space below title */
+      color: orange;
+      text-align: center;
+      border-bottom: 2px solid orange;
+      padding-bottom: 0.5rem; /* Space between text and border */
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Enhanced text shadow */
+    }
+
+    .header-row {
+      display: grid;
+      /* Adjust columns: Auto for name, fixed for THC/Price */
+      grid-template-columns: auto 60px 110px;
+      gap: 10px; /* Space between header columns */
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 0.8rem; /* Space below header */
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* Lighter border */
+      padding-bottom: 0.4rem;
+      align-items: center;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    /* Center align THC and Price headers */
+    .header-row span:nth-child(2),
+    .header-row span:nth-child(3) {
+      text-align: center;
+    }
+
+    .urun {
+      display: grid;
+      /* Match header columns */
+      grid-template-columns: auto 60px 110px;
+      gap: 10px; /* Space between item columns */
+      align-items: center; /* Vertically align content */
+      margin-bottom: 0.6rem; /* Space between items */
+      font-size: 1.1rem; /* Slightly larger item text */
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow */
+      min-height: 30px; /* Ensure consistent row height */
+    }
+    /* Allow long product names to wrap */
+    .urun span:first-child {
+      word-break: break-word;
+      line-height: 1.3; /* Improve readability for wrapped text */
+    }
+
+    /* --- Item Status Styling --- */
+    /* Out of Stock */
+    .cizili {
+      text-decoration: line-through;
+      color: #888 !important; /* Use important to override potential inline styles */
+      text-shadow: none !important;
+      opacity: 0.7; /* Make it faded */
+    }
+    .cizili span { /* Ensure child spans also get styled */
+      color: inherit !important;
+      text-decoration: inherit;
+      text-shadow: inherit !important;
+    }
+     .cizili .thc-orani { /* Keep THC color distinct but faded */
+       color: #007777 !important; /* Dimmed cyan */
+     }
+
+    /* New Item Indicator */
+    .new span:first-child::after {
+      content: "";
+      display: inline-block;
+      background-image: url('New-Icon.png'); /* Ensure this path is correct */
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 30px; /* Adjust size as needed */
+      height: 20px; /* Adjust size as needed */
+      margin-left: 8px; /* Space from text */
+      vertical-align: middle; /* Align with text */
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.6)); /* Add shadow to icon */
+    }
+
+    /* --- Specific Item Details --- */
+    .thc-orani {
+      color: #00FFFF; /* Cyan for THC */
+      font-size: 1rem;
+      text-align: center;
+      white-space: nowrap; /* Prevent wrapping */
+    }
+
+    /* Price alignment */
+    .urun span:last-child {
+      text-align: center;
+      font-size: 1rem;
+      white-space: nowrap; /* Prevent wrapping */
+    }
+
+    /* Message for empty categories */
+    .yakinda-mesaji {
+        text-align: center;
+        padding: 1.5rem 0;
+        font-size: 1rem;
+        color: #aaa;
+        font-style: italic;
+    }
+
+    /* --- Bottom Gallery --- */
     #bottom-gallery {
       position: fixed;
-      bottom: 200px;
-      left: 27%;
-      width: 75%;
-      height: 160px;
-      z-index: 5;
+      bottom: 0px; /* Sit right at the bottom */
+      left: 0; /* Start from left edge */
+      width: 100%; /* Full width */
+      height: 180px; /* Increased height */
+      z-index: 5; /* Above video, below legend/logo potentially */
       overflow: hidden;
-      padding: 5px 0;
-      box-sizing: border-box;
+      padding: 10px 0; /* Vertical padding */
+      background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0)); /* Fade effect */
     }
-    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
+    #bottom-gallery .swiper-container {
+      width: 100%;
+      height: 100%;
+    }
     #bottom-gallery .swiper-slide {
-      width: 237px;
-      height: 156px;
-      display: flex; justify-content: center; align-items: center;
-      transition: all 0.6s ease-in-out;
+      width: 280px; /* Wider slides */
+      height: 160px; /* Adjusted height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.5s ease-out; /* Smoother transition */
       transform-style: preserve-3d;
-      opacity: 0.4; filter: blur(4px); transform: scale(0.85);
+      /* Default state: less visible */
+      opacity: 0.35;
+      filter: blur(3px);
+      transform: scale(0.8);
     }
-    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
-    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
-    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-    #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
-    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
-  transform: scale(1.5); /* %20 daha büyük yap (1.0 normal boyut) */}
-    .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
-    body::-webkit-scrollbar { width: 10px; }
-    body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
-    body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-    body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
+    /* Active slide: fully visible, no blur, full size */
+    #bottom-gallery .swiper-slide-active {
+      opacity: 1;
+      filter: blur(0px);
+      transform: scale(1);
+      z-index: 1; /* Ensure active is on top */
+    }
+    /* Adjacent slides: slightly more visible */
+    #bottom-gallery .swiper-slide-prev,
+    #bottom-gallery .swiper-slide-next {
+      opacity: 0.7;
+      filter: blur(1px);
+      transform: scale(0.9);
+    }
+    #bottom-gallery .swiper-slide img {
+      display: block;
+      width: 100%; /* Fill slide width */
+      height: 100%; /* Fill slide height */
+      object-fit: cover; /* Cover area, crop if needed */
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4); /* Stronger shadow */
+    }
+
+    /* --- Logo --- */
+    #logo {
+      position: fixed;
+      bottom: 200px; /* Position above gallery+legend */
+      left: 15px;
+      width: 130px; /* Slightly larger */
+      opacity: 0.9;
+      z-index: 10; /* Above most elements */
+      transition: opacity 0.3s ease;
+    }
+    #logo:hover {
+        opacity: 1;
+    }
+
+    /* --- Legend --- */
+    #legend-container {
+      position: fixed;
+      right: 15px;
+      bottom: 200px; /* Position above gallery */
+      background: rgba(0, 0, 0, 0.85); /* Slightly darker background */
+      padding: 10px 15px;
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap; /* Allow items to wrap */
+      gap: 10px 15px; /* Row and column gap */
+      z-index: 10; /* Above most elements */
+      max-width: calc(100% - 180px); /* Max width relative to logo/screen edge */
+       /* Removed the transform: scale(1.5) - can be added back if desired */
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem; /* Slightly larger legend text */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      white-space: nowrap; /* Prevent brand names from wrapping */
+    }
+
+    .legend-color {
+      width: 12px; /* Larger color swatch */
+      height: 12px;
+      display: inline-block;
+      margin-right: 6px; /* More space */
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.6); /* More visible border */
+      flex-shrink: 0; /* Prevent swatch from shrinking */
+    }
+
+    /* --- Custom Scrollbar (Webkit) --- */
+    body::-webkit-scrollbar {
+      width: 10px;
+    }
+    body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    body::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 165, 0, 0.6); /* Semi-transparent orange */
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 165, 0, 0.85); /* More opaque on hover */
+    }
+
+    /* --- Loading/Error Message --- */
+    .status-message {
+        width: 100%;
+        text-align: center;
+        padding: 4rem 0;
+        font-size: 1.2rem;
+        color: #ccc;
+    }
+    .error-message {
+        color: #ff6b6b; /* Reddish color for errors */
+        font-weight: bold;
+    }
+    .error-message small {
+        display: block;
+        font-size: 0.9rem;
+        color: #ffaaaa;
+        margin-top: 0.5rem;
+        font-weight: normal;
+    }
+
   </style>
 </head>
 <body>
-  <video autoplay muted loop>
+  <!-- Video Background -->
+  <video autoplay muted loop id="video-bg">
     <source src="video.mp4" type="video/mp4">
     Tarayıcınız video etiketini desteklemiyor.
   </video>
 
+  <!-- Menu Container -->
   <div id="menu">
-    <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
+    <div class="status-message">Menü yükleniyor...</div>
   </div>
 
+  <!-- Bottom Image Gallery -->
   <div id="bottom-gallery">
     <div class="swiper-container gallery-swiper">
       <div class="swiper-wrapper">
+        <!-- Gallery images -->
         <div class="swiper-slide"><img src="joints.png" alt="Joints"></div>
         <div class="swiper-slide"><img src="rainbow_zizi.png" alt="Rainbow Zizi"></div>
-        <div class="swiper-slide"><img src="hash_1.png" alt="Hash_1"></div>
+        <div class="swiper-slide"><img src="hash_1.png" alt="Hash 1"></div>
         <div class="swiper-slide"><img src="zowahh.png" alt="Zowahh"></div>
-        <div class="swiper-slide"><img src="gelato41.png" alt="Gelato41"></div>
-        <div class="swiper-slide"><img src="hash_2.png" alt="Hash_2"></div>
-        <div class="swiper-slide"><img src="fritter_licker.png" alt="fritter licker"></div>
-        <div class="swiper-slide"><img src="exodus_cheese.png" alt="exodus cheese"></div>
-        <div class="swiper-slide"><img src="hash_3.png" alt="Hash_3"></div>
-        <div class="swiper-slide"><img src="exodus_cheese_joints.png" alt="exodus cheese joints"></div>
-        <div class="swiper-slide"><img src="aardactig_bio_amnesia.png" alt="aardactig bio amnesia"></div>
+        <div class="swiper-slide"><img src="gelato41.png" alt="Gelato 41"></div>
+        <div class="swiper-slide"><img src="hash_2.png" alt="Hash 2"></div>
+        <div class="swiper-slide"><img src="fritter_licker.png" alt="Fritter Licker"></div>
+        <div class="swiper-slide"><img src="exodus_cheese.png" alt="Exodus Cheese"></div>
+        <div class="swiper-slide"><img src="hash_3.png" alt="Hash 3"></div>
+        <div class="swiper-slide"><img src="exodus_cheese_joints.png" alt="Exodus Cheese Joints"></div>
+        <div class="swiper-slide"><img src="aardactig_bio_amnesia.png" alt="Aardachtig Bio Amnesia"></div>
+        <!-- Add more slides as needed -->
       </div>
     </div>
   </div>
 
+  <!-- Legend Container -->
   <div id="legend-container"></div>
+
+  <!-- Logo -->
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
+
+  <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Custom Menu Script -->
   <script>
-    let currentDataVersion = null;
-    const CHECK_INTERVAL = 60000;
+    // --- Configuration ---
+    const CHECK_INTERVAL = 60000; // Check for updates every 60 seconds (1 minute)
     const BASE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3L-IeqXSMxpJPMO_hmdZtSRFz8VY2dzYbq4RfXtHsrNAZ_VbhK219hRJtdDq3BWvH/exec';
     const MENU_URL = BASE_SCRIPT_URL;
-    const RENK_URL = BASE_SCRIPT_URL + '?action=renkler';
-    const SIRA_URL = BASE_SCRIPT_URL + '?action=sirala';
-    const VERSION_URL = BASE_SCRIPT_URL + '?action=version';
+    const RENK_URL = BASE_SCRIPT_URL + '?action=renkler'; // URL for brand colors
+    const SIRA_URL = BASE_SCRIPT_URL + '?action=sirala';   // URL for category sorting
+    const VERSION_URL = BASE_SCRIPT_URL + '?action=version'; // URL for data version
 
+    // --- State ---
+    let currentDataVersion = null;
+    let swiperInstance = null; // To hold the Swiper instance
+
+    // --- Helper Functions ---
+    /**
+     * Fetches JSON data from a given URL.
+     * @param {string} url - The URL to fetch data from.
+     * @returns {Promise<object>} - A promise that resolves with the JSON data.
+     * @throws {Error} - Throws an error if the fetch fails or the response is not ok.
+     */
     async function fetchData(url) {
       try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status} for ${url}`);
-        return res.json();
+        const response = await fetch(url, { cache: "no-store" }); // Prevent caching issues
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+        }
+        return await response.json();
       } catch (error) {
         console.error("Fetch error:", error);
+        // Rethrow the error so it can be caught by the calling function
         throw error;
       }
     }
 
+    /**
+     * Creates and renders the menu HTML structure from fetched data.
+     * @param {boolean} [isUpdate=false] - Flag indicating if this is an update or initial load.
+     */
     async function createMenu(isUpdate = false) {
       const menuContainer = document.getElementById('menu');
       const legendContainer = document.getElementById('legend-container');
+
+      // Show loading message only on initial load
       if (!isUpdate) {
-        menuContainer.innerHTML = '<div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>';
-        legendContainer.innerHTML = '';
+        menuContainer.innerHTML = '<div class="status-message">Menü yükleniyor...</div>';
+        legendContainer.innerHTML = ''; // Clear legend on initial load
       }
+
       try {
-        const [menuData, renkler, siralamaData, versionData] = await Promise.all([
+        // Fetch all required data concurrently
+        const [menuData, renklerData, siralamaData, versionData] = await Promise.all([
           fetchData(MENU_URL),
           fetchData(RENK_URL),
           fetchData(SIRA_URL),
           fetchData(VERSION_URL)
         ]);
-        currentDataVersion = versionData.version;
-        const kategoriler = {};
-        const tumMarkalar = new Set();
-        siralamaData.forEach(k => kategoriler[k.kategori] = []);
-        menuData.forEach(item => {
-          if (kategoriler.hasOwnProperty(item.ana_kategori)) {
-            kategoriler[item.ana_kategori].push(item);
-            if (item.marka) tumMarkalar.add(item.marka);
-          }
-        });
-        const sutunGruplari = {};
+
+        // Check if the version has actually changed (relevant for updates)
+        if (isUpdate && versionData.version === currentDataVersion) {
+          console.log("Data version hasn't changed. No UI update needed.");
+          return; // Exit if data is the same
+        }
+
+        currentDataVersion = versionData.version; // Update the current version
+
+        // --- Data Processing ---
+        const kategoriler = {}; // { categoryName: [item1, item2, ...] }
+        const tumMarkalar = new Set(); // Unique brand names
+        const renklerMap = renklerData.reduce((acc, item) => { // Convert array to { brand: color } map
+            acc[item.marka] = item.renk_kodu;
+            return acc;
+            }, {});
+
+        // Initialize categories based on sorting data to maintain order
         siralamaData.forEach(k => {
-          const s = k.sutun_no;
-          if (!sutunGruplari[s]) sutunGruplari[s] = [];
-          if (kategoriler.hasOwnProperty(k.kategori)) {
-            sutunGruplari[s].push({ kategori: k.kategori, sira_no: k.sira_no });
+          if (!kategoriler[k.kategori]) { // Ensure category exists
+            kategoriler[k.kategori] = [];
           }
-        });
-        menuContainer.innerHTML = '';
-        Object.keys(sutunGruplari).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(s => {
-          const col = document.createElement('div');
-          col.className = 'column';
-          const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
-          kats.forEach(({kategori}) => {
-            const baslik = document.createElement('div');
-            baslik.className = 'kategori-baslik';
-            baslik.textContent = kategori;
-            col.appendChild(baslik);
-            const header = document.createElement('div');
-            header.className = 'header-row';
-            let ph = '1 GR/5 GR';
-            if (kategori === 'JOINTS') ph = '1 ST/5 ST';
-            else if (kategori === 'EDIBLES') ph = 'Price';
-            header.innerHTML = `<span>Product</span><span>THC</span><span>${ph}</span>`;
-            col.appendChild(header);
-            if (kategoriler[kategori] && kategoriler[kategori].length > 0) {
-              kategoriler[kategori].forEach(urun => {
-                const div = document.createElement('div');
-                let cls = 'urun';
-                if (urun.stok_var_mi === false) cls += ' cizili';
-                if (urun.yeni_mi === true) cls += ' new';
-                div.className = cls;
-                let fiyat = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
-                if (kategori === 'EDIBLES') fiyat = `${urun.fiyat_1gr || '-'}€`;
-                const thc = urun.thc_orani || '-';
-                const renk = renkler[urun.marka] || 'white';
-                div.innerHTML = `<span style="color:${renk}">${urun.urun_adi || 'İsimsiz Ürün'}</span><span class="thc-orani">${thc}</span><span>${fiyat}</span>`;
-                col.appendChild(div);
-              });
-            } else {
-              const y = document.createElement('div');
-              y.textContent = 'Yakında...';
-              y.style.textAlign = 'center';
-              y.style.padding = '1rem 0';
-              y.style.fontSize = '0.9rem';
-              y.style.color = '#aaa';
-              col.appendChild(y);
-            }
-          });
-          menuContainer.appendChild(col);
         });
 
-        if (!isUpdate || legendContainer.innerHTML === '') {
-          legendContainer.innerHTML = '';
-          const sortedMarkalar = Array.from(tumMarkalar).sort();
-          sortedMarkalar.forEach(marka => {
-            const item = document.createElement('div');
-            item.className = 'legend-item';
-            const renk = renkler[marka] || '#999999';
-            item.innerHTML = `<span class="legend-color" style="background-color:${renk};"></span>${marka}`;
-            legendContainer.appendChild(item);
+        // Populate categories with menu items and collect brands
+        menuData.forEach(item => {
+          // Ensure the item's category exists in our sorting data
+          if (kategoriler.hasOwnProperty(item.ana_kategori)) {
+            kategoriler[item.ana_kategori].push(item);
+            if (item.marka) { // Add brand if it exists
+              tumMarkalar.add(item.marka);
+            }
+          } else {
+             console.warn(`Item "${item.urun_adi}" has category "${item.ana_kategori}" which is not defined in sorting data. Skipping.`);
+          }
+        });
+
+        // Group categories by column number defined in sorting data
+        const sutunGruplari = {}; // { columnNumber: [{kategori: 'Name', sira_no: 1}, ...] }
+        siralamaData.forEach(k => {
+          const colNum = k.sutun_no;
+          if (!sutunGruplari[colNum]) {
+            sutunGruplari[colNum] = [];
+          }
+          // Add category and its sort order within the column
+          sutunGruplari[colNum].push({ kategori: k.kategori, sira_no: k.sira_no });
+        });
+
+        // --- Rendering ---
+        menuContainer.innerHTML = ''; // Clear previous content or loading message
+
+        // Sort columns by their number and create column elements
+        Object.keys(sutunGruplari).sort((a, b) => parseInt(a) - parseInt(b)).forEach(colNum => {
+          const columnDiv = document.createElement('div');
+          columnDiv.className = 'column';
+
+          // Sort categories within the column based on their 'sira_no'
+          const sortedKategorilerInColumn = sutunGruplari[colNum].sort((a, b) => a.sira_no - b.sira_no);
+
+          // Render each category in the column
+          sortedKategorilerInColumn.forEach(({ kategori: kategoriAdi }) => {
+            // Category Title
+            const baslikDiv = document.createElement('div');
+            baslikDiv.className = 'kategori-baslik';
+            baslikDiv.textContent = kategoriAdi;
+            columnDiv.appendChild(baslikDiv);
+
+            // Header Row
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'header-row';
+            let priceHeader = '1 GR / 5 GR'; // Default price header
+            if (kategoriAdi.toUpperCase() === 'JOINTS') {
+              priceHeader = '1 AD / 5 AD';
+            } else if (kategoriAdi.toUpperCase() === 'EDIBLES') {
+              priceHeader = 'Fiyat'; // Price per item
+            } else if (kategoriAdi.toUpperCase() === 'DRINKS') {
+                priceHeader = 'Fiyat';
+            }
+            // Set header content
+            headerDiv.innerHTML = `<span>Ürün</span><span>THC</span><span>${priceHeader}</span>`;
+            columnDiv.appendChild(headerDiv);
+
+            // Products in the category
+            const itemsInCategory = kategoriler[kategoriAdi] || [];
+            if (itemsInCategory.length > 0) {
+              itemsInCategory.forEach(urun => {
+                const urunDiv = document.createElement('div');
+                let itemClasses = 'urun';
+                if (urun.stok_var_mi === false) { // Check if out of stock
+                  itemClasses += ' cizili';
+                }
+                if (urun.yeni_mi === true) { // Check if new
+                  itemClasses += ' new';
+                }
+                urunDiv.className = itemClasses;
+
+                // Format price based on category
+                let fiyatText = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
+                if (kategoriAdi.toUpperCase() === 'EDIBLES' || kategoriAdi.toUpperCase() === 'JOINTS' || kategoriAdi.toUpperCase() === 'DRINKS') {
+                  // Use fiyat_1gr for single item price categories
+                  fiyatText = `${urun.fiyat_1gr || '-'}€`;
+                }
+                 // Use fiyat_1gr/fiyat_5gr for joints price
+                if (kategoriAdi.toUpperCase() === 'JOINTS') {
+                    fiyatText = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
+                }
+
+                const thcText = urun.thc_orani ? `${urun.thc_orani}%` : '-'; // Add % to THC
+                const markaRenk = renklerMap[urun.marka] || 'white'; // Get color or default to white
+
+                // Set product row content
+                urunDiv.innerHTML = `
+                  <span style="color:${markaRenk};">${urun.urun_adi || 'İsimsiz Ürün'}</span>
+                  <span class="thc-orani">${thcText}</span>
+                  <span>${fiyatText}</span>
+                `;
+                columnDiv.appendChild(urunDiv);
+              });
+            } else {
+              // Show message if category is empty
+              const yakindaDiv = document.createElement('div');
+              yakindaDiv.className = 'yakinda-mesaji';
+              yakindaDiv.textContent = 'Yakında...';
+              columnDiv.appendChild(yakindaDiv);
+            }
           });
+          // Add the completed column to the menu container
+          menuContainer.appendChild(columnDiv);
+        });
+
+        // --- Render Legend ---
+        // Render legend only on initial load or if it was previously empty
+        if (!isUpdate || legendContainer.innerHTML.trim() === '') {
+            legendContainer.innerHTML = ''; // Clear it just in case
+            const sortedMarkalar = Array.from(tumMarkalar).sort((a, b) => a.localeCompare(b)); // Sort brands alphabetically
+
+            sortedMarkalar.forEach(marka => {
+                const legendItemDiv = document.createElement('div');
+                legendItemDiv.className = 'legend-item';
+                const renk = renklerMap[marka] || '#CCCCCC'; // Default grey color for unknown brands
+                legendItemDiv.innerHTML = `
+                <span class="legend-color" style="background-color:${renk};"></span>
+                ${marka}
+                `;
+                legendContainer.appendChild(legendItemDiv);
+            });
         }
 
       } catch (error) {
         console.error('Menü oluşturulamadı:', error);
-        menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. <br><small>${error.message}</small></div>`;
-        currentDataVersion = null;
+        // Display a user-friendly error message
+        menuContainer.innerHTML = `
+          <div class="status-message error-message">
+            Menü yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.
+            <small>Hata Detayı: ${error.message}</small>
+          </div>`;
+        currentDataVersion = null; // Reset version on error to force reload on next check
       }
     }
 
+    /**
+     * Checks if the data version on the server has changed and triggers an update if needed.
+     */
     async function checkForUpdates() {
-      if (currentDataVersion === null) return;
+      // Don't check if the initial load failed (currentDataVersion is null)
+      if (currentDataVersion === null) {
+        console.log("Initial load failed or not complete, skipping update check.");
+        // Optionally, try to load again if initial load failed
+        // await createMenu();
+        return;
+      }
+
+      console.log("Checking for updates...");
       try {
         const versionData = await fetchData(VERSION_URL);
         if (versionData.version && versionData.version !== currentDataVersion) {
-          await createMenu(true);
+          console.log(`New data version detected (${versionData.version}). Updating menu...`);
+          await createMenu(true); // Pass true to indicate it's an update
+        } else {
+          console.log("Data is up-to-date.");
         }
       } catch (error) {
+        // Log error but don't necessarily show a disruptive message to the user
         console.error("Güncelleme kontrolünde hata:", error);
       }
     }
 
+    // --- Initialization ---
     document.addEventListener('DOMContentLoaded', function () {
-      new Swiper('.gallery-swiper', {
-        effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
-        loop: true, spaceBetween: 10,
-        autoplay: { delay: 3500, disableOnInteraction: true },
-        allowTouchMove: false,
+      // Initialize Swiper Gallery
+      swiperInstance = new Swiper('.gallery-swiper', {
+        effect: 'slide',         // Basic slide effect
+        grabCursor: false,       // No grab cursor, assumes display only
+        centeredSlides: true,    // Center the active slide
+        slidesPerView: 'auto',   // Show as many slides as fit based on their width
+        loop: true,              // Loop the slides
+        spaceBetween: 15,        // Space between slides
+        autoplay: {
+          delay: 3000,           // Autoplay delay
+          disableOnInteraction: false, // Autoplay continues even if user interacts (if allowTouchMove was true)
+          pauseOnMouseEnter: true,   // Pause autoplay when mouse is over the gallery
+        },
+        allowTouchMove: false,   // Disable manual dragging (for display purposes)
+        speed: 600,              // Transition speed
       });
+
+      // Initial Menu Load
       createMenu().then(() => {
-        if (currentDataVersion !== null) {
-          setInterval(checkForUpdates, CHECK_INTERVAL);
-        }
+        // Start checking for updates only after the initial load attempt
+        // Check immediately once, then set interval
+        setTimeout(checkForUpdates, 5000); // Check shortly after load
+        setInterval(checkForUpdates, CHECK_INTERVAL);
+      }).catch(err => {
+          console.error("Initial menu load promise rejected:", err);
+          // Error is already displayed by createMenu, but log it here too.
       });
     });
+
   </script>
 </body>
 </html>
