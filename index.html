@@ -187,24 +187,13 @@
         col.className = 'column';
         const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
         kats.forEach(({kategori}) => {
-            const baslik = document.createElement('div');
-            baslik.className = 'kategori-baslik';
-            baslik.textContent = kategori;
-            col.appendChild(baslik);
-          
-            const header = document.createElement('div');
-            header.className = 'header-row';
-            // header içeriği vs...
-          
-            col.appendChild(header);
-          
-            // burada ürünleri col'a ekliyorsun...
-          
-            if (kategori === 'HASH') {
-              const gallery = document.getElementById('bottom-gallery');
-              col.appendChild(gallery); // ✅ ürünlerin altına gelir
-            }
-          });
+          const baslik = document.createElement('div');
+          baslik.className = 'kategori-baslik';
+          baslik.textContent = kategori;
+          if (kategori === 'HASH') {
+            const gallery = document.getElementById('bottom-gallery');
+            col.appendChild(gallery); }
+          col.appendChild(baslik);
 
           const header = document.createElement('div');
           header.className = 'header-row';
