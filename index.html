@@ -190,6 +190,9 @@
           const baslik = document.createElement('div');
           baslik.className = 'kategori-baslik';
           baslik.textContent = kategori;
+          if (kategori === 'HASH') {
+            const gallery = document.getElementById('bottom-gallery');
+            col.appendChild(gallery); }
           col.appendChild(baslik);
 
           const header = document.createElement('div');
