@@ -165,7 +165,7 @@
                 let cls = 'urun';
                 if (urun.stok_var_mi === false) cls += ' cizili';
                 if (urun.yeni_mi === true) cls += ' new';
-                if (urun.korting === true) cls += ' korting';
+                if (urun.korting === true || urun.korting === 'true' || urun.korting === 'TRUE' || urun.korting === 1) cls += ' korting';
                 div.className = cls;
                 let fiyat = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
                 if (kategori === 'EDIBLES') fiyat = `${urun.fiyat_1gr || '-'}€`;
