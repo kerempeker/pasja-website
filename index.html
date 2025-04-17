@@ -22,6 +22,7 @@
     .cizili { text-decoration: line-through; color: #777 !important; text-shadow: none !important; }
     .cizili span { color: #777 !important; text-decoration: line-through; text-shadow: none !important; }
     .new span:first-child::after { content: ""; display: inline-block; background-image: url('New-Icon.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); }
+    .korting span:first-child::after { content: ""; display: inline-block; background-image: url('korting.png'); background-size: contain; background-repeat: no-repeat; width: 32px; height: 22px; margin-left: 6px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); }
     .thc-orani { color: #00FFFF; font-size: 1rem; text-align: center; white-space: nowrap; }
     .urun span:last-child { text-align: center; font-size: 1rem; white-space: nowrap; }
     #bottom-gallery {
@@ -164,6 +165,7 @@
                 let cls = 'urun';
                 if (urun.stok_var_mi === false) cls += ' cizili';
                 if (urun.yeni_mi === true) cls += ' new';
+                if (urun.korting === true) cls += ' korting';
                 div.className = cls;
                 let fiyat = `${urun.fiyat_1gr || '-'}€ / ${urun.fiyat_5gr || '-'}€`;
                 if (kategori === 'EDIBLES') fiyat = `${urun.fiyat_1gr || '-'}€`;
