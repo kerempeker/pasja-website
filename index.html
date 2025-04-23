@@ -215,14 +215,14 @@
 
               let fiyat1 = '-', fiyat5 = '-';
               if (kategori === 'JOINTS') {
-                fiyat1 = urun.fiyat_1gr ? `${urun.fiyat_1gr}€` : '-';
-                fiyat5 = urun.fiyat_5gr ? `${urun.fiyat_5gr}€` : '-';
+                fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
+                fiyat5 = urun.fiyat_5gr ? `€${urun.fiyat_5gr}` : '-';
               } else if (kategori === 'EDIBLES') {
-                fiyat1 = urun.fiyat_1gr ? `${urun.fiyat_1gr}€` : '-';
+                fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
                 fiyat5 = '-';
               } else {
-                fiyat1 = urun.fiyat_1gr ? `${urun.fiyat_1gr}€` : '-';
-                fiyat5 = urun.fiyat_5gr ? `${urun.fiyat_5gr}€` : '-';
+                fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
+                fiyat5 = urun.fiyat_5gr ? `€${urun.fiyat_5gr}` : '-';
               }
 
               const thc = urun.thc_orani || '-';
