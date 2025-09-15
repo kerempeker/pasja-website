@@ -209,13 +209,13 @@
 
                 const header = document.createElement('div');
                 header.className = 'header-row';
-                let ph1 = '1 GR', ph2 = '5 GR' ph3 = '-' ;
+                let ph1 = '1 GR', ph2 = '5 GR' ;
                 const upperKategori = kategori.toUpperCase(); // Büyük/küçük harf duyarlılığını kaldır
-                if (upperKategori === 'JOINTS') [ph1, ph2, ph3] = ['1 ST', '5 ST','-'];
+                if (upperKategori === 'JOINTS') [ph1, ph2] = ['1 ST', '5 ST'];
                 else if (upperKategori === 'PASJA HASH JOINTS') [ph1, ph2] = ['1 ST', '6 ST'];
-                else if (upperKategori === 'JOINTS 10 & 15 STUKS') [ph1, ph2, ph3] = ['10 ST', '15 ST','-'];
-                else if (upperKategori === 'JOINTS (ZONDER TABAK)') [ph1, ph2, ph3] = ['1 ST', '5 ST','-'];
-                else if (upperKategori === 'EDIBLES') [ph1, ph2, ph3] = ['Price', '-','-' ];
+                else if (upperKategori === 'JOINTS 10 & 15 STUKS') [ph1, ph2] = ['10 ST', '15 ST'];
+                else if (upperKategori === 'JOINTS (ZONDER TABAK)') [ph1, ph2] = ['1 ST', '5 ST'];
+                else if (upperKategori === 'EDIBLES') [ph1, ph2] = ['Price', '-' ];
                 header.innerHTML = `<span>Product</span><span>${ph1}</span><span>${ph3}</span><span>${ph2}</span>`;
                 col.appendChild(header);
 
