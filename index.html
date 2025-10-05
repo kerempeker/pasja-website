@@ -1,5 +1,3 @@
---- START OF FILE index (1).html ---
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -60,24 +58,8 @@
       text-overflow: ellipsis;
     }
 
-    .new span:first-child::after,
-    .korting span:first-child::after {
-      content: "";
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-      width: 16px;
-      height: 14px;
-      margin-left: 4px;
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
-      position: relative;
-      top: 0px;
-    }
-
-    /* Çizili stili kaldırıldı, artık stokta olmayanlar gösterilmeyecek */
     .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
     .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    /* .thc-orani kaldırıldı */
 
     #bottom-gallery {
       position: fixed;
@@ -104,8 +86,7 @@
     #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
     #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
-    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
-  transform: scale(1.5); /* %20 daha büyük yap (1.0 normal boyut) */}
+    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px); transform-origin: bottom right; transform: scale(1.5); }
     .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
     .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
     body::-webkit-scrollbar { width: 10px; }
@@ -127,7 +108,7 @@
   <div id="bottom-gallery">
     <div class="swiper-container gallery-swiper">
       <div class="swiper-wrapper">
-        
+        <!-- Galeri görselleri buraya eklenecek -->
       </div>
     </div>
  </div>
@@ -137,10 +118,11 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwZo-6gr9lFcoIMYGYmm4-LgqgNyPZXckr9TjEHAiO6HZJZMgc4EbqWpSRJTpVU9SXc/exec'; // Kendi URL'niz ile değiştirin
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwJnkEgM4LwYKGj7U5m8pCVQtGU-I0Vo6NxKAX3ctgv7IM8BKVQrbNKG-n3TFjOHF8/exec'; // Kendi URL'niz ile değiştirin
     const MENU_URL = BASE_URL;
     const RENK_URL = BASE_URL + '?action=renkler';
     const SIRA_URL = BASE_URL + '?action=sirala';
+    const GALLERY_URL = BASE_URL + '?action=galeri'; // Yeni galeri URL'si
 
     const UPDATE_INTERVAL = 10000; // Güncelleme aralığı (milisaniye) - 10 saniye
 
@@ -165,16 +147,20 @@
     async function createMenu(isUpdate = false) {
       const menuContainer = document.getElementById('menu');
       const legendContainer = document.getElementById('legend-container');
+      const gallerySwiperWrapper = document.querySelector('#bottom-gallery .swiper-wrapper');
+
       if (!isUpdate) {
           menuContainer.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#ccc;">Menü yükleniyor...</div>';
           legendContainer.innerHTML = '';
+          gallerySwiperWrapper.innerHTML = ''; // Galeri içeriğini temizle
       }
 
       try {
-        const [menuData, renkler, siralamaData] = await Promise.all([
+        const [menuData, renkler, siralamaData, galleryImages] = await Promise.all([
             fetchData(MENU_URL),
             fetchData(RENK_URL),
-            fetchData(SIRA_URL)
+            fetchData(SIRA_URL),
+            fetchData(GALLERY_URL) // Galeri görsellerini çek
         ]);
 
         const kategoriler = {};
@@ -215,18 +201,20 @@
                 const upperKategori = kategori.toUpperCase();
 
                 // Kategoriye göre başlıkları ve grid şablonunu ayarla
-                if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) { // 'WEED' veya 'HASH' içeren her kategori
+                // Tablonuzdaki "fiyat_1", "fiyat_2", "fiyat_3", "fiyat_voorraad", "fiyat_new", "fiyat_korting" sütunlarına göre düzenliyoruz.
+                // Tablonuzdaki sütun başlıklarını kullanın: "1 GR", "2,5 GR", "5 GR", "Voorraad", "New", "Korting"
+                if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
                     headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
-                } else if (upperKategori.includes('JOINTS')) { // 'JOINTS' içeren her kategori
-                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
-                    gridTemplateColumns += ' 70px 70px 70px 70px';
-                } else if (upperKategori.includes('EDIBLES')) { // 'EDIBLES' içeren her kategori
-                    headerHtml += '<span>5 ST</span><span>10 ST</span>';
+                } else if (upperKategori.includes('JOINTS')) {
+                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>'; // Tablonuzda 3 fiyat sütunu var gibi görünüyor.
+                    gridTemplateColumns += ' 70px 70px 70px';
+                } else if (upperKategori.includes('EDIBLES')) {
+                    headerHtml += '<span>1 ST</span><span>5 ST</span>'; // Tablonuzda 2 fiyat sütunu var gibi görünüyor.
                     gridTemplateColumns += ' 70px 70px';
                 } else { // Diğer kategoriler için varsayılan
-                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
-                    gridTemplateColumns += ' 70px 70px';
+                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span><span>Fiyat 3</span>'; // Varsayılan olarak 3 fiyat gösterelim
+                    gridTemplateColumns += ' 70px 70px 70px';
                 }
                 
                 header.innerHTML = headerHtml;
@@ -239,7 +227,7 @@
                         const div = document.createElement('div');
                         let cls = 'urun';
                         if (urun.yeni_mi === true) cls += ' new';
-                        if (urun.korting === true || urun.korting === 'true' || urun.korting === 1) cls += ' korting';
+                        if (urun.korting === true) cls += ' korting';
                         div.className = cls;
                         div.style.gridTemplateColumns = gridTemplateColumns;
 
@@ -247,20 +235,20 @@
 
                         // Kategoriye göre fiyatları yerleştir
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`; 
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`; 
+                            urunHtml += `<span>${formatPrice(urun.fiyat_3)}</span>`;
                         } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_4)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_3)}</span>`;
                         } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
                         } else { // Diğer kategoriler için varsayılan
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_3)}</span>`;
                         }
 
                         div.innerHTML = urunHtml;
@@ -279,6 +267,18 @@
             menuContainer.appendChild(col);
         });
 
+        // Galeri görsellerini Swiper'a ekle
+        if (galleryImages && galleryImages.length > 0) {
+            gallerySwiperWrapper.innerHTML = ''; // Mevcut görselleri temizle
+            galleryImages.forEach(imageUrl => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                slide.innerHTML = `<img src="${imageUrl}" alt="Galeri Görseli">`;
+                gallerySwiperWrapper.appendChild(slide);
+            });
+        }
+
+        // Marka renkleri legend'ını oluştur
         if (!isUpdate || legendContainer.innerHTML.trim() === '') {
             legendContainer.innerHTML = '';
             const tumMarkalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
@@ -300,20 +300,28 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      new Swiper('.gallery-swiper', {
-        effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
-        loop: true, spaceBetween: 10,
-        autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
-        allowTouchMove: false,
-        speed: 600
-      });
-
+      // Swiper'ın zaten initialize edilmiş olup olmadığını kontrol et
+      let mySwiper = document.querySelector('.gallery-swiper').swiper;
+      if (!mySwiper) {
+        mySwiper = new Swiper('.gallery-swiper', {
+          effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
+          loop: true, spaceBetween: 10,
+          autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+          allowTouchMove: false,
+          speed: 600
+        });
+      } else {
+        // Zaten varsa, yeni görselleri yükledikten sonra güncelle
+        mySwiper.update();
+      }
+      
       createMenu().then(() => {
           console.log("İlk menü başarıyla yüklendi.");
           setInterval(async () => {
               console.log("Menü güncelleniyor (Tüm veriler çekiliyor)...");
               try {
                   await createMenu(true);
+                  if (mySwiper) mySwiper.update(); // Swiper'ı güncelle
               } catch (error) {
                   console.error("Arkaplan güncelleme aralığı hatası (genel):", error);
               }
