@@ -1,202 +1,195 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Pasja Menü</title>
-
-<!-- ================== STİL ================== -->
 <style>
 :root{
-  --bg:#0b0f14;--bg-soft:#111722;--panel:#121826cc;--panel-border:#2a3444;
-  --text:#e6eef9;--muted:#a8b3c7;--divider:#1e2634;--shadow:0 6px 28px rgba(0,0,0,.35);
+  --bg:#0b0f14;--panel:#121826cc;--panel-b:#2a3444;--text:#e6eef9;--muted:#a8b3c7;--div:#1e2634;--sh:0 6px 28px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-  background:var(--bg);color:var(--text);line-height:1.45;
-}
-.bg-video{position:fixed;inset:0;z-index:-2;overflow:hidden;}
-.bg-video video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;
-  transform:translate(-50%,-50%);filter:brightness(.35) saturate(1.1);}
-.bg-overlay{position:fixed;inset:0;z-index:-1;
-  background:radial-gradient(1200px 700px at 60% 10%,#1b2331cc 0%,#0b0f14 55%,#0b0f14 100%);}
-.app{max-width:1400px;margin:32px auto 80px;padding:0 20px;}
-#logo{position:fixed;left:16px;bottom:16px;width:120px;opacity:.9;z-index:10;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));}
-.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px;}
-.category-block{background:var(--panel);border:1px solid var(--panel-border);
-  border-radius:16px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(6px);}
-.category-title{padding:14px 16px;font-weight:700;text-transform:uppercase;
-  font-size:1rem;border-bottom:1px solid var(--divider);}
-.header-row,.menu-row{display:flex;align-items:center;gap:12px;padding:10px 14px;}
-.header-row{color:var(--muted);font-size:.92rem;border-bottom:1px solid var(--divider);}
-.header-row>span:first-child,.menu-row>span:first-child{flex:1 1 auto;min-width:0;}
-.header-row>span:nth-child(n+2),.menu-row>span:nth-child(n+2){
-  flex:0 0 auto;min-width:7ch;text-align:right;white-space:nowrap;}
-.menu-row{border-bottom:1px dashed rgba(168,179,199,.24);
-  transition:background .18s ease,transform .18s ease;}
-.menu-row:hover{background:rgba(255,255,255,.04);transform:translateY(-1px);}
-.menu-row>span:first-child{font-weight:600;letter-spacing:.2px;}
-.legend{display:flex;flex-wrap:wrap;gap:10px 14px;
-  padding:14px 0 4px;color:var(--muted);font-size:.92rem;}
-.legend-item{display:inline-flex;align-items:center;gap:8px;}
-.legend-dot{width:12px;height:12px;border-radius:50%;
-  outline:1px solid rgba(255,255,255,.25);}
-@media(max-width:860px){
-  .columns{grid-template-columns:1fr;}
-  .menu-row,.header-row{padding:10px 12px;gap:10px;}
-  #logo{width:96px;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial; background:var(--bg); color:var(--text); line-height:1.45;}
+.bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
+.bg video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);filter:brightness(.35) saturate(1.05)}
+.overlay{position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 700px at 60% 10%, #1b2331cc 0%, #0b0f14 55%, #0b0f14 100%)}
+.app{max-width:1400px;margin:32px auto 80px;padding:0 20px}
+#logo{position:fixed;left:16px;bottom:16px;width:120px;opacity:.9;z-index:10;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px}
+.category{background:var(--panel);border:1px solid var(--panel-b);border-radius:16px;box-shadow:var(--sh);overflow:hidden;backdrop-filter:blur(6px)}
+.cat-title{padding:14px 16px;font-weight:700;text-transform:uppercase;font-size:1rem;border-bottom:1px solid var(--div)}
+.header,.row{display:flex;align-items:center;gap:12px;padding:10px 14px}
+.header{color:var(--muted);font-size:.92rem;border-bottom:1px solid var(--div)}
+.header>span:first-child,.row>span:first-child{flex:1 1 auto;min-width:0}
+.header>span:nth-child(n+2),.row>span:nth-child(n+2){flex:0 0 auto;min-width:7ch;text-align:right;white-space:nowrap}
+.row{border-bottom:1px dashed rgba(168,179,199,.24);transition:background .18s ease,transform .18s ease}
+.row:hover{background:rgba(255,255,255,.04);transform:translateY(-1px)}
+.row>span:first-child{font-weight:600;letter-spacing:.2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;padding:14px 0 4px;color:var(--muted);font-size:.92rem}
+.legend-item{display:inline-flex;align-items:center;gap:8px}
+.legend-dot{width:12px;height:12px;border-radius:50%;outline:1px solid rgba(255,255,255,.25)}
+.msg{padding:20px}
+@media (max-width:860px){
+  .columns{grid-template-columns:1fr}
+  .header,.row{padding:10px 12px;gap:10px}
+  #logo{width:96px}
 }
 </style>
 </head>
-
 <body>
-<!-- ================== ARKA PLAN ================== -->
-<div class="bg-video">
-  <video autoplay loop muted playsinline src="video.mp4"></video>
-</div>
-<div class="bg-overlay"></div>
+<div class="bg"><video autoplay loop muted playsinline src="video.mp4"></video></div>
+<div class="overlay"></div>
 
-<!-- ================== LOGO ================== -->
-<img id="logo" src="Pasja_Logo.png" alt="Pasja Logo">
+<img id="logo" src="Pasja_Logo.png" alt="Pasja Logo" />
 
-<!-- ================== ANA UYGULAMA ================== -->
 <div class="app">
-  <div id="legend-container" class="legend"></div>
-  <div id="menu-container" class="columns"></div>
+  <div id="legend" class="legend"></div>
+  <div id="menu" class="columns"></div>
 </div>
 
-<!-- ================== JAVASCRIPT ================== -->
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec";
 
-/* ===== KATEGORİ ŞEMALARI ===== */
-const LAYOUTS = {
-  gram: {
-    labels:["1 GR","2,5 GR","5 GR"],
-    fields:["fiyat_1gr","fiyat_25gr","fiyat_5gr"]
-  },
-  joints: {
-    labels:["1 ST","5 ST","10 ST","15 ST"],
-    fields:["fiyat_1gr","fiyat_5gr","fiyat_10gr","fiyat_15gr"]
-  },
-  edibles: {
-    labels:["5 ST","10 ST"],
-    fields:["fiyat_1gr","fiyat_5gr"]
+/* —— helpers ———————————————————————————————————————————— */
+async function fetchJSON(url){
+  const r = await fetch(url, { cache:"no-store" });
+  const t = await r.text();
+  try { return JSON.parse(t); }
+  catch(e){ console.error("JSON parse error @", url, "\nRAW:", t); throw e; }
+}
+function arr(x){
+  if (Array.isArray(x)) return x;
+  if (x && Array.isArray(x.data)) return x.data;
+  if (x && Array.isArray(x.items)) return x.items;
+  if (x && Array.isArray(x.sirala)) return x.sirala;
+  if (x && Array.isArray(x.siralama)) return x.siralama;
+  return [];
+}
+function inStock(it){
+  const keys = ["stok","stock","stokta","in_stock","available","stok_durumu"];
+  for (const k of keys) if (k in it){
+    const v = it[k];
+    if (typeof v === "number") return v > 0;
+    const s = String(v).trim().toLowerCase();
+    return ["true","yes","var","1","available"].includes(s);
   }
-};
-function pickLayout(cat){
-  const c=String(cat||"").toUpperCase();
-  if(c.includes("JOINT")) return LAYOUTS.joints;
-  if(c==="EDIBLES") return LAYOUTS.edibles;
-  return LAYOUTS.gram;
+  return true;
 }
-
-/* ===== STOK KONTROL ===== */
-function isInStock(item){
-  const keys=["stok","stock","stokta","in_stock","available","stok_durumu"];
-  for(const k of keys){
-    if(k in item){
-      const v=item[k];
-      if(typeof v==="number") return v>0;
-      const s=String(v).trim().toLowerCase();
-      return ["true","yes","var","1","available"].includes(s);
-    }
-  }return true;
-}
-
-/* ===== SAFE VALUE ===== */
-function safeVal(v){
-  if(v===null||v===undefined) return "";
-  const s=String(v).trim();
-  if(!s||/^€?\s*0([.,]0+)?$/.test(s)) return "";
+function val(v){
+  if (v==null) return "";
+  const s = String(v).trim();
+  if (!s || /^€?\s*0([.,]0+)?$/.test(s)) return "";
   return s;
 }
 
-/* ===== HEADER ===== */
-function buildHeader(category){
-  const layout=pickLayout(category);
-  const header=document.createElement("div");
-  header.className="header-row";
-  const name=document.createElement("span"); name.textContent="Product";
-  header.appendChild(name);
-  layout.labels.forEach(lbl=>{
-    const s=document.createElement("span"); s.textContent=lbl; header.appendChild(s);
-  });
-  return {header,layout};
+/* —— layouts ———————————————————————————————————————————— */
+const LAYOUTS = {
+  gram:   { labels:["1 GR","2,5 GR","5 GR"], fields:["fiyat_1gr","fiyat_25gr","fiyat_5gr"] },
+  joints: { labels:["1 ST","5 ST","10 ST","15 ST"], fields:["fiyat_1gr","fiyat_5gr","fiyat_10gr","fiyat_15gr"] },
+  edibles:{ labels:["5 ST","10 ST"], fields:["fiyat_1gr","fiyat_5gr"] }
+};
+function pickLayout(cat){
+  const c = String(cat||"").toUpperCase();
+  if (c.includes("JOINT")) return LAYOUTS.joints;
+  if (c === "EDIBLES")     return LAYOUTS.edibles;
+  return LAYOUTS.gram;
 }
 
-/* ===== ROW ===== */
-function buildRow(item,category,colorMap){
-  const layout=pickLayout(category);
-  const row=document.createElement("div"); row.className="menu-row";
-  const name=document.createElement("span");
-  name.textContent=item.urun_adi||"";
-  if(colorMap&&item.marka&&colorMap[item.marka]) name.style.color=colorMap[item.marka];
-  row.appendChild(name);
-  layout.fields.forEach(f=>{
-    const s=document.createElement("span");
-    s.textContent=safeVal(item[f]); row.appendChild(s);
-  });
-  return row;
+/* —— renderers ———————————————————————————————————————————— */
+function headerEl(category){
+  const l = pickLayout(category);
+  const h = document.createElement("div");
+  h.className = "header";
+  const a = document.createElement("span"); a.textContent = "Product"; h.appendChild(a);
+  l.labels.forEach(lbl=>{ const s=document.createElement("span"); s.textContent=lbl; h.appendChild(s); });
+  return h;
+}
+function rowEl(item, category, colorMap){
+  const l = pickLayout(category);
+  const r = document.createElement("div");
+  r.className = "row";
+  const a = document.createElement("span");
+  a.textContent = item.urun_adi || "";
+  if (colorMap && item.marka && colorMap[item.marka]) a.style.color = colorMap[item.marka];
+  r.appendChild(a);
+  l.fields.forEach(f=>{ const s=document.createElement("span"); s.textContent = val(item[f]); r.appendChild(s); });
+  return r;
+}
+function categoryEl(category, items, colorMap){
+  const c = document.createElement("div"); c.className="category";
+  const t = document.createElement("div"); t.className="cat-title"; t.textContent=category; c.appendChild(t);
+  c.appendChild(headerEl(category));
+  items.filter(inStock).forEach(it=> c.appendChild(rowEl(it, category, colorMap)));
+  return c;
 }
 
-/* ===== CATEGORY BLOCK ===== */
-function renderCategoryBlock(category,items,colorMap){
-  const block=document.createElement("div"); block.className="category-block";
-  const title=document.createElement("div"); title.className="category-title";
-  title.textContent=category; block.appendChild(title);
-  const {header}=buildHeader(category); block.appendChild(header);
-  items.filter(isInStock).forEach(it=>block.appendChild(buildRow(it,category,colorMap)));
-  return block;
-}
-
-/* ===== MENU RENDER ===== */
-async function createMenu(){
-  const menuCont=document.getElementById("menu-container");
-  const legendCont=document.getElementById("legend-container");
-  menuCont.innerHTML="<p style='padding:20px'>Menü yükleniyor...</p>";
+/* —— main ———————————————————————————————————————————— */
+async function draw(){
+  const menuBox = document.getElementById("menu");
+  const legBox  = document.getElementById("legend");
+  menuBox.innerHTML = `<p class="msg">Menü yükleniyor...</p>`;
   try{
-    const [menuRes,renkRes,siralaRes]=await Promise.all([
-      fetch(BASE_URL).then(r=>r.json()),
-      fetch(BASE_URL+"?action=renkler").then(r=>r.json()),
-      fetch(BASE_URL+"?action=sirala").then(r=>r.json())
+    const [menuRes, renkRes, sortRes] = await Promise.all([
+      fetchJSON(BASE_URL),
+      fetchJSON(BASE_URL + "?action=renkler"),
+      Promise.any([
+        fetchJSON(BASE_URL + "?action=sirala"),
+        fetchJSON(BASE_URL + "?action=siralama")
+      ]).catch(()=>({data:[]}))
     ]);
-    const menuData=menuRes.data||menuRes;
-    const renkler=renkRes.data||renkRes;
-    const siralama=siralaRes.data||siralaRes;
-    const colorMap={};
-    renkler.forEach(r=>colorMap[r.marka]=r.renk_kodu);
 
-    legendCont.innerHTML="";
+    const menu    = arr(menuRes);
+    const renkler = arr(renkRes);
+    let   sirala  = arr(sortRes);
+
+    const colorMap = {};
+    legBox.innerHTML = "";
     renkler.forEach(r=>{
-      const item=document.createElement("div");
-      item.className="legend-item";
-      item.innerHTML=`<span class="legend-dot" style="background:${r.renk_kodu}"></span>${r.marka}`;
-      legendCont.appendChild(item);
+      if (r?.marka && r?.renk_kodu){
+        colorMap[r.marka] = r.renk_kodu;
+        const li = document.createElement("div");
+        li.className="legend-item";
+        li.innerHTML = `<span class="legend-dot" style="background:${r.renk_kodu}"></span>${r.marka}`;
+        legBox.appendChild(li);
+      }
     });
 
-    menuCont.innerHTML="";
-    siralama.sort((a,b)=>a.sutun_no-b.sutun_no||a.sira_no-b.sira_no);
-    const grouped={};
-    menuData.forEach(it=>{
-      if(!grouped[it.kategori]) grouped[it.kategori]=[];
-      grouped[it.kategori].push(it);
+    const grouped = {};
+    menu.forEach(it=>{
+      const k = it?.kategori || "DİĞER";
+      (grouped[k] ||= []).push(it);
     });
-    siralama.forEach(k=>{
-      const cat=k.kategori;
-      if(grouped[cat]) menuCont.appendChild(renderCategoryBlock(cat,grouped[cat],colorMap));
+
+    if (!Array.isArray(sirala) || sirala.length===0){
+      sirala = Object.keys(grouped).sort().map((k,i)=>({kategori:k,sutun_no:Math.floor(i/3)+1,sira_no:(i%3)+1}));
+      console.warn("Sıralama verisi yok; alfabetik fallback kullanıldı.");
+    } else {
+      try{
+        sirala.sort((a,b)=>{
+          const sA=+a?.sutun_no||0, sB=+b?.sutun_no||0;
+          const rA=+a?.sira_no ||0, rB=+b?.sira_no ||0;
+          return (sA-sB)||(rA-rB)||String(a?.kategori).localeCompare(String(b?.kategori));
+        });
+      }catch(e){ console.warn("Sıralama sort edilemedi; ham sıra kullanılacak.", e); }
+    }
+
+    menuBox.innerHTML = "";
+    sirala.forEach(s=>{
+      const k = s?.kategori;
+      if (k && grouped[k]) menuBox.appendChild(categoryEl(k, grouped[k], colorMap));
     });
+    Object.keys(grouped).forEach(k=>{
+      if (!sirala.find(x=>x.kategori===k)) menuBox.appendChild(categoryEl(k, grouped[k], colorMap));
+    });
+
   }catch(e){
-    menuCont.innerHTML="<p style='padding:20px;color:#f66'>Veri alınamadı.</p>";
-    console.error(e);
+    menuBox.innerHTML = `<p class="msg" style="color:#ff6b6b">Veri alınamadı.</p>`;
+    console.error("draw() error:", e);
   }
 }
 
-/* ===== AUTO REFRESH ===== */
-createMenu();
-setInterval(createMenu,60000);
+draw();
+setInterval(draw, 60000);
 </script>
 </body>
 </html>
