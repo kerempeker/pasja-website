@@ -74,10 +74,9 @@
       top: 0px;
     }
 
-    /* Çizili stili kaldırıldı, artık stokta olmayanlar gösterilmeyecek */
     .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
     .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    /* .thc-orani kaldırıldı */
+    
 
     #bottom-gallery {
       position: fixed;
@@ -159,8 +158,6 @@
         if (price === undefined || price === null || price === 0 || price === '') {
             return '';
         }
-        // Eğer fiyat zaten bir string olarak geliyorsa (örn: "€10"), tekrar "€" eklemeyelim.
-        // Ama genellikle sayıdır, bu yüzden sayıya göre formatlayalım.
         return `€${price}`;
     }
 
@@ -184,7 +181,8 @@
             if (k && k.kategori) kategoriler[k.kategori] = [];
         });
         menuData.forEach(item => {
-            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi !== false) {
+            // Stokta olmayan ürünleri filtrele. "Voorraad" sütunu API'den "Voorraad" anahtarı olarak gelmeli.
+            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.Voorraad !== false) {
                 kategoriler[item.ana_kategori].push(item);
             }
         });
@@ -222,13 +220,12 @@
                     gridTemplateColumns += ' 70px 70px 70px';
                 } else if (upperKategori.includes('JOINTS')) { 
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
-                    gridTemplateColumns += ' 70px 70px 70px 70px';
+                    gridTemplateColumns += ' 70px 70px 70px 70px'; // 4 fiyat sütunu için
                 } else if (upperKategori.includes('EDIBLES')) { 
                     headerHtml += '<span>5 ST</span><span>10 ST</span>';
                     gridTemplateColumns += ' 70px 70px';
                 } else { // Diğer kategoriler için varsayılan (eğer belirtilmemişse)
-                    // Genelleştirilmiş fiyat sütunları, örneğin: D ve E sütunları
-                    headerHtml += '<span>Fiyat D</span><span>Fiyat E</span>'; 
+                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
                     gridTemplateColumns += ' 70px 70px';
                 }
                 
@@ -241,29 +238,34 @@
                     liste.forEach(urun => {
                         const div = document.createElement('div');
                         let cls = 'urun';
-                        if (urun.yeni_mi === true) cls += ' new';
-                        if (urun.korting === true || urun.korting === 'true' || urun.korting === 1) cls += ' korting';
+                        // "new" ve "korting" sütunları doğrudan JSON anahtarı olarak gelebilir.
+                        // Ekran görüntüsüne göre "new" ve "korting" sütun başlıkları kullanılıyor.
+                        if (urun.new === true) cls += ' new';
+                        if (urun.korting === true) cls += ' korting';
                         div.className = cls;
                         div.style.gridTemplateColumns = gridTemplateColumns;
 
-                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
+                        // "marka" sütunu API'den "marka" olarak gelmeli.
+                        // "urun_adi" sütunu API'den "urun_adi" olarak gelmeli (veya Sheets'teki ilk ürün sütunu başlığı ne ise o).
+                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.Product || 'İsimsiz Ürün'}</span>`; // 'Product' varsaydım
 
                         // Kategoriye göre fiyatları yerleştir
+                        // Fiyatlar için doğrudan Sheets sütun başlıklarını kullanıyoruz: 'prijs 1', 'prijs 2', 'prijs 3', 'prijs 4'
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 1 GR fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 2.5 GR fiyatı (E sütunu)
-                            urunHtml += `<span>${formatPrice(urun.F)}</span>`; // 5 GR fiyatı (F sütunu)
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 1 GR
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 2.5 GR
+                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // F sütunu: 5 GR
                         } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 1 ST fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 5 ST fiyatı (E sütunu)
-                            urunHtml += `<span>${formatPrice(urun.F)}</span>`; // 10 ST fiyatı (F sütunu)
-                            urunHtml += `<span>${formatPrice(urun.G)}</span>`; // 15 ST fiyatı (G sütunu)
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 1 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 5 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // F sütunu: 10 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 4'])}</span>`; // G sütunu: 15 ST (Yeni eklenen J sütunu)
                         } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 5 ST fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 10 ST fiyatı (E sütunu)
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 5 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 10 ST
                         } else { // Diğer kategoriler için varsayılan
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // Varsayılan olarak D sütunu
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // Varsayılan olarak E sütunu
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; 
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; 
                         }
 
                         div.innerHTML = urunHtml;
@@ -284,6 +286,7 @@
 
         if (!isUpdate || legendContainer.innerHTML.trim() === '') {
             legendContainer.innerHTML = '';
+            // API'den "marka" olarak geliyorsa doğru.
             const tumMarkalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
             tumMarkalar.forEach(marka => {
                 const item = document.createElement('div');
