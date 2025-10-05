@@ -77,8 +77,7 @@
 
     .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
     .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    /* THC oranı için stil kaldırıldı, Excel'de ayrı bir sütun görünmüyor. Eğer varsa, tekrar eklenmeli. */
-
+    
     #bottom-gallery {
       position: fixed;
       bottom: 200px;
@@ -106,8 +105,8 @@
     #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
     #legend-container { 
       position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   
-      transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
-      transform: scale(1.0); /* Yeni kodda default 1.0 olsun, büyütme istenirse ayarlanır */
+      transform-origin: bottom right; 
+      transform: scale(1.0); 
     }
     .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
     .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
@@ -159,12 +158,11 @@
     }
 
     function formatPrice(price) {
-        if (price === undefined || price === null || price === '' || price === 0) {
-            return '-'; // Fiyat yoksa '-' göster
+        if (price === undefined || price === null || price === '' || String(price).trim() === '0' || String(price).trim().toLowerCase() === 'false') { // 'false' stringi veya '0' da boş kabul edilebilir.
+            return '-'; 
         }
-        // Eğer fiyat zaten string olarak geliyorsa ve içinde '€' varsa, tekrar eklemeyiz.
-        // Ama genelde sayılar gelir, bu yüzden ekleyebiliriz.
-        return `€${String(price).replace('.', ',')}`; // Ondalık ayırıcıyı ',' yap
+        // Fiyatı stringe çevirip, noktayı virgülle değiştir (Avrupa formatı) ve başına '€' ekle.
+        return `€${String(price).replace('.', ',')}`; 
     }
 
     async function createMenu(isUpdate = false) {
@@ -188,11 +186,10 @@
         });
         
         menuData.forEach(item => {
-            // Excel'deki "Voorraad" sütunu TRUE/FALSE değeri dönmeli.
-            // Sadece Voorraad'ı TRUE olan veya boş olmayan (yani stokta var kabul edilen) ürünleri göster.
-            // Boş hücreler API'den null, undefined veya boş string olarak gelebilir.
-            // Excel'de checkbox işareti, Sheets API'de genellikle `true` veya `false` (boolean) olarak gelir.
-            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.Voorraad === true) {
+            // Excel'deki "voorraad" sütunu TRUE/FALSE değeri veya boş olabilir.
+            // Sadece `voorraad` değeri `true` olanları listeye ekle.
+            // Apps Script'ten gelen boolean değeri doğrudan kontrol ediyoruz.
+            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.voorraad === true) {
                 kategoriler[item.ana_kategori].push(item);
             }
         });
@@ -229,12 +226,13 @@
                     headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
                 } else if (upperKategori.includes('JOINTS')) { 
-                    // Excel görselinde Joints için 1 ST, 5 ST, 10 ST ve 15 ST görünüyor.
-                    // Bu 4 fiyat sütununa denk geliyor (prijs 1, prijs 2, prijs 3, prijs 4).
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 70px 70px 70px 70px'; 
                 } else if (upperKategori.includes('EDIBLES')) { 
-                    headerHtml += '<span>5 ST</span><span>10 ST</span>';
+                    // Edibles için 10 ST ve 15 ST istendi. Bu 'prijs 3' ve 'prijs 4'e denk gelebilir.
+                    // Excel'deki 'prijs 1', 'prijs 2' gibi sütunların hangi adetlere karşılık geldiğini netleştirmeliyiz.
+                    // Varsayım: prijs 1 -> 10 ST, prijs 2 -> 15 ST
+                    headerHtml += '<span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 70px 70px';
                 } else { // Diğer kategoriler için varsayılan (eğer belirtilmemişse)
                     headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
@@ -250,32 +248,30 @@
                     liste.forEach(urun => {
                         const div = document.createElement('div');
                         let cls = 'urun';
-                        // Stok kontrolü `Voorraad` sütununa göre yapıldı. Artık `cizili` sınıfını stokta olmayanlar için kullanmayacağız, çünkü zaten filtreliyoruz.
                         // "new" ve "korting" sütunları doğrudan JSON anahtarı olarak gelmeli.
-                        // Ekran görüntüsüne göre "new" ve "korting" sütun başlıkları kullanılıyor.
-                        if (urun.new === true) cls += ' new'; // Excel'de işaretliyse true gelmeli
-                        if (urun.korting === true) cls += ' korting'; // Excel'de işaretliyse true gelmeli
+                        // Apps Script'ten gelen boolean değeri doğrudan kontrol ediyoruz.
+                        if (urun.new === true) cls += ' new'; 
+                        if (urun.korting === true) cls += ' korting';
                         div.className = cls;
                         div.style.gridTemplateColumns = gridTemplateColumns;
 
-                        // "marka" sütunu API'den "marka" olarak gelmeli.
-                        // "Product" sütunu API'den "Product" olarak gelmeli (Excel'deki "Kolom 1" veya "Product" başlığına denk geliyor).
-                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.Product || 'İsimsiz Ürün'}</span>`;
+                        // Ürün adı `urun_adi` sütunundan alınacak.
+                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
 
                         // Kategoriye göre fiyatları yerleştir
-                        // Fiyatlar için doğrudan Sheets sütun başlıklarını kullanıyoruz: 'prijs 1', 'prijs 2', 'prijs 3', 'prijs 4'
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 1 GR
-                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 2.5 GR
-                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // F sütunu: 5 GR
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // 1 GR
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // 2,5 GR
+                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // 5 GR
                         } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 1 ST
-                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 5 ST
-                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // F sütunu: 10 ST
-                            urunHtml += `<span>${formatPrice(urun['prijs 4'])}</span>`; // G sütunu: 15 ST (Excel'de 4. fiyat sütunu)
-                        } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // D sütunu: 5 ST
-                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // E sütunu: 10 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // 1 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // 5 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 3'])}</span>`; // 10 ST
+                            urunHtml += `<span>${formatPrice(urun['prijs 4'])}</span>`; // 15 ST
+                        } else if (upperKategori.includes('EDIBLES')) { 
+                            // Edibles için istenen 10 ST ve 15 ST, prijs 1 ve prijs 2 ile eşleştirildi
+                            urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; // 10 ST (varsayım)
+                            urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; // 15 ST (varsayım)
                         } else { // Diğer kategoriler için varsayılan
                             urunHtml += `<span>${formatPrice(urun['prijs 1'])}</span>`; 
                             urunHtml += `<span>${formatPrice(urun['prijs 2'])}</span>`; 
