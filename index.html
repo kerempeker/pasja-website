@@ -159,8 +159,6 @@
         if (price === undefined || price === null || price === 0 || price === '') {
             return '';
         }
-        // Eğer fiyat zaten bir string olarak geliyorsa (örn: "€10"), tekrar "€" eklemeyelim.
-        // Ama genellikle sayıdır, bu yüzden sayıya göre formatlayalım.
         return `€${price}`;
     }
 
@@ -217,18 +215,17 @@
                 const upperKategori = kategori.toUpperCase();
 
                 // Kategoriye göre başlıkları ve grid şablonunu ayarla
-                if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) { 
+                if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) { // 'WEED' veya 'HASH' içeren her kategori
                     headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
-                } else if (upperKategori.includes('JOINTS')) { 
+                } else if (upperKategori.includes('JOINTS')) { // 'JOINTS' içeren her kategori
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 70px 70px 70px 70px';
-                } else if (upperKategori.includes('EDIBLES')) { 
+                } else if (upperKategori.includes('EDIBLES')) { // 'EDIBLES' içeren her kategori
                     headerHtml += '<span>5 ST</span><span>10 ST</span>';
                     gridTemplateColumns += ' 70px 70px';
-                } else { // Diğer kategoriler için varsayılan (eğer belirtilmemişse)
-                    // Genelleştirilmiş fiyat sütunları, örneğin: D ve E sütunları
-                    headerHtml += '<span>Fiyat D</span><span>Fiyat E</span>'; 
+                } else { // Diğer kategoriler için varsayılan
+                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
                     gridTemplateColumns += ' 70px 70px';
                 }
                 
@@ -250,20 +247,20 @@
 
                         // Kategoriye göre fiyatları yerleştir
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 1 GR fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 2.5 GR fiyatı (E sütunu)
-                            urunHtml += `<span>${formatPrice(urun.F)}</span>`; // 5 GR fiyatı (F sütunu)
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2_5gr)}</span>`; 
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 1 ST fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 5 ST fiyatı (E sütunu)
-                            urunHtml += `<span>${formatPrice(urun.F)}</span>`; // 10 ST fiyatı (F sütunu)
-                            urunHtml += `<span>${formatPrice(urun.G)}</span>`; // 15 ST fiyatı (G sütunu)
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_15gr)}</span>`;
                         } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // 5 ST fiyatı (D sütunu)
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // 10 ST fiyatı (E sütunu)
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`;
                         } else { // Diğer kategoriler için varsayılan
-                            urunHtml += `<span>${formatPrice(urun.D)}</span>`; // Varsayılan olarak D sütunu
-                            urunHtml += `<span>${formatPrice(urun.E)}</span>`; // Varsayılan olarak E sütunu
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         }
 
                         div.innerHTML = urunHtml;
