@@ -137,7 +137,7 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec'; // Kendi URL'niz ile değiştirin
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwZo-6gr9lFcoIMYGYmm4-LgqgNyPZXckr9TjEHAiO6HZJZMgc4EbqWpSRJTpVU9SXc/exec'; // Kendi URL'niz ile değiştirin
     const MENU_URL = BASE_URL;
     const RENK_URL = BASE_URL + '?action=renkler';
     const SIRA_URL = BASE_URL + '?action=sirala';
@@ -248,16 +248,16 @@
                         // Kategoriye göre fiyatları yerleştir
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
                             urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_2_5gr)}</span>`; 
+                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`; 
                             urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         } else if (upperKategori.includes('JOINTS')) {
                             urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_15gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_4)}</span>`;
                         } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_25gr)}</span>`;
                         } else { // Diğer kategoriler için varsayılan
                             urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
