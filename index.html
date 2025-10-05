@@ -1,195 +1,328 @@
+--- START OF FILE index (1).html ---
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Pasja Menü</title>
-<style>
-:root{
-  --bg:#0b0f14;--panel:#121826cc;--panel-b:#2a3444;--text:#e6eef9;--muted:#a8b3c7;--div:#1e2634;--sh:0 6px 28px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial; background:var(--bg); color:var(--text); line-height:1.45;}
-.bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
-.bg video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);filter:brightness(.35) saturate(1.05)}
-.overlay{position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 700px at 60% 10%, #1b2331cc 0%, #0b0f14 55%, #0b0f14 100%)}
-.app{max-width:1400px;margin:32px auto 80px;padding:0 20px}
-#logo{position:fixed;left:16px;bottom:16px;width:120px;opacity:.9;z-index:10;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
-.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px}
-.category{background:var(--panel);border:1px solid var(--panel-b);border-radius:16px;box-shadow:var(--sh);overflow:hidden;backdrop-filter:blur(6px)}
-.cat-title{padding:14px 16px;font-weight:700;text-transform:uppercase;font-size:1rem;border-bottom:1px solid var(--div)}
-.header,.row{display:flex;align-items:center;gap:12px;padding:10px 14px}
-.header{color:var(--muted);font-size:.92rem;border-bottom:1px solid var(--div)}
-.header>span:first-child,.row>span:first-child{flex:1 1 auto;min-width:0}
-.header>span:nth-child(n+2),.row>span:nth-child(n+2){flex:0 0 auto;min-width:7ch;text-align:right;white-space:nowrap}
-.row{border-bottom:1px dashed rgba(168,179,199,.24);transition:background .18s ease,transform .18s ease}
-.row:hover{background:rgba(255,255,255,.04);transform:translateY(-1px)}
-.row>span:first-child{font-weight:600;letter-spacing:.2px}
-.legend{display:flex;flex-wrap:wrap;gap:10px 14px;padding:14px 0 4px;color:var(--muted);font-size:.92rem}
-.legend-item{display:inline-flex;align-items:center;gap:8px}
-.legend-dot{width:12px;height:12px;border-radius:50%;outline:1px solid rgba(255,255,255,.25)}
-.msg{padding:20px}
-@media (max-width:860px){
-  .columns{grid-template-columns:1fr}
-  .header,.row{padding:10px 12px;gap:10px}
-  #logo{width:96px}
-}
-</style>
-</head>
-<body>
-<div class="bg"><video autoplay loop muted playsinline src="video.mp4"></video></div>
-<div class="overlay"></div>
+  <meta charset="UTF-8">
+  <title>Dijital Menü</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: black; }
+    body {
+      margin: 0;
+      padding: 0 0 260px 0;
+      background-color: transparent; color: white; min-height: 100vh; position: relative;
+    }
+    video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
+    #menu { padding: 2rem; box-sizing: border-box; border-radius: 12px; margin: 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
+    .column { flex: 1; min-width: 240px; box-sizing: border-box; }
+    .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: #f5f5f5; text-align: center; border-bottom: 2px solid #f5f5f5; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
 
-<img id="logo" src="Pasja_Logo.png" alt="Pasja Logo" />
+    .header-row {
+      display: grid;    
+      grid-template-columns: auto; /* Dinamik olarak JS tarafından ayarlanacak */
+      gap: 0px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+      padding-bottom: 0.3rem;
+      align-items: center;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    .header-row span { text-align: center; }
+    .header-row span:first-child { text-align: left; padding-left: 6px; }
 
-<div class="app">
-  <div id="legend" class="legend"></div>
-  <div id="menu" class="columns"></div>
-</div>
-
-<script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec";
-
-/* —— helpers ———————————————————————————————————————————— */
-async function fetchJSON(url){
-  const r = await fetch(url, { cache:"no-store" });
-  const t = await r.text();
-  try { return JSON.parse(t); }
-  catch(e){ console.error("JSON parse error @", url, "\nRAW:", t); throw e; }
-}
-function arr(x){
-  if (Array.isArray(x)) return x;
-  if (x && Array.isArray(x.data)) return x.data;
-  if (x && Array.isArray(x.items)) return x.items;
-  if (x && Array.isArray(x.sirala)) return x.sirala;
-  if (x && Array.isArray(x.siralama)) return x.siralama;
-  return [];
-}
-function inStock(it){
-  const keys = ["stok","stock","stokta","in_stock","available","stok_durumu"];
-  for (const k of keys) if (k in it){
-    const v = it[k];
-    if (typeof v === "number") return v > 0;
-    const s = String(v).trim().toLowerCase();
-    return ["true","yes","var","1","available"].includes(s);
-  }
-  return true;
-}
-function val(v){
-  if (v==null) return "";
-  const s = String(v).trim();
-  if (!s || /^€?\s*0([.,]0+)?$/.test(s)) return "";
-  return s;
-}
-
-/* —— layouts ———————————————————————————————————————————— */
-const LAYOUTS = {
-  gram:   { labels:["1 GR","2,5 GR","5 GR"], fields:["fiyat_1gr","fiyat_25gr","fiyat_5gr"] },
-  joints: { labels:["1 ST","5 ST","10 ST","15 ST"], fields:["fiyat_1gr","fiyat_5gr","fiyat_10gr","fiyat_15gr"] },
-  edibles:{ labels:["5 ST","10 ST"], fields:["fiyat_1gr","fiyat_5gr"] }
-};
-function pickLayout(cat){
-  const c = String(cat||"").toUpperCase();
-  if (c.includes("JOINT")) return LAYOUTS.joints;
-  if (c === "EDIBLES")     return LAYOUTS.edibles;
-  return LAYOUTS.gram;
-}
-
-/* —— renderers ———————————————————————————————————————————— */
-function headerEl(category){
-  const l = pickLayout(category);
-  const h = document.createElement("div");
-  h.className = "header";
-  const a = document.createElement("span"); a.textContent = "Product"; h.appendChild(a);
-  l.labels.forEach(lbl=>{ const s=document.createElement("span"); s.textContent=lbl; h.appendChild(s); });
-  return h;
-}
-function rowEl(item, category, colorMap){
-  const l = pickLayout(category);
-  const r = document.createElement("div");
-  r.className = "row";
-  const a = document.createElement("span");
-  a.textContent = item.urun_adi || "";
-  if (colorMap && item.marka && colorMap[item.marka]) a.style.color = colorMap[item.marka];
-  r.appendChild(a);
-  l.fields.forEach(f=>{ const s=document.createElement("span"); s.textContent = val(item[f]); r.appendChild(s); });
-  return r;
-}
-function categoryEl(category, items, colorMap){
-  const c = document.createElement("div"); c.className="category";
-  const t = document.createElement("div"); t.className="cat-title"; t.textContent=category; c.appendChild(t);
-  c.appendChild(headerEl(category));
-  items.filter(inStock).forEach(it=> c.appendChild(rowEl(it, category, colorMap)));
-  return c;
-}
-
-/* —— main ———————————————————————————————————————————— */
-async function draw(){
-  const menuBox = document.getElementById("menu");
-  const legBox  = document.getElementById("legend");
-  menuBox.innerHTML = `<p class="msg">Menü yükleniyor...</p>`;
-  try{
-    const [menuRes, renkRes, sortRes] = await Promise.all([
-      fetchJSON(BASE_URL),
-      fetchJSON(BASE_URL + "?action=renkler"),
-      Promise.any([
-        fetchJSON(BASE_URL + "?action=sirala"),
-        fetchJSON(BASE_URL + "?action=siralama")
-      ]).catch(()=>({data:[]}))
-    ]);
-
-    const menu    = arr(menuRes);
-    const renkler = arr(renkRes);
-    let   sirala  = arr(sortRes);
-
-    const colorMap = {};
-    legBox.innerHTML = "";
-    renkler.forEach(r=>{
-      if (r?.marka && r?.renk_kodu){
-        colorMap[r.marka] = r.renk_kodu;
-        const li = document.createElement("div");
-        li.className="legend-item";
-        li.innerHTML = `<span class="legend-dot" style="background:${r.renk_kodu}"></span>${r.marka}`;
-        legBox.appendChild(li);
-      }
-    });
-
-    const grouped = {};
-    menu.forEach(it=>{
-      const k = it?.kategori || "DİĞER";
-      (grouped[k] ||= []).push(it);
-    });
-
-    if (!Array.isArray(sirala) || sirala.length===0){
-      sirala = Object.keys(grouped).sort().map((k,i)=>({kategori:k,sutun_no:Math.floor(i/3)+1,sira_no:(i%3)+1}));
-      console.warn("Sıralama verisi yok; alfabetik fallback kullanıldı.");
-    } else {
-      try{
-        sirala.sort((a,b)=>{
-          const sA=+a?.sutun_no||0, sB=+b?.sutun_no||0;
-          const rA=+a?.sira_no ||0, rB=+b?.sira_no ||0;
-          return (sA-sB)||(rA-rB)||String(a?.kategori).localeCompare(String(b?.kategori));
-        });
-      }catch(e){ console.warn("Sıralama sort edilemedi; ham sıra kullanılacak.", e); }
+    .urun {
+      display: grid;
+      grid-template-columns: auto; /* Dinamik olarak JS tarafından ayarlanacak */
+      gap: 0px;
+      align-items: center;
+      height: 28px;
+      margin-bottom: 0.1rem;
+      font-size: 1.05rem;
+      line-height: 1;
+      overflow: hidden;
     }
 
-    menuBox.innerHTML = "";
-    sirala.forEach(s=>{
-      const k = s?.kategori;
-      if (k && grouped[k]) menuBox.appendChild(categoryEl(k, grouped[k], colorMap));
-    });
-    Object.keys(grouped).forEach(k=>{
-      if (!sirala.find(x=>x.kategori===k)) menuBox.appendChild(categoryEl(k, grouped[k], colorMap));
-    });
+    .urun span {
+      text-align: center;
+    }
 
-  }catch(e){
-    menuBox.innerHTML = `<p class="msg" style="color:#ff6b6b">Veri alınamadı.</p>`;
-    console.error("draw() error:", e);
-  }
-}
+    .urun span:first-child {
+      text-align: left;
+      padding-left: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-draw();
-setInterval(draw, 60000);
-</script>
+    .new span:first-child::after,
+    .korting span:first-child::after {
+      content: "";
+      display: inline-block;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 16px;
+      height: 14px;
+      margin-left: 4px;
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+      position: relative;
+      top: 0px;
+    }
+
+    /* Çizili stili kaldırıldı, artık stokta olmayanlar gösterilmeyecek */
+    .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
+    .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
+    /* .thc-orani kaldırıldı */
+
+    #bottom-gallery {
+      position: fixed;
+      bottom: 200px;
+      left: 27%;
+      width: 75%;
+      height: 160px;
+      z-index: 5;
+      overflow: hidden;
+      padding: 5px 0;
+      box-sizing: border-box;
+    }
+    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
+    #bottom-gallery .swiper-slide {
+      width: 237px;
+      height: 156px;
+      display: flex; justify-content: center; align-items: center;
+      transition: all 0.6s ease-in-out;
+      transform-style: preserve-3d;
+      opacity: 0.4; filter: blur(4px); transform: scale(0.85);
+    }
+    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
+    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
+    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+    #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
+    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
+  transform: scale(1.5); /* %20 daha büyük yap (1.0 normal boyut) */}
+    .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
+    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
+    body::-webkit-scrollbar { width: 10px; }
+    body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+    body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+    body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop>
+    <source src="video.mp4" type="video/mp4">
+    Tarayıcınız video etiketini desteklemiyor.
+  </video>
+
+  <div id="menu">
+    <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
+  </div>
+
+  <div id="bottom-gallery">
+    <div class="swiper-container gallery-swiper">
+      <div class="swiper-wrapper">
+        
+      </div>
+    </div>
+ </div>
+
+  <div id="legend-container"></div>
+  <img id="logo" src="Pasja Review_1_silindi.png" alt="Pasja Logo">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec'; // Kendi URL'niz ile değiştirin
+    const MENU_URL = BASE_URL;
+    const RENK_URL = BASE_URL + '?action=renkler';
+    const SIRA_URL = BASE_URL + '?action=sirala';
+
+    const UPDATE_INTERVAL = 10000; // Güncelleme aralığı (milisaniye) - 10 saniye
+
+    async function fetchData(url) {
+        try {
+             const res = await fetch(url, { cache: "no-store" });
+             if (!res.ok) throw new Error(`HTTP error! status: ${res.status} for ${url}`);
+             return res.json();
+        } catch (error) {
+             console.error("Fetch hatası:", url, error);
+             throw error;
+        }
+    }
+
+    function formatPrice(price) {
+        if (price === undefined || price === null || price === 0 || price === '') {
+            return '';
+        }
+        return `€${price}`;
+    }
+
+    async function createMenu(isUpdate = false) {
+      const menuContainer = document.getElementById('menu');
+      const legendContainer = document.getElementById('legend-container');
+      if (!isUpdate) {
+          menuContainer.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#ccc;">Menü yükleniyor...</div>';
+          legendContainer.innerHTML = '';
+      }
+
+      try {
+        const [menuData, renkler, siralamaData] = await Promise.all([
+            fetchData(MENU_URL),
+            fetchData(RENK_URL),
+            fetchData(SIRA_URL)
+        ]);
+
+        const kategoriler = {};
+        siralamaData.forEach(k => {
+            if (k && k.kategori) kategoriler[k.kategori] = [];
+        });
+        menuData.forEach(item => {
+            // Stokta olmayan ürünleri filtrele
+            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi !== false) {
+                kategoriler[item.ana_kategori].push(item);
+            }
+        });
+
+        const sutunGruplari = {};
+        siralamaData.forEach(k => {
+            if (k && k.kategori && k.sutun_no && k.sira_no) {
+                const s = k.sutun_no;
+                if (!sutunGruplari[s]) sutunGruplari[s] = [];
+                sutunGruplari[s].push({ kategori: k.kategori, sira_no: k.sira_no });
+            }
+        });
+
+        menuContainer.innerHTML = '';
+        Object.keys(sutunGruplari).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(s => {
+            const col = document.createElement('div');
+            col.className = 'column';
+            const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
+            kats.forEach(({kategori}) => {
+                const baslik = document.createElement('div');
+                baslik.className = 'kategori-baslik';
+                baslik.textContent = kategori;
+                col.appendChild(baslik);
+
+                const header = document.createElement('div');
+                header.className = 'header-row';
+                let headerHtml = '<span>Product</span>';
+                let gridTemplateColumns = 'auto'; // Ürün adının genişliği
+
+                const upperKategori = kategori.toUpperCase();
+
+                // Kategoriye göre başlıkları ve grid şablonunu ayarla
+                if (upperKategori === 'WEED' || upperKategori === 'HASH') {
+                    headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span>';
+                    gridTemplateColumns += ' 70px 70px 70px';
+                } else if (upperKategori === 'JOINTS') {
+                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
+                    gridTemplateColumns += ' 70px 70px 70px 70px';
+                } else if (upperKategori === 'EDIBLES') {
+                    headerHtml += '<span>5 ST</span><span>10 ST</span>';
+                    gridTemplateColumns += ' 70px 70px';
+                } else { // Diğer kategoriler için varsayılan olarak (eğer belirtilmemişse)
+                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; // Veya tamamen boş bırakılabilir
+                    gridTemplateColumns += ' 70px 70px';
+                }
+                
+                header.innerHTML = headerHtml;
+                header.style.gridTemplateColumns = gridTemplateColumns; // Header grid şablonunu ayarla
+                col.appendChild(header);
+
+                const liste = kategoriler[kategori];
+                if (liste && liste.length > 0) {
+                    liste.forEach(urun => {
+                        const div = document.createElement('div');
+                        let cls = 'urun';
+                        if (urun.yeni_mi === true) cls += ' new';
+                        if (urun.korting === true || urun.korting === 'true' || urun.korting === 1) cls += ' korting';
+                        div.className = cls;
+                        div.style.gridTemplateColumns = gridTemplateColumns; // Ürün grid şablonunu ayarla
+
+                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
+
+                        // Kategoriye göre fiyatları yerleştir
+                        if (upperKategori === 'WEED' || upperKategori === 'HASH') {
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_2_5gr)}</span>`; // 2.5 GR fiyatı
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                        } else if (upperKategori === 'JOINTS') {
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`; // 10 ST fiyatı
+                            urunHtml += `<span>${formatPrice(urun.fiyat_15gr)}</span>`; // 15 ST fiyatı
+                        } else if (upperKategori === 'EDIBLES') {
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_10gr)}</span>`;
+                        } else { // Diğer kategoriler için varsayılan (eğer belirtilmemişse)
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                        }
+
+                        div.innerHTML = urunHtml;
+                        col.appendChild(div);
+                    });
+                } else {
+                    const y = document.createElement('div');
+                    y.textContent = 'Yakında...';
+                    y.style.textAlign = 'center';
+                    y.style.padding = '1rem 0';
+                    y.style.fontSize = '0.9rem';
+                    y.style.color = '#aaa';
+                    col.appendChild(y);
+                }
+            });
+            menuContainer.appendChild(col);
+        });
+
+        if (!isUpdate || legendContainer.innerHTML.trim() === '') {
+            legendContainer.innerHTML = '';
+            const tumMarkalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
+            tumMarkalar.forEach(marka => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                const renk = renkler[marka] || '#999999';
+                item.innerHTML = `<span class="legend-color" style="background-color:${renk};"></span>${marka}`;
+                legendContainer.appendChild(item);
+            });
+        }
+
+      } catch (error) {
+        console.error(`Menü ${isUpdate ? 'güncellenirken' : 'oluşturulurken'} hata:`, error);
+        if (!isUpdate) {
+            menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.<br><small>${error.message}</small></div>`;
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      new Swiper('.gallery-swiper', {
+        effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
+        loop: true, spaceBetween: 10,
+        autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+        allowTouchMove: false,
+        speed: 600
+      });
+
+      createMenu().then(() => {
+          console.log("İlk menü başarıyla yüklendi.");
+          setInterval(async () => {
+              console.log("Menü güncelleniyor (Tüm veriler çekiliyor)...");
+              try {
+                  await createMenu(true);
+              } catch (error) {
+                  console.error("Arkaplan güncelleme aralığı hatası (genel):", error);
+              }
+          }, UPDATE_INTERVAL);
+      }).catch(error => {
+          console.error("İlk menü yüklemesi başarısız oldu:", error);
+      });
+    });
+  </script>
 </body>
 </html>
