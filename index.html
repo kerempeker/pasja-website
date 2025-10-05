@@ -8,7 +8,7 @@
     html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: black; }
     body {
       margin: 0;
-      padding: 0 0 260px 0;
+      padding: 0 0 260px 0; /* Sayfanın alt boşluğunu ayarlayın, galeri olmadığı için daha az olabilir */
       background-color: transparent; color: white; min-height: 100vh; position: relative;
     }
     video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
@@ -61,29 +61,8 @@
     .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
     .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
 
-    #bottom-gallery {
-      position: fixed;
-      bottom: 200px;
-      left: 27%;
-      width: 75%;
-      height: 160px;
-      z-index: 5;
-      overflow: hidden;
-      padding: 5px 0;
-      box-sizing: border-box;
-    }
-    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
-    #bottom-gallery .swiper-slide {
-      width: 237px;
-      height: 156px;
-      display: flex; justify-content: center; align-items: center;
-      transition: all 0.6s ease-in-out;
-      transform-style: preserve-3d;
-      opacity: 0.4; filter: blur(4px); transform: scale(0.85);
-    }
-    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
-    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
-    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    /* Galeri divini ve stillerini kaldırıyoruz veya görünmez yapıyoruz */
+    #bottom-gallery { display: none; } /* Galeri tamamen kaldırıldığı için görünmez yapıyoruz */
 
     #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
     #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px); transform-origin: bottom right; transform: scale(1.5); }
@@ -105,10 +84,11 @@
     <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
   </div>
 
+  <!-- Galeri divi kaldırıldı veya display: none ile gizlendi -->
   <div id="bottom-gallery">
     <div class="swiper-container gallery-swiper">
       <div class="swiper-wrapper">
-        <!-- Galeri görselleri buraya eklenecek -->
+        <!-- Galeri görselleri buraya eklenecek, ancak şu anda 'foto_link' sütunu yok. -->
       </div>
     </div>
  </div>
@@ -118,11 +98,11 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwJnkEgM4LwYKGj7U5m8pCVQtGU-I0Vo6NxKAX3ctgv7IM8BKVQrbNKG-n3TFjOHF8/exec'; // Kendi URL'niz ile değiştirin
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbyTH5VXMlxsYqGpkcuX4MjAEOEN2ciRnhMNt3AXav-T6xINXNbEaE0EsICNfzD0-ObB/exec'; // Kendi URL'niz ile değiştirin
     const MENU_URL = BASE_URL;
     const RENK_URL = BASE_URL + '?action=renkler';
     const SIRA_URL = BASE_URL + '?action=sirala';
-    const GALLERY_URL = BASE_URL + '?action=galeri'; // Yeni galeri URL'si
+    const GALLERY_URL = BASE_URL + '?action=galeri'; // Galeri için çağrı hala var, ancak sunucu boş dizi döndürecek
 
     const UPDATE_INTERVAL = 10000; // Güncelleme aralığı (milisaniye) - 10 saniye
 
@@ -160,7 +140,7 @@
             fetchData(MENU_URL),
             fetchData(RENK_URL),
             fetchData(SIRA_URL),
-            fetchData(GALLERY_URL) // Galeri görsellerini çek
+            fetchData(GALLERY_URL) // Galeri görsellerini çekmeye çalışacak, ancak boş dizi dönecek
         ]);
 
         const kategoriler = {};
@@ -168,7 +148,8 @@
             if (k && k.kategori) kategoriler[k.kategori] = [];
         });
         menuData.forEach(item => {
-            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi !== false) {
+            // Sadece stokta olan ürünleri ekliyoruz (stok_var_mi true ise)
+            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi === true) {
                 kategoriler[item.ana_kategori].push(item);
             }
         });
@@ -200,21 +181,24 @@
 
                 const upperKategori = kategori.toUpperCase();
 
-                // Kategoriye göre başlıkları ve grid şablonunu ayarla
-                // Tablonuzdaki "fiyat_1", "fiyat_2", "fiyat_3", "fiyat_voorraad", "fiyat_new", "fiyat_korting" sütunlarına göre düzenliyoruz.
-                // Tablonuzdaki sütun başlıklarını kullanın: "1 GR", "2,5 GR", "5 GR", "Voorraad", "New", "Korting"
+                // Fiyat başlıklarını tablonuzdaki D, E, F, G sütunlarına göre dinamik olarak ayarlayalım
+                // Tablonuzdaki "1 GR", "2,5 GR", "5 GR" ve "1 ST" başlıklarını varsayarak.
                 if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
                     headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
                 } else if (upperKategori.includes('JOINTS')) {
-                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>'; // Tablonuzda 3 fiyat sütunu var gibi görünüyor.
-                    gridTemplateColumns += ' 70px 70px 70px';
+                    // Jointler için 4 fiyat sütunu var: 1 ST, 5 ST, 10 ST, 15 ST
+                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
+                    gridTemplateColumns += ' 70px 70px 70px 70px';
                 } else if (upperKategori.includes('EDIBLES')) {
-                    headerHtml += '<span>1 ST</span><span>5 ST</span>'; // Tablonuzda 2 fiyat sütunu var gibi görünüyor.
+                    // Edibles için 2 fiyat sütunu varsayalım
+                    headerHtml += '<span>1 ST</span><span>5 ST</span>';
                     gridTemplateColumns += ' 70px 70px';
-                } else { // Diğer kategoriler için varsayılan
-                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span><span>Fiyat 3</span>'; // Varsayılan olarak 3 fiyat gösterelim
-                    gridTemplateColumns += ' 70px 70px 70px';
+                } else {
+                    // Diğer tüm kategoriler için varsayılan 3 fiyat başlığı (veya 4 fiyat için uygun olanı seçin)
+                    // Tablonuzdaki genel fiyat başlıkları: "1 GR", "2,5 GR", "5 GR", "Voorraad"
+                    headerHtml += '<span>1 GR</span><span>2,5 GR</span><span>5 GR</span><span>Voorraad</span>'; // Örnek genel başlıklar
+                    gridTemplateColumns += ' 70px 70px 70px 70px';
                 }
                 
                 header.innerHTML = headerHtml;
@@ -242,13 +226,15 @@
                             urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_3)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_voorraad)}</span>`; // 4. fiyat sütunu
                         } else if (upperKategori.includes('EDIBLES')) {
                             urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
-                        } else { // Diğer kategoriler için varsayılan
+                        } else { // Diğer kategoriler için varsayılan 4 fiyatı gösterelim
                             urunHtml += `<span>${formatPrice(urun.fiyat_1)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_2)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_3)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_voorraad)}</span>`;
                         }
 
                         div.innerHTML = urunHtml;
@@ -267,17 +253,29 @@
             menuContainer.appendChild(col);
         });
 
-        // Galeri görsellerini Swiper'a ekle
+        // Galeri görselleri (eğer foto_link sütunu eklenirse aktif edilebilir)
+        // Şu anki durumda getGalleryImages boş dizi döndüreceği için burası bir şey yapmayacak.
         if (galleryImages && galleryImages.length > 0) {
-            gallerySwiperWrapper.innerHTML = ''; // Mevcut görselleri temizle
+            gallerySwiperWrapper.innerHTML = '';
             galleryImages.forEach(imageUrl => {
                 const slide = document.createElement('div');
                 slide.className = 'swiper-slide';
                 slide.innerHTML = `<img src="${imageUrl}" alt="Galeri Görseli">`;
                 gallerySwiperWrapper.appendChild(slide);
             });
+            // Swiper'ı güncelle
+            let mySwiper = document.querySelector('.gallery-swiper').swiper;
+            if (mySwiper) {
+                mySwiper.update();
+                mySwiper.autoplay.start();
+            }
+        } else {
+             // Galeri aktif değilse veya boşsa, swiper konteynerini gizle
+             document.getElementById('bottom-gallery').style.display = 'none';
+             // Sayfanın alt boşluğunu azalt
+             document.body.style.paddingBottom = '60px'; // Örnek olarak 60px bırakabiliriz
         }
-
+        
         // Marka renkleri legend'ını oluştur
         if (!isUpdate || legendContainer.innerHTML.trim() === '') {
             legendContainer.innerHTML = '';
@@ -300,27 +298,29 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      // Swiper'ın zaten initialize edilmiş olup olmadığını kontrol et
-      let mySwiper = document.querySelector('.gallery-swiper').swiper;
-      if (!mySwiper) {
-        mySwiper = new Swiper('.gallery-swiper', {
-          effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
-          loop: true, spaceBetween: 10,
-          autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
-          allowTouchMove: false,
-          speed: 600
-        });
-      } else {
-        // Zaten varsa, yeni görselleri yükledikten sonra güncelle
-        mySwiper.update();
-      }
+      // Swiper'ın sadece galleryImages varsa başlatılmasını sağlayın
+      let mySwiper;
+      // createMenu çalıştırıldıktan sonra mySwiper'ı tanımlayacağız
       
       createMenu().then(() => {
           console.log("İlk menü başarıyla yüklendi.");
+          // Galeri görselleri varsa Swiper'ı başlat
+          if (document.querySelector('#bottom-gallery .swiper-wrapper').children.length > 0) {
+              mySwiper = new Swiper('.gallery-swiper', {
+                  effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
+                  loop: true, spaceBetween: 10,
+                  autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+                  allowTouchMove: false,
+                  speed: 600
+              });
+          }
+
           setInterval(async () => {
               console.log("Menü güncelleniyor (Tüm veriler çekiliyor)...");
               try {
                   await createMenu(true);
+                  // Swiper'ı tekrar kontrol edip güncellemek iyi bir pratik
+                  mySwiper = document.querySelector('.gallery-swiper').swiper; // Mevcut swiper instance'ını al
                   if (mySwiper) mySwiper.update(); // Swiper'ı güncelle
               } catch (error) {
                   console.error("Arkaplan güncelleme aralığı hatası (genel):", error);
