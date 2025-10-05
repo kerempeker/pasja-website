@@ -1,321 +1,202 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Dijital Menü</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <style>
-    html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: black; }
-    body {
-      margin: 0;
-      padding: 0 0 260px 0;
-      background-color: transparent; color: white; min-height: 100vh; position: relative;
-    }
-    video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
-    #menu { padding: 2rem; box-sizing: border-box; border-radius: 12px; margin: 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
-    .column { flex: 1; min-width: 240px; box-sizing: border-box; }
-    .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: #f5f5f5; text-align: center; border-bottom: 2px solid #f5f5f5; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pasja Menü</title>
 
-    .header-row {
-      display: grid;    
-      grid-template-columns: auto 70px 70px 70px;
-      gap: 0px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      margin-bottom: 0.6rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-      padding-bottom: 0.3rem;
-      align-items: center;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-    }
-    .header-row span { text-align: center; }
-    .header-row span:first-child { text-align: left; padding-left: 6px; }
-
-    .urun {
-      display: grid;
-      grid-template-columns: auto 70px 70px 70px;
-      gap: 0px;
-      align-items: center;
-      height: 28px;
-      margin-bottom: 0.1rem;
-      font-size: 1.05rem;
-      line-height: 1;
-      overflow: hidden;
-    }
-
-    .urun span {
-      text-align: center;
-    }
-
-    .urun span:first-child {
-      text-align: left;
-      padding-left: 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .new span:first-child::after,
-    .korting span:first-child::after {
-      content: "";
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-      width: 16px;
-      height: 14px;
-      margin-left: 4px;
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
-      position: relative;
-      top: 0px;
-    }
-
-    .cizili { text-decoration: line-through; color: #777 !important; text-shadow: none !important; }
-    .cizili span { color: #777 !important; text-decoration: line-through; text-shadow: none !important; }
-    .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    .thc-orani { color: #FFFFFF; font-size: 1rem; white-space: nowrap; }
-
-    #bottom-gallery {
-      position: fixed;
-      bottom: 200px;
-      left: 27%;
-      width: 75%;
-      height: 160px;
-      z-index: 5;
-      overflow: hidden;
-      padding: 5px 0;
-      box-sizing: border-box;
-    }
-    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
-    #bottom-gallery .swiper-slide {
-      width: 237px;
-      height: 156px;
-      display: flex; justify-content: center; align-items: center;
-      transition: all 0.6s ease-in-out;
-      transform-style: preserve-3d;
-      opacity: 0.4; filter: blur(4px); transform: scale(0.85);
-    }
-    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
-    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
-    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-    #logo_silindi { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
-    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
-  transform: scale(1.5); /* %20 daha büyük yap (1.0 normal boyut) */}
-    .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
-    body::-webkit-scrollbar { width: 10px; }
-    body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
-    body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-    body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
-  </style>
+<!-- ================== STİL ================== -->
+<style>
+:root{
+  --bg:#0b0f14;--bg-soft:#111722;--panel:#121826cc;--panel-border:#2a3444;
+  --text:#e6eef9;--muted:#a8b3c7;--divider:#1e2634;--shadow:0 6px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:var(--bg);color:var(--text);line-height:1.45;
+}
+.bg-video{position:fixed;inset:0;z-index:-2;overflow:hidden;}
+.bg-video video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;
+  transform:translate(-50%,-50%);filter:brightness(.35) saturate(1.1);}
+.bg-overlay{position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(1200px 700px at 60% 10%,#1b2331cc 0%,#0b0f14 55%,#0b0f14 100%);}
+.app{max-width:1400px;margin:32px auto 80px;padding:0 20px;}
+#logo{position:fixed;left:16px;bottom:16px;width:120px;opacity:.9;z-index:10;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));}
+.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px;}
+.category-block{background:var(--panel);border:1px solid var(--panel-border);
+  border-radius:16px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(6px);}
+.category-title{padding:14px 16px;font-weight:700;text-transform:uppercase;
+  font-size:1rem;border-bottom:1px solid var(--divider);}
+.header-row,.menu-row{display:flex;align-items:center;gap:12px;padding:10px 14px;}
+.header-row{color:var(--muted);font-size:.92rem;border-bottom:1px solid var(--divider);}
+.header-row>span:first-child,.menu-row>span:first-child{flex:1 1 auto;min-width:0;}
+.header-row>span:nth-child(n+2),.menu-row>span:nth-child(n+2){
+  flex:0 0 auto;min-width:7ch;text-align:right;white-space:nowrap;}
+.menu-row{border-bottom:1px dashed rgba(168,179,199,.24);
+  transition:background .18s ease,transform .18s ease;}
+.menu-row:hover{background:rgba(255,255,255,.04);transform:translateY(-1px);}
+.menu-row>span:first-child{font-weight:600;letter-spacing:.2px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;
+  padding:14px 0 4px;color:var(--muted);font-size:.92rem;}
+.legend-item{display:inline-flex;align-items:center;gap:8px;}
+.legend-dot{width:12px;height:12px;border-radius:50%;
+  outline:1px solid rgba(255,255,255,.25);}
+@media(max-width:860px){
+  .columns{grid-template-columns:1fr;}
+  .menu-row,.header-row{padding:10px 12px;gap:10px;}
+  #logo{width:96px;}
+}
+</style>
 </head>
+
 <body>
-  <video autoplay muted loop>
-    <source src="video.mp4" type="video/mp4">
-    Tarayıcınız video etiketini desteklemiyor.
-  </video>
+<!-- ================== ARKA PLAN ================== -->
+<div class="bg-video">
+  <video autoplay loop muted playsinline src="video.mp4"></video>
+</div>
+<div class="bg-overlay"></div>
 
-  <div id="menu">
-    <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
-  </div>
+<!-- ================== LOGO ================== -->
+<img id="logo" src="Pasja_Logo.png" alt="Pasja Logo">
 
-  <div id="bottom-gallery">
-    <div class="swiper-container gallery-swiper">
-      <div class="swiper-wrapper">
-        
-      </div>
-    </div>
- </div>
+<!-- ================== ANA UYGULAMA ================== -->
+<div class="app">
+  <div id="legend-container" class="legend"></div>
+  <div id="menu-container" class="columns"></div>
+</div>
 
-  <div id="legend-container"></div>
-  <img id="logo" src="Pasja Review_1_silindi.png" alt="Pasja Logo">
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<!-- ================== JAVASCRIPT ================== -->
+<script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec";
 
-  <script>
-    // --- Yöntem 1 Uygulaması ---
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbwgLRX49Gx2bdjS-9L1hhujEYwOUcchyLq5jog1MVKMm8gvPeRddh3LUZ4_ci_ATdSd/exec'; // Kendi URL'niz ile değiştirin
-    const MENU_URL = BASE_URL; // Varsayılan olarak menü verisini getirir
-    const RENK_URL = BASE_URL + '?action=renkler';
-    const SIRA_URL = BASE_URL + '?action=sirala';
-    // VERSION_URL ve currentDataVersion kaldırıldı.
+/* ===== KATEGORİ ŞEMALARI ===== */
+const LAYOUTS = {
+  gram: {
+    labels:["1 GR","2,5 GR","5 GR"],
+    fields:["fiyat_1gr","fiyat_25gr","fiyat_5gr"]
+  },
+  joints: {
+    labels:["1 ST","5 ST","10 ST","15 ST"],
+    fields:["fiyat_1gr","fiyat_5gr","fiyat_10gr","fiyat_15gr"]
+  },
+  edibles: {
+    labels:["5 ST","10 ST"],
+    fields:["fiyat_1gr","fiyat_5gr"]
+  }
+};
+function pickLayout(cat){
+  const c=String(cat||"").toUpperCase();
+  if(c.includes("JOINT")) return LAYOUTS.joints;
+  if(c==="EDIBLES") return LAYOUTS.edibles;
+  return LAYOUTS.gram;
+}
 
-    const UPDATE_INTERVAL = 10000; // Güncelleme aralığı (milisaniye) - 60 saniye
-
-    async function fetchData(url) {
-        try {
-             const res = await fetch(url, { cache: "no-store" }); // Cache engelleme önemli
-             if (!res.ok) throw new Error(`HTTP error! status: ${res.status} for ${url}`);
-             return res.json();
-        } catch (error) {
-             console.error("Fetch hatası:", url, error);
-             throw error; // Hatanın yukarıya iletilmesi için
-        }
+/* ===== STOK KONTROL ===== */
+function isInStock(item){
+  const keys=["stok","stock","stokta","in_stock","available","stok_durumu"];
+  for(const k of keys){
+    if(k in item){
+      const v=item[k];
+      if(typeof v==="number") return v>0;
+      const s=String(v).trim().toLowerCase();
+      return ["true","yes","var","1","available"].includes(s);
     }
+  }return true;
+}
 
-    async function createMenu(isUpdate = false) {
-      const menuContainer = document.getElementById('menu');
-      const legendContainer = document.getElementById('legend-container');
-      if (!isUpdate) {
-          menuContainer.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#ccc;">Menü yükleniyor...</div>';
-          legendContainer.innerHTML = ''; // İlk yüklemede lejantı temizle
-      }
+/* ===== SAFE VALUE ===== */
+function safeVal(v){
+  if(v===null||v===undefined) return "";
+  const s=String(v).trim();
+  if(!s||/^€?\s*0([.,]0+)?$/.test(s)) return "";
+  return s;
+}
 
-      try {
-        // Sadece gerekli verileri çek, versiyonu çekme
-        const [menuData, renkler, siralamaData] = await Promise.all([
-            fetchData(MENU_URL),
-            fetchData(RENK_URL),
-            fetchData(SIRA_URL)
-        ]);
+/* ===== HEADER ===== */
+function buildHeader(category){
+  const layout=pickLayout(category);
+  const header=document.createElement("div");
+  header.className="header-row";
+  const name=document.createElement("span"); name.textContent="Product";
+  header.appendChild(name);
+  layout.labels.forEach(lbl=>{
+    const s=document.createElement("span"); s.textContent=lbl; header.appendChild(s);
+  });
+  return {header,layout};
+}
 
-        // --- Veri İşleme ---
-        const kategoriler = {};
-        // Sıralama verisine göre kategorileri başlat
-        siralamaData.forEach(k => {
-            if (k && k.kategori) kategoriler[k.kategori] = [];
-        });
-        // Ürünleri kategorilere yerleştir
-        menuData.forEach(item => {
-            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori)) {
-                kategoriler[item.ana_kategori].push(item);
-            }
-        });
+/* ===== ROW ===== */
+function buildRow(item,category,colorMap){
+  const layout=pickLayout(category);
+  const row=document.createElement("div"); row.className="menu-row";
+  const name=document.createElement("span");
+  name.textContent=item.urun_adi||"";
+  if(colorMap&&item.marka&&colorMap[item.marka]) name.style.color=colorMap[item.marka];
+  row.appendChild(name);
+  layout.fields.forEach(f=>{
+    const s=document.createElement("span");
+    s.textContent=safeVal(item[f]); row.appendChild(s);
+  });
+  return row;
+}
 
-        // Kategorileri sütunlara göre grupla
-        const sutunGruplari = {};
-        siralamaData.forEach(k => {
-            if (k && k.kategori && k.sutun_no && k.sira_no) {
-                const s = k.sutun_no;
-                if (!sutunGruplari[s]) sutunGruplari[s] = [];
-                sutunGruplari[s].push({ kategori: k.kategori, sira_no: k.sira_no });
-            }
-        });
+/* ===== CATEGORY BLOCK ===== */
+function renderCategoryBlock(category,items,colorMap){
+  const block=document.createElement("div"); block.className="category-block";
+  const title=document.createElement("div"); title.className="category-title";
+  title.textContent=category; block.appendChild(title);
+  const {header}=buildHeader(category); block.appendChild(header);
+  items.filter(isInStock).forEach(it=>block.appendChild(buildRow(it,category,colorMap)));
+  return block;
+}
 
-        // --- Menü HTML Oluşturma ---
-        menuContainer.innerHTML = ''; // Mevcut içeriği temizle
-        Object.keys(sutunGruplari).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(s => {
-            const col = document.createElement('div');
-            col.className = 'column';
-            const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
-            kats.forEach(({kategori}) => {
-                const baslik = document.createElement('div');
-                baslik.className = 'kategori-baslik';
-                baslik.textContent = kategori;
-                col.appendChild(baslik); // GALERİ TAŞIMA KODU KALDIRILDI
+/* ===== MENU RENDER ===== */
+async function createMenu(){
+  const menuCont=document.getElementById("menu-container");
+  const legendCont=document.getElementById("legend-container");
+  menuCont.innerHTML="<p style='padding:20px'>Menü yükleniyor...</p>";
+  try{
+    const [menuRes,renkRes,siralaRes]=await Promise.all([
+      fetch(BASE_URL).then(r=>r.json()),
+      fetch(BASE_URL+"?action=renkler").then(r=>r.json()),
+      fetch(BASE_URL+"?action=sirala").then(r=>r.json())
+    ]);
+    const menuData=menuRes.data||menuRes;
+    const renkler=renkRes.data||renkRes;
+    const siralama=siralaRes.data||siralaRes;
+    const colorMap={};
+    renkler.forEach(r=>colorMap[r.marka]=r.renk_kodu);
 
-                const header = document.createElement('div');
-                header.className = 'header-row';
-                let ph1 = '1 GR', ph2 = '5 GR' ;
-                const upperKategori = kategori.toUpperCase(); // Büyük/küçük harf duyarlılığını kaldır
-                if (upperKategori === 'JOINTS') [ph1, ph2] = ['1 ST', '5 ST'];
-                else if (upperKategori === 'PASJA HASH JOINTS') [ph1, ph2] = ['1 ST', '6 ST'];
-                else if (upperKategori === 'JOINTS 10 & 15 STUKS') [ph1, ph2] = ['10 ST', '15 ST'];
-                else if (upperKategori === 'JOINTS (ZONDER TABAK)') [ph1, ph2] = ['1 ST', '5 ST'];
-                else if (upperKategori === 'EDIBLES') [ph1, ph2] = ['5 ST', '10 ST' ];
-                header.innerHTML = `<span>Product</span><span>${ph1}</span><span>2,5 GR</span><span>${ph2}</span>`;
-                col.appendChild(header);
-
-                const liste = kategoriler[kategori];
-                if (liste && liste.length > 0) {
-                    liste.forEach(urun => {
-                        const div = document.createElement('div');
-                        let cls = 'urun';
-                        if (urun.stok_var_mi === false) cls += ' cizili';
-                        if (urun.yeni_mi === true) cls += ' new'; // Bool kontrol yeterli
-                        // Korting kontrolü (Bool, string veya sayı olabilir diye geniş tutulmuş)
-                        if (urun.korting === true || urun.korting === 'true' || urun.korting === 1) cls += ' korting';
-                        div.className = cls;
-
-                        let fiyat1 = '-', fiyat5 = '-';
-                        if (upperKategori === 'JOINTS') {
-                            fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
-                            fiyat5 = urun.fiyat_5gr ? `€${urun.fiyat_5gr}` : '-';
-                        } else if (upperKategori === 'EDIBLES') {
-                            fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
-                            fiyat5 = '-';
-                        } else {
-                            fiyat1 = urun.fiyat_1gr ? `€${urun.fiyat_1gr}` : '-';
-                            fiyat5 = urun.fiyat_5gr ? `€${urun.fiyat_5gr}` : '-';
-                        }
-
-                        const thc = urun.thc_orani || '-';
-                        const renk = renkler[urun.marka] || 'white';
-                        div.innerHTML = `
-                            <span style="color:${renk}">${urun.urun_adi || 'İsimsiz Ürün'}</span>
-                            <span class="thc-orani">${thc}</span>
-                            <span>${fiyat1}</span>
-                            <span>${fiyat5}</span>`;
-                        col.appendChild(div);
-                    });
-                } else {
-                    const y = document.createElement('div');
-                    y.textContent = 'Yakında...';
-                    y.style.textAlign = 'center';
-                    y.style.padding = '1rem 0';
-                    y.style.fontSize = '0.9rem';
-                    y.style.color = '#aaa';
-                    col.appendChild(y);
-                }
-            });
-            menuContainer.appendChild(col);
-        });
-
-        // --- Lejant Oluşturma (Sadece ilk yüklemede veya lejant boşsa) ---
-        if (!isUpdate || legendContainer.innerHTML.trim() === '') {
-            legendContainer.innerHTML = ''; // Temizle
-            const tumMarkalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
-            tumMarkalar.forEach(marka => {
-                const item = document.createElement('div');
-                item.className = 'legend-item';
-                const renk = renkler[marka] || '#999999'; // Varsayılan renk
-                item.innerHTML = `<span class="legend-color" style="background-color:${renk};"></span>${marka}`;
-                legendContainer.appendChild(item);
-            });
-        }
-
-      } catch (error) {
-        console.error(`Menü ${isUpdate ? 'güncellenirken' : 'oluşturulurken'} hata:`, error);
-        // Arkaplan güncellemesinde hata olursa kullanıcı arayüzünü bozma, sadece konsola yaz.
-        if (!isUpdate) {
-            menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.<br><small>${error.message}</small></div>`;
-        }
-      }
-    }
-
-    // checkForUpdates fonksiyonu kaldırıldı.
-
-    document.addEventListener('DOMContentLoaded', function () {
-      // Swiper başlatma
-      new Swiper('.gallery-swiper', {
-        effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
-        loop: true, spaceBetween: 10,
-        autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true }, // disableOnInteraction false ve pauseOnMouseEnter true yapıldı
-        allowTouchMove: false,
-        speed: 600 // Geçiş hızı eklendi
-      });
-
-      // İlk menü yüklemesi
-      createMenu().then(() => {
-          console.log("İlk menü başarıyla yüklendi.");
-          // Periyodik olarak menüyü yeniden oluştur (verimsiz yöntem)
-          setInterval(async () => { // async ekleyerek await kullanılabilir
-              console.log("Menü güncelleniyor (Tüm veriler çekiliyor)...");
-              try {
-                  await createMenu(true); // true -> güncelleme olduğunu belirtir
-              } catch (error) {
-                  // Hata createMenu içinde zaten loglanıyor, burada tekrar loglamaya gerek yok
-                  console.error("Arkaplan güncelleme aralığı hatası (genel):", error);
-              }
-          }, UPDATE_INTERVAL); // Belirlenen aralıkta çalıştır
-      }).catch(error => {
-          console.error("İlk menü yüklemesi başarısız oldu:", error);
-          // Hata mesajı createMenu içinde zaten gösterilmiş olmalı.
-      });
+    legendCont.innerHTML="";
+    renkler.forEach(r=>{
+      const item=document.createElement("div");
+      item.className="legend-item";
+      item.innerHTML=`<span class="legend-dot" style="background:${r.renk_kodu}"></span>${r.marka}`;
+      legendCont.appendChild(item);
     });
-  </script>
+
+    menuCont.innerHTML="";
+    siralama.sort((a,b)=>a.sutun_no-b.sutun_no||a.sira_no-b.sira_no);
+    const grouped={};
+    menuData.forEach(it=>{
+      if(!grouped[it.kategori]) grouped[it.kategori]=[];
+      grouped[it.kategori].push(it);
+    });
+    siralama.forEach(k=>{
+      const cat=k.kategori;
+      if(grouped[cat]) menuCont.appendChild(renderCategoryBlock(cat,grouped[cat],colorMap));
+    });
+  }catch(e){
+    menuCont.innerHTML="<p style='padding:20px;color:#f66'>Veri alınamadı.</p>";
+    console.error(e);
+  }
+}
+
+/* ===== AUTO REFRESH ===== */
+createMenu();
+setInterval(createMenu,60000);
+</script>
 </body>
 </html>
