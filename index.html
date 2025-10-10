@@ -213,14 +213,17 @@
                 const upperKategori = kategori.toUpperCase();
 
                 // Kategoriye göre başlıkları ve grid şablonunu ayarla
-                if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) { // 'WEED' veya 'HASH' içeren her kategori
-                    headerHtml += '<span>0.5 GR</span><span>1 GR</span><span>2.5 GR</span>';
+                if (upperKategori.includes('WEED')) { // 'WEED' veya 'HASH' içeren her kategori
+                    headerHtml += '<span>1 GR</span><span>2.5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
                 } else if (upperKategori.includes('JOINTS')) { // 'JOINTS' içeren her kategori
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 70px 70px 70px 70px';
                 } else if (upperKategori.includes('EDIBLES')) { // 'EDIBLES' içeren her kategori
                     headerHtml += '<span>5 ST</span><span>10 ST</span>';
+                    gridTemplateColumns += ' 70px 70px';
+                } else if (upperKategori.includes('HASH')) { // 'EDIBLES' içeren her kategori
+                    headerHtml += '<span>0.5 GR</span><span>1 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px';
                 } else { // Diğer kategoriler için varsayılan
                     headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
