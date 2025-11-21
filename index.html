@@ -258,7 +258,8 @@
                             urunHtml += `<span>${formatPrice(urun.fiyat_4)}</span>`;
                         } else if (upperKategori.includes('EDIBLES')) {
                             urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.thc_orani)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.thc_orani)}</span>`; 
+                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         } else { // Diğer kategoriler için varsayılan
                             urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
                             urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
