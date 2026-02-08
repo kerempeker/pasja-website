@@ -18,7 +18,7 @@
 
     .header-row {
       display: grid;    
-      grid-template-columns: auto; /* Dinamik olarak JS tarafından ayarlanacak */
+      grid-template-columns: auto; 
       gap: 0px;
       font-size: 0.9rem;
       font-weight: bold;
@@ -33,7 +33,7 @@
 
     .urun {
       display: grid;
-      grid-template-columns: auto; /* Dinamik olarak JS tarafından ayarlanacak */
+      grid-template-columns: auto; 
       gap: 0px;
       align-items: center;
       height: 28px;
@@ -52,10 +52,21 @@
       padding-left: 6px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px; /* Daire ve yazı arasındaki boşluk */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: white; /* Tüm ürün adları artık beyaz */
+    }
+
+    /* Yeni eklenen Yuvarlak Renk Noktası Stili */
+    .renk-noktasi {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0; /* Dairenin ezilmesini engeller */
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .new span:first-child::after,
@@ -72,10 +83,8 @@
       top: 0px;
     }
 
-    /* Çizili stili kaldırıldı, artık stokta olmayanlar gösterilmeyecek */
     .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
     .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    /* .thc-orani kaldırıldı */
 
     #bottom-gallery {
       position: fixed;
@@ -102,10 +111,23 @@
     #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
     #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
-    #legend-container { position: fixed; right: 15px; bottom: 15px; background: rgba(0, 0, 0, 0.8); padding: 8px 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 10; max-width: calc(70% - 40px);   transform-origin: bottom right; /* Büyütme/Küçültme sağ alt köşeden başlasın */
-  transform: scale(1.5); /* %20 daha büyük yap (1.0 normal boyut) */}
+    #legend-container { 
+      position: fixed; 
+      right: 15px; 
+      bottom: 15px; 
+      background: rgba(0, 0, 0, 0.8); 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 8px; 
+      z-index: 10; 
+      max-width: calc(70% - 40px);   
+      transform-origin: bottom right; 
+      transform: scale(1.5); 
+    }
     .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.5); }
+    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.5); }
     body::-webkit-scrollbar { width: 10px; }
     body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
     body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
@@ -124,28 +146,27 @@
 
   <div id="bottom-gallery">
     <div class="swiper-container gallery-swiper">
-      <div class="swiper-wrapper">
-        
-      </div>
+      <div class="swiper-wrapper"></div>
     </div>
  </div>
 
   <div id="legend-container"></div>
   <img id="logo" src="Pasja Review_1.png" alt="Pasja Logo">
+  
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbzVO1YH0O5qgk9rSiFr0Lcc3uojOeHJiNWlLE04i5Ampc-e4zmLOocy5-QorgowvJnz/exec'; // Kendi URL'niz ile değiştirin
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbzVO1YH0O5qgk9rSiFr0Lcc3uojOeHJiNWlLE04i5Ampc-e4zmLOocy5-QorgowvJnz/exec'; 
     const MENU_URL = BASE_URL;
     const RENK_URL = BASE_URL + '?action=renkler';
     const SIRA_URL = BASE_URL + '?action=sirala';
 
-    const UPDATE_INTERVAL = 10000; // Güncelleme aralığı (milisaniye) - 10 saniye
+    const UPDATE_INTERVAL = 10000; 
 
     async function fetchData(url) {
         try {
              const res = await fetch(url, { cache: "no-store" });
-             if (!res.ok) throw new Error(`HTTP error! status: ${res.status} for ${url}`);
+             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
              return res.json();
         } catch (error) {
              console.error("Fetch hatası:", url, error);
@@ -154,20 +175,14 @@
     }
 
     function formatPrice(price) {
-        if (price === undefined || price === null || price === 0 || price === '') {
-            return '';
-        }
+        if (price === undefined || price === null || price === 0 || price === '') return '';
         return `€${price}`;
     }
 
     async function createMenu(isUpdate = false) {
       const menuContainer = document.getElementById('menu');
       const legendContainer = document.getElementById('legend-container');
-      if (!isUpdate) {
-          menuContainer.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#ccc;">Menü yükleniyor...</div>';
-          legendContainer.innerHTML = '';
-      }
-
+      
       try {
         const [menuData, renkler, siralamaData] = await Promise.all([
             fetchData(MENU_URL),
@@ -176,9 +191,7 @@
         ]);
 
         const kategoriler = {};
-        siralamaData.forEach(k => {
-            if (k && k.kategori) kategoriler[k.kategori] = [];
-        });
+        siralamaData.forEach(k => { if (k && k.kategori) kategoriler[k.kategori] = []; });
         menuData.forEach(item => {
             if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi !== false) {
                 kategoriler[item.ana_kategori].push(item);
@@ -199,6 +212,7 @@
             const col = document.createElement('div');
             col.className = 'column';
             const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
+            
             kats.forEach(({kategori}) => {
                 const baslik = document.createElement('div');
                 baslik.className = 'kategori-baslik';
@@ -212,20 +226,19 @@
 
                 const upperKategori = kategori.toUpperCase();
 
-                // Kategoriye göre başlıkları ve grid şablonunu ayarla
-                if (upperKategori.includes('WEED')) { // 'WEED' veya 'HASH' içeren her kategori
+                if (upperKategori.includes('WEED')) {
                     headerHtml += '<span>1 GR</span><span>2.5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
-                } else if (upperKategori.includes('JOINTS')) { // 'JOINTS' içeren her kategori
+                } else if (upperKategori.includes('JOINTS')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 70px 70px 70px 70px';
-                } else if (upperKategori.includes('EDIBLES')) { // 'EDIBLES' içeren her kategori
+                } else if (upperKategori.includes('EDIBLES')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
-                } else if (upperKategori.includes('HASH')) { // 'EDIBLES' içeren her kategori
+                } else if (upperKategori.includes('HASH')) {
                     headerHtml += '<span>0.5 GR</span><span>1 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 70px 70px 70px';
-                } else { // Diğer kategoriler için varsayılan
+                } else {
                     headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
                     gridTemplateColumns += ' 70px 70px';
                 }
@@ -244,25 +257,18 @@
                         div.className = cls;
                         div.style.gridTemplateColumns = gridTemplateColumns;
 
-                        let urunHtml = `<span style="color:${renkler[urun.marka] || 'white'}">${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
+                        // Ürün Adı ve Renk Noktası Düzenlemesi
+                        const urunRengi = renkler[urun.marka] || '#999999';
+                        let urunHtml = `<span><span class="renk-noktasi" style="background-color:${urunRengi}"></span>${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
 
-                        // Kategoriye göre fiyatları yerleştir
                         if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.thc_orani)}</span>`; 
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.thc_orani)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_4)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span><span>${formatPrice(urun.fiyat_4)}</span>`;
                         } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.thc_orani)}</span>`; 
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                        } else { // Diğer kategoriler için varsayılan
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span>`;
-                            urunHtml += `<span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
+                        } else {
+                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
                         }
 
                         div.innerHTML = urunHtml;
@@ -294,34 +300,22 @@
         }
 
       } catch (error) {
-        console.error(`Menü ${isUpdate ? 'güncellenirken' : 'oluşturulurken'} hata:`, error);
-        if (!isUpdate) {
-            menuContainer.innerHTML = `<div style="color: red; text-align: center; padding: 2rem; width: 100%;">Menü yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.<br><small>${error.message}</small></div>`;
-        }
+        console.error("Hata:", error);
       }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
       new Swiper('.gallery-swiper', {
-        effect: 'slide', grabCursor: false, centeredSlides: true, slidesPerView: 'auto',
+        effect: 'slide', centeredSlides: true, slidesPerView: 'auto',
         loop: true, spaceBetween: 10,
-        autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
-        allowTouchMove: false,
-        speed: 600
+        autoplay: { delay: 3500, disableOnInteraction: false },
+        allowTouchMove: false, speed: 600
       });
 
       createMenu().then(() => {
-          console.log("İlk menü başarıyla yüklendi.");
           setInterval(async () => {
-              console.log("Menü güncelleniyor (Tüm veriler çekiliyor)...");
-              try {
-                  await createMenu(true);
-              } catch (error) {
-                  console.error("Arkaplan güncelleme aralığı hatası (genel):", error);
-              }
+              try { await createMenu(true); } catch (e) {}
           }, UPDATE_INTERVAL);
-      }).catch(error => {
-          console.error("İlk menü yüklemesi başarısız oldu:", error);
       });
     });
   </script>
