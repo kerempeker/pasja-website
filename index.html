@@ -12,13 +12,18 @@
       background-color: transparent; color: white; min-height: 100vh; position: relative;
     }
     video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
-    #menu { padding: 2rem; box-sizing: border-box; border-radius: 12px; margin: 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
-    .column { flex: 1; min-width: 240px; box-sizing: border-box; }
+    
+    /* GÜNCELLEME 1: Gap azaltıldı ve menü kenar boşlukları ayarlandı */
+    #menu { padding: 1rem 2rem; box-sizing: border-box; border-radius: 12px; margin: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    
+    /* GÜNCELLEME 2: Min-width 240px'den 320px'e çıkarıldı. İsimlere yer açıldı. */
+    .column { flex: 1; min-width: 320px; box-sizing: border-box; }
+    
     .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: #f5f5f5; text-align: center; border-bottom: 2px solid #f5f5f5; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
 
     .header-row {
       display: grid;    
-      grid-template-columns: auto; 
+      grid-template-columns: 1fr; /* Auto yerine 1fr */
       gap: 0px;
       font-size: 0.9rem;
       font-weight: bold;
@@ -33,7 +38,7 @@
 
     .urun {
       display: grid;
-      grid-template-columns: auto; 
+      grid-template-columns: 1fr; /* Auto yerine 1fr */
       gap: 0px;
       align-items: center;
       height: 28px;
@@ -52,20 +57,20 @@
       padding-left: 6px;
       display: flex;
       align-items: center;
-      gap: 8px; /* Daire ve yazı arasındaki boşluk */
+      gap: 8px; 
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: white; /* Tüm ürün adları artık beyaz */
+      color: white; 
+      font-weight: 500; /* İsimler biraz daha kalın olsun */
     }
 
-    /* Yeni eklenen Yuvarlak Renk Noktası Stili */
     .renk-noktasi {
       width: 12px;
       height: 12px;
       border-radius: 50%;
       display: inline-block;
-      flex-shrink: 0; /* Dairenin ezilmesini engeller */
+      flex-shrink: 0; 
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
@@ -122,7 +127,7 @@
       flex-wrap: wrap; 
       gap: 8px; 
       z-index: 10; 
-      max-width: calc(70% - 40px);   
+      max-width: calc(70% - 40px);    
       transform-origin: bottom right; 
       transform: scale(1.5); 
     }
@@ -222,25 +227,28 @@
                 const header = document.createElement('div');
                 header.className = 'header-row';
                 let headerHtml = '<span>Product</span>';
-                let gridTemplateColumns = 'auto'; 
+                
+                // GÜNCELLEME 3: "auto" yerine "1fr" kullanıyoruz ki isim alanı esnek olsun
+                let gridTemplateColumns = '1fr'; 
 
                 const upperKategori = kategori.toUpperCase();
 
+                // GÜNCELLEME 4: Fiyat sütunları 70px'den 60px'e düşürüldü. Yer kazanıldı.
                 if (upperKategori.includes('WEED')) {
                     headerHtml += '<span>1 GR</span><span>2.5 GR</span><span>5 GR</span>';
-                    gridTemplateColumns += ' 70px 70px 70px';
+                    gridTemplateColumns += ' 60px 60px 60px';
                 } else if (upperKategori.includes('JOINTS')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
-                    gridTemplateColumns += ' 70px 70px 70px 70px';
+                    gridTemplateColumns += ' 60px 60px 60px 60px';
                 } else if (upperKategori.includes('EDIBLES')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>';
-                    gridTemplateColumns += ' 70px 70px 70px';
+                    gridTemplateColumns += ' 60px 60px 60px';
                 } else if (upperKategori.includes('HASH')) {
                     headerHtml += '<span>0.5 GR</span><span>1 GR</span><span>5 GR</span>';
-                    gridTemplateColumns += ' 70px 70px 70px';
+                    gridTemplateColumns += ' 60px 60px 60px';
                 } else {
                     headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
-                    gridTemplateColumns += ' 70px 70px';
+                    gridTemplateColumns += ' 60px 60px';
                 }
                 
                 header.innerHTML = headerHtml;
