@@ -237,9 +237,12 @@
                 if (upperKategori.includes('WEED')) {
                     headerHtml += '<span>1 GR</span><span>2.5 GR</span><span>5 GR</span>';
                     gridTemplateColumns += ' 60px 60px 60px';
-                } else if (upperKategori.includes('JOINTS')) {
+                } else if (upperKategori.includes('WEED JOINTS')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
                     gridTemplateColumns += ' 60px 60px 60px 60px';
+                } else if (upperKategori.includes('VAPES')) {
+                    headerHtml += '<span>1 ST</span>';
+                    gridTemplateColumns += '60px';                
                 } else if (upperKategori.includes('EDIBLES')) {
                     headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>';
                     gridTemplateColumns += ' 60px 60px 60px';
@@ -284,7 +287,7 @@
                     });
                 } else {
                     const y = document.createElement('div');
-                    y.textContent = 'Yakında...';
+                    y.textContent = 'Soon...';
                     y.style.textAlign = 'center';
                     y.style.padding = '1rem 0';
                     y.style.fontSize = '0.9rem';
