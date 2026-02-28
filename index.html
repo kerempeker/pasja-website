@@ -64,7 +64,7 @@
     header {
       position: relative; z-index: 10;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 52px 16px;
+      padding: 14px 40px 12px;
       border-bottom: 1px solid var(--border-glow);
       box-shadow: 0 1px 30px rgba(0,245,255,0.08);
     }
@@ -89,12 +89,12 @@
     #app {
       position: relative; z-index: 10;
       display: grid;
-      grid-template-columns: 250px 1fr 1fr 1fr 1fr;
-      height: calc(1080px - 73px - 36px);
+      grid-template-columns: 200px 1fr 1fr 1fr 1fr;
+      height: calc(1080px - 67px - 32px);
     }
 
     aside {
-      padding: 18px 14px;
+      padding: 12px 10px;
       border-right: 1px solid var(--border-glow);
       display: flex; flex-direction: column; gap: 6px;
       overflow: hidden;
@@ -105,14 +105,14 @@
       margin-bottom: 4px; padding-bottom: 8px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .brand-item { display: flex; align-items: center; gap: 10px; font-size: 1.15rem; font-weight: 600; padding: 5px 0; }
-    .brand-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
+    .brand-item { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; padding: 3px 0; }
+    .brand-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .ticker-wrap { margin-top: auto; border-top: 1px solid var(--border-glow); padding-top: 12px; }
     .ticker-label {
       font-family: 'Orbitron', monospace; font-size: 0.78rem; letter-spacing: 0.25em;
       color: var(--neon-green); margin-bottom: 6px; text-shadow: 0 0 6px var(--neon-green);
     }
-    .ticker { font-size: 1rem; color: var(--text-dim); line-height: 1.7; }
+    .ticker { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
     .ticker span { color: var(--neon-amber); font-weight: 600; }
 
     .menu-col {
@@ -121,12 +121,12 @@
     }
     .menu-col:last-child { border-right: none; }
 
-    .cat-block { flex-shrink: 0; padding: 13px 16px 6px; }
-    .cat-block + .cat-block { border-top: 1px solid rgba(255,255,255,0.07); }
+    .cat-block { flex-shrink: 0; padding: 8px 12px 4px; }
+    .cat-block + .cat-block { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 0; }
 
     .cat-title {
       font-family: 'Orbitron', monospace;
-      font-size: 1.05rem; font-weight: 700; letter-spacing: 0.14em;
+      font-size: 0.88rem; font-weight: 700; letter-spacing: 0.1em;
       margin-bottom: 7px;
       display: flex; align-items: center; gap: 10px;
     }
@@ -142,7 +142,7 @@
 
     .tbl-head {
       display: grid;
-      font-family: 'Orbitron', monospace; font-size: 0.75rem; letter-spacing: 0.08em;
+      font-family: 'Orbitron', monospace; font-size: 0.62rem; letter-spacing: 0.06em;
       color: var(--text-dim);
       padding: 0 4px 4px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -153,7 +153,7 @@
 
     .prod-row {
       display: grid; align-items: center;
-      min-height: 30px; padding: 2px 4px; border-radius: 3px;
+      min-height: 24px; padding: 1px 4px; border-radius: 3px;
       transition: background 0.15s;
     }
     .prod-row:hover { background: rgba(0,245,255,0.05); }
@@ -161,23 +161,23 @@
 
     .prod-name {
       display: flex; align-items: center; gap: 6px;
-      font-size: 1.08rem; font-weight: 600;
+      font-size: 0.9rem; font-weight: 600;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       transition: color 0.15s;
     }
-    .prod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .prod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .prod-price {
-      font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+      font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700;
       text-align: right; color: var(--neon-amber);
       text-shadow: 0 0 5px rgba(255,183,0,0.5);
     }
-    .prod-price.empty { color: rgba(255,255,255,0.1); font-size: 0.75rem; }
+    .prod-price.empty { color: rgba(255,255,255,0.1); font-size: 0.65rem; }
 
     .badge-new {
       display: inline-flex; align-items: center;
-      font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 900;
-      padding: 2px 5px; border-radius: 2px;
-      background: var(--neon-green); color: #000; margin-left: 3px; flex-shrink: 0;
+      font-family: 'Orbitron', monospace; font-size: 0.5rem; font-weight: 900;
+      padding: 1px 4px; border-radius: 2px;
+      background: var(--neon-green); color: #000; margin-left: 2px; flex-shrink: 0;
       animation: newPulse 2.5s ease-in-out infinite;
     }
     @keyframes newPulse {
@@ -186,9 +186,9 @@
     }
     .badge-sale {
       display: inline-flex; align-items: center;
-      font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 900;
-      padding: 2px 5px; border-radius: 2px;
-      background: var(--neon-pink); color: #fff; margin-left: 3px; flex-shrink: 0;
+      font-family: 'Orbitron', monospace; font-size: 0.5rem; font-weight: 900;
+      padding: 1px 4px; border-radius: 2px;
+      background: var(--neon-pink); color: #fff; margin-left: 2px; flex-shrink: 0;
       animation: salePulse 2.5s ease-in-out infinite;
     }
     @keyframes salePulse {
@@ -209,7 +209,7 @@
     @keyframes loadPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
 
     footer {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 32px;
       background: rgba(5,5,8,0.97);
       border-top: 1px solid var(--border-glow);
       display: flex; align-items: center;
@@ -316,32 +316,32 @@
     // JOINT önce kontrol edilmeli — "WEED JOINTS" WEED dalına girmesin
     if (u.includes('JOINT')) return {
       headers : ['Product','1ST','5ST','10ST','15ST'],
-      grid    : '1fr 50px 50px 58px 58px',
+      grid    : '1fr 44px 44px 52px 52px',
       keys    : ['fiyat_1gr','thc_orani','fiyat_5gr','fiyat_4']
     };
     if (u.includes('WEED')) return {
       headers : ['Product','1GR','2.5GR','5GR'],
-      grid    : '1fr 64px 64px 64px',
+      grid    : '1fr 56px 56px 56px',
       keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
     };
     if (u.includes('EDIBLE')) return {
       headers : ['Product','1ST','5ST','10ST'],
-      grid    : '1fr 64px 64px 64px',
+      grid    : '1fr 56px 56px 56px',
       keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
     };
     if (u.includes('HASH')) return {
       headers : ['Product','0.5GR','1GR','5GR'],
-      grid    : '1fr 64px 64px 64px',
+      grid    : '1fr 56px 56px 56px',
       keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
     };
     if (u.includes('VAPE')) return {
       headers : ['Product','Flyat 1','Flyat 2'],
-      grid    : '1fr 85px 85px',
+      grid    : '1fr 72px 72px',
       keys    : ['fiyat_1gr','fiyat_5gr']
     };
     return {
       headers : ['Product','Fiyat 1','Fiyat 2'],
-      grid    : '1fr 85px 85px',
+      grid    : '1fr 72px 72px',
       keys    : ['fiyat_1gr','fiyat_5gr']
     };
   }
