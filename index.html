@@ -2,330 +2,476 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Dijital Menü</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasja — Digital Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: black; }
+    :root {
+      --neon-green:  #39ff14;
+      --neon-cyan:   #00f5ff;
+      --neon-pink:   #ff2d78;
+      --neon-amber:  #ffb700;
+      --neon-purple: #bf5fff;
+      --bg-dark:     #050508;
+      --border-glow: rgba(0,245,255,0.25);
+      --text-main:   #e8eaf6;
+      --text-dim:    #7986a3;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { width: 100%; height: 100%; overflow: hidden; background: #000; }
+
     body {
-      margin: 0;
-      padding: 0 0 260px 0;
-      background-color: transparent; color: white; min-height: 100vh; position: relative;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: var(--bg-dark);
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--text-main);
+      transform-origin: top left;
     }
-    video { position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0.4; object-fit: cover; }
-    
-    /* GÜNCELLEME 1: Gap azaltıldı ve menü kenar boşlukları ayarlandı */
-    #menu { padding: 1rem 2rem; box-sizing: border-box; border-radius: 12px; margin: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
-    
-    /* GÜNCELLEME 2: Min-width 240px'den 320px'e çıkarıldı. İsimlere yer açıldı. */
-    .column { flex: 1; min-width: 320px; box-sizing: border-box; }
-    
-    .kategori-baslik { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.8rem; color: #f5f5f5; text-align: center; border-bottom: 2px solid #f5f5f5; padding-bottom: 0.4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); }
 
-    .header-row {
-      display: grid;    
-      grid-template-columns: 1fr; /* Auto yerine 1fr */
-      gap: 0px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      margin-bottom: 0.6rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-      padding-bottom: 0.3rem;
-      align-items: center;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none; z-index: 999;
     }
-    .header-row span { text-align: center; }
-    .header-row span:first-child { text-align: left; padding-left: 6px; }
 
-    .urun {
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridShift 20s linear infinite;
+    }
+    @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
+
+    .glow-tl, .glow-br {
+      position: fixed; width: 600px; height: 600px;
+      border-radius: 50%; pointer-events: none; z-index: 0;
+      filter: blur(120px); opacity: 0.12;
+    }
+    .glow-tl { top: -200px; left: -200px; background: var(--neon-cyan); }
+    .glow-br { bottom: -200px; right: -200px; background: var(--neon-pink);
+      animation: pulseBR 5s ease-in-out infinite alternate; }
+    @keyframes pulseBR { from { opacity: 0.08; } to { opacity: 0.18; } }
+
+    header {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px 14px;
+      border-bottom: 1px solid var(--border-glow);
+      box-shadow: 0 1px 30px rgba(0,245,255,0.08);
+    }
+    .logo-text {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.2rem; font-weight: 900; letter-spacing: 0.25em;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0,245,255,0.5);
+      animation: flicker 8s infinite;
+    }
+    @keyframes flicker {
+      0%,95%,100% { opacity: 1; }
+      96% { opacity: 0.7; } 97% { opacity: 1; } 98% { opacity: 0.6; }
+    }
+    .header-tagline { font-size: 0.85rem; letter-spacing: 0.4em; color: var(--text-dim); }
+    .header-time {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--neon-amber); text-shadow: 0 0 8px var(--neon-amber);
+    }
+
+    #app {
+      position: relative; z-index: 10;
       display: grid;
-      grid-template-columns: 1fr; /* Auto yerine 1fr */
-      gap: 0px;
-      align-items: center;
-      height: 28px;
-      margin-bottom: 0.1rem;
-      font-size: 1.05rem;
-      line-height: 1;
+      grid-template-columns: 250px 1fr 1fr 1fr 1fr;
+      height: calc(1080px - 73px - 36px);
+    }
+
+    aside {
+      padding: 18px 14px;
+      border-right: 1px solid var(--border-glow);
+      display: flex; flex-direction: column; gap: 6px;
       overflow: hidden;
     }
+    .aside-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.6rem; letter-spacing: 0.3em; color: var(--text-dim);
+      margin-bottom: 4px; padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .brand-item { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; padding: 3px 0; }
+    .brand-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .ticker-wrap { margin-top: auto; border-top: 1px solid var(--border-glow); padding-top: 12px; }
+    .ticker-label {
+      font-family: 'Orbitron', monospace; font-size: 0.56rem; letter-spacing: 0.3em;
+      color: var(--neon-green); margin-bottom: 6px; text-shadow: 0 0 6px var(--neon-green);
+    }
+    .ticker { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+    .ticker span { color: var(--neon-amber); font-weight: 600; }
 
-    .urun span {
-      text-align: center;
+    .menu-col {
+      border-right: 1px solid var(--border-glow);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .menu-col:last-child { border-right: none; }
+
+    .cat-block { flex-shrink: 0; padding: 11px 14px 5px; }
+    .cat-block + .cat-block { border-top: 1px solid rgba(255,255,255,0.07); }
+
+    .cat-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+      margin-bottom: 7px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .cat-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, currentColor, transparent); opacity: 0.35;
+    }
+    .cc0 { color: var(--neon-green);  text-shadow: 0 0 10px rgba(57,255,20,0.6); }
+    .cc1 { color: var(--neon-cyan);   text-shadow: 0 0 10px rgba(0,245,255,0.6); }
+    .cc2 { color: var(--neon-pink);   text-shadow: 0 0 10px rgba(255,45,120,0.6); }
+    .cc3 { color: var(--neon-amber);  text-shadow: 0 0 10px rgba(255,183,0,0.6); }
+    .cc4 { color: var(--neon-purple); text-shadow: 0 0 10px rgba(191,95,255,0.6); }
+
+    .tbl-head {
+      display: grid;
+      font-family: 'Orbitron', monospace; font-size: 0.52rem; letter-spacing: 0.1em;
+      color: var(--text-dim);
+      padding: 0 4px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 1px;
+    }
+    .tbl-head span { text-align: right; }
+    .tbl-head span:first-child { text-align: left; }
+
+    .prod-row {
+      display: grid; align-items: center;
+      min-height: 23px; padding: 1px 4px; border-radius: 3px;
+      transition: background 0.15s;
+    }
+    .prod-row:hover { background: rgba(0,245,255,0.05); }
+    .prod-row:hover .prod-name { color: var(--neon-cyan); }
+
+    .prod-name {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.83rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: color 0.15s;
+    }
+    .prod-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .prod-price {
+      font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700;
+      text-align: right; color: var(--neon-amber);
+      text-shadow: 0 0 5px rgba(255,183,0,0.5);
+    }
+    .prod-price.empty { color: rgba(255,255,255,0.1); font-size: 0.55rem; }
+
+    .badge-new {
+      display: inline-flex; align-items: center;
+      font-family: 'Orbitron', monospace; font-size: 0.42rem; font-weight: 900;
+      padding: 1px 4px; border-radius: 2px;
+      background: var(--neon-green); color: #000; margin-left: 2px; flex-shrink: 0;
+      animation: newPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes newPulse {
+      0%,100% { box-shadow: 0 0 4px var(--neon-green); }
+      50% { box-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(57,255,20,0.4); }
+    }
+    .badge-sale {
+      display: inline-flex; align-items: center;
+      font-family: 'Orbitron', monospace; font-size: 0.42rem; font-weight: 900;
+      padding: 1px 4px; border-radius: 2px;
+      background: var(--neon-pink); color: #fff; margin-left: 2px; flex-shrink: 0;
+      animation: salePulse 2.5s ease-in-out infinite;
+    }
+    @keyframes salePulse {
+      0%,100% { box-shadow: 0 0 4px var(--neon-pink); }
+      50% { box-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255,45,120,0.4); }
     }
 
-    .urun span:first-child {
-      text-align: left;
-      padding-left: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px; 
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: white; 
-      font-weight: 500; /* İsimler biraz daha kalın olsun */
+    .soon-text {
+      font-family: 'Orbitron', monospace; font-size: 0.6rem; letter-spacing: 0.3em;
+      color: var(--text-dim); text-align: center; padding: 8px 0;
     }
+    .loading-msg {
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; color: var(--text-dim);
+      font-family: 'Orbitron', monospace; font-size: 0.65rem; letter-spacing: 0.2em;
+      animation: loadPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes loadPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
 
-    .renk-noktasi {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      display: inline-block;
-      flex-shrink: 0; 
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+      background: rgba(5,5,8,0.97);
+      border-top: 1px solid var(--border-glow);
+      display: flex; align-items: center;
+      padding: 0 48px; z-index: 100; gap: 20px;
+      box-shadow: 0 -1px 20px rgba(0,245,255,0.08);
     }
-
-    .new span:first-child::after,
-    .korting span:first-child::after {
-      content: "";
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-      width: 16px;
-      height: 14px;
-      margin-left: 4px;
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
-      position: relative;
-      top: 0px;
+    .footer-label {
+      font-family: 'Orbitron', monospace; font-size: 0.52rem; letter-spacing: 0.25em;
+      color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan); flex-shrink: 0;
     }
-
-    .new span:first-child::after { content: ""; background-image: url('New-Icon.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-    .korting span:first-child::after { content: ""; background-image: url('korting.png'); width: 55px; height: 44px; margin-left: 6px; vertical-align: middle; }
-
-    #bottom-gallery {
-      position: fixed;
-      bottom: 200px;
-      left: 27%;
-      width: 75%;
-      height: 160px;
-      z-index: 5;
-      overflow: hidden;
-      padding: 5px 0;
-      box-sizing: border-box;
+    .brand-pills { display: flex; gap: 12px; }
+    .brand-pill { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 600; }
+    .brand-pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .footer-right {
+      margin-left: auto; font-family: 'Orbitron', monospace;
+      font-size: 0.52rem; letter-spacing: 0.2em; color: var(--text-dim);
     }
-    #bottom-gallery .swiper-container { width: 100%; height: 100%; }
-    #bottom-gallery .swiper-slide {
-      width: 237px;
-      height: 156px;
-      display: flex; justify-content: center; align-items: center;
-      transition: all 0.6s ease-in-out;
-      transform-style: preserve-3d;
-      opacity: 0.4; filter: blur(4px); transform: scale(0.85);
-    }
-    #bottom-gallery .swiper-slide-active { opacity: 1; filter: blur(0px); transform: scale(1); }
-    #bottom-gallery .swiper-slide-prev, #bottom-gallery .swiper-slide-next { opacity: 0.9; filter: blur(0px); transform: scale(0.95); }
-    #bottom-gallery .swiper-slide img { display: block; width: 95%; height: 95%; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-    #logo { position: fixed; bottom: 15px; left: 15px; width: 120px; opacity: 0.9; z-index: 10; }
-    #legend-container { 
-      position: fixed; 
-      right: 15px; 
-      bottom: 15px; 
-      background: rgba(0, 0, 0, 0.8); 
-      padding: 8px 12px; 
-      border-radius: 8px; 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 8px; 
-      z-index: 10; 
-      max-width: calc(70% - 40px);    
-      transform-origin: bottom right; 
-      transform: scale(1.5); 
-    }
-    .legend-item { display: flex; align-items: center; font-size: 0.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-    .legend-color { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.5); }
-    body::-webkit-scrollbar { width: 10px; }
-    body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
-    body::-webkit-scrollbar-thumb { background-color: rgba(255, 165, 0, 0.7); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-    body::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 165, 0, 0.9); }
   </style>
 </head>
 <body>
-  <video autoplay muted loop>
-    <source src="video.mp4" type="video/mp4">
-    Tarayıcınız video etiketini desteklemiyor.
-  </video>
 
-  <div id="menu">
-    <div style="width:100%; text-align: center; padding: 3rem 0; color: #ccc;">Menü yükleniyor...</div>
+<div class="grid-bg"></div>
+<div class="glow-tl"></div>
+<div class="glow-br"></div>
+
+<header>
+  <div>
+    <div class="logo-text">PASJA</div>
+    <div class="header-tagline">Tilburg · Premium Cannabis Menu</div>
   </div>
-
-  <div id="bottom-gallery">
-    <div class="swiper-container gallery-swiper">
-      <div class="swiper-wrapper"></div>
+  <div style="text-align:center;">
+    <div style="font-size:0.62rem;letter-spacing:0.3em;color:var(--text-dim);margin-bottom:4px;">QUALITY SELECTION</div>
+    <div style="display:flex;gap:16px;align-items:center;">
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;color:var(--neon-green);text-shadow:0 0 8px var(--neon-green);">LIVE</div>
+        <div style="font-size:0.52rem;letter-spacing:0.2em;color:var(--text-dim);">MENU</div>
+      </div>
+      <div style="width:1px;height:28px;background:var(--border-glow);"></div>
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;color:var(--neon-amber);text-shadow:0 0 8px var(--neon-amber);">18+</div>
+        <div style="font-size:0.52rem;letter-spacing:0.2em;color:var(--text-dim);">ONLY</div>
+      </div>
     </div>
- </div>
+  </div>
+  <div class="header-time" id="clock">--:--</div>
+</header>
 
-  <div id="legend-container"></div>
-  <img id="logo" src="Pasja Review_1111deneme.png" alt="Pasja Logo">
-  
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<div id="app">
+  <aside>
+    <div class="aside-title">Brands</div>
+    <div id="sidebar-brands"><div class="loading-msg" style="height:auto;padding:8px 0;font-size:0.58rem;">...</div></div>
+    <div class="ticker-wrap">
+      <div class="ticker-label">// INFO</div>
+      <div class="ticker">
+        Max <span>5 GR</span> per bezoek<br>
+        Alleen voor <span>18+</span><br>
+        Geniet verantwoord
+      </div>
+    </div>
+  </aside>
+  <div class="menu-col" id="col-1"><div class="loading-msg">Yükleniyor...</div></div>
+  <div class="menu-col" id="col-2"></div>
+  <div class="menu-col" id="col-3"></div>
+  <div class="menu-col" id="col-4"></div>
+</div>
 
-  <script>
-    const BASE_URL = 'https://script.google.com/macros/s/AKfycbzVO1YH0O5qgk9rSiFr0Lcc3uojOeHJiNWlLE04i5Ampc-e4zmLOocy5-QorgowvJnz/exec'; 
-    const MENU_URL = BASE_URL;
-    const RENK_URL = BASE_URL + '?action=renkler';
-    const SIRA_URL = BASE_URL + '?action=sirala';
+<footer>
+  <div class="footer-label">// BRANDS</div>
+  <div class="brand-pills" id="footer-brands"></div>
+  <div class="footer-right">PASJA REVIEW · TILBURG · 18+</div>
+</footer>
 
-    const UPDATE_INTERVAL = 10000; 
+<script>
+  /* ══════════════════════════════════════════
+   *  CONFIG
+   * ══════════════════════════════════════════ */
+  const BASE_URL  = 'https://script.google.com/macros/s/AKfycbzVO1YH0O5qgk9rSiFr0Lcc3uojOeHJiNWlLE04i5Ampc-e4zmLOocy5-QorgowvJnz/exec';
+  const MENU_URL  = BASE_URL;
+  const RENK_URL  = BASE_URL + '?action=renkler';
+  const SIRA_URL  = BASE_URL + '?action=sirala';
+  const UPDATE_MS = 10000; // 10 sn
 
-    async function fetchData(url) {
-        try {
-             const res = await fetch(url, { cache: "no-store" });
-             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-             return res.json();
-        } catch (error) {
-             console.error("Fetch hatası:", url, error);
-             throw error;
-        }
+  /* Kategori renk sınıfları — sırayla dönüyor */
+  const CAT_COLORS = ['cc0','cc1','cc2','cc3','cc4'];
+  let colorIdx = 0;
+
+  /* ── Fiyat formatla ── */
+  function fmt(v) {
+    if (v === undefined || v === null || v === 0 || v === '') return null;
+    return `€${v}`;
+  }
+
+  /* ── Fetch ── */
+  async function fetchJSON(url) {
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  }
+
+  /* ── Kategori tipine göre sütun config ── */
+  function getConfig(kat) {
+    const u = kat.toUpperCase();
+    // JOINT önce kontrol edilmeli — "WEED JOINTS" WEED dalına girmesin
+    if (u.includes('JOINT')) return {
+      headers : ['Product','1ST','5ST','10ST','15ST'],
+      grid    : '1fr 42px 42px 48px 48px',
+      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr','fiyat_4']
+    };
+    if (u.includes('WEED')) return {
+      headers : ['Product','1GR','2.5GR','5GR'],
+      grid    : '1fr 52px 52px 52px',
+      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
+    };
+    if (u.includes('EDIBLE')) return {
+      headers : ['Product','1ST','5ST','10ST'],
+      grid    : '1fr 52px 52px 52px',
+      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
+    };
+    if (u.includes('HASH')) return {
+      headers : ['Product','0.5GR','1GR','5GR'],
+      grid    : '1fr 52px 52px 52px',
+      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
+    };
+    if (u.includes('VAPE')) return {
+      headers : ['Product','Flyat 1','Flyat 2'],
+      grid    : '1fr 70px 70px',
+      keys    : ['fiyat_1gr','fiyat_5gr']
+    };
+    return {
+      headers : ['Product','Fiyat 1','Fiyat 2'],
+      grid    : '1fr 70px 70px',
+      keys    : ['fiyat_1gr','fiyat_5gr']
+    };
+  }
+
+  /* ── Tek bir kategori bloğu oluştur ── */
+  function buildBlock(kategori, urunler, renkler) {
+    const cfg   = getConfig(kategori);
+    const color = CAT_COLORS[colorIdx++ % CAT_COLORS.length];
+
+    const headerCells = cfg.headers.map((h,i) =>
+      `<span${i > 0 ? ' style="text-align:right"' : ''}>${h}</span>`
+    ).join('');
+
+    let rows = '';
+    if (!urunler || urunler.length === 0) {
+      rows = `<div class="soon-text">// SOON //</div>`;
+    } else {
+      rows = urunler.map(u => {
+        const renk   = renkler[u.marka] || '#888';
+        const badges = [
+          u.yeni_mi === true ? '<span class="badge-new">NEW</span>' : '',
+          (u.korting === true || u.korting === 'true' || u.korting === 1)
+            ? '<span class="badge-sale">SALE</span>' : ''
+        ].join('');
+
+        const priceCells = cfg.keys.map(k => {
+          const v = fmt(u[k]);
+          return v
+            ? `<div class="prod-price">${v}</div>`
+            : `<div class="prod-price empty">—</div>`;
+        }).join('');
+
+        return `<div class="prod-row" style="grid-template-columns:${cfg.grid}">
+          <div class="prod-name">
+            <div class="prod-dot" style="background:${renk};box-shadow:0 0 4px ${renk}70;"></div>
+            ${u.urun_adi || '?'}${badges}
+          </div>
+          ${priceCells}
+        </div>`;
+      }).join('');
     }
 
-    function formatPrice(price) {
-        if (price === undefined || price === null || price === 0 || price === '') return '';
-        return `€${price}`;
-    }
+    return `<div class="cat-block">
+      <div class="cat-title ${color}">${kategori}</div>
+      <div class="tbl-head" style="grid-template-columns:${cfg.grid}">${headerCells}</div>
+      ${rows}
+    </div>`;
+  }
 
-    async function createMenu(isUpdate = false) {
-      const menuContainer = document.getElementById('menu');
-      const legendContainer = document.getElementById('legend-container');
-      
-      try {
-        const [menuData, renkler, siralamaData] = await Promise.all([
-            fetchData(MENU_URL),
-            fetchData(RENK_URL),
-            fetchData(SIRA_URL)
-        ]);
+  /* ── Ana render fonksiyonu ── */
+  async function renderMenu() {
+    colorIdx = 0;
 
-        const kategoriler = {};
-        siralamaData.forEach(k => { if (k && k.kategori) kategoriler[k.kategori] = []; });
-        menuData.forEach(item => {
-            if (item && item.ana_kategori && kategoriler.hasOwnProperty(item.ana_kategori) && item.stok_var_mi !== false) {
-                kategoriler[item.ana_kategori].push(item);
-            }
-        });
+    const [menuData, renkler, siralamaData] = await Promise.all([
+      fetchJSON(MENU_URL),
+      fetchJSON(RENK_URL),
+      fetchJSON(SIRA_URL)
+    ]);
 
-        const sutunGruplari = {};
-        siralamaData.forEach(k => {
-            if (k && k.kategori && k.sutun_no && k.sira_no) {
-                const s = k.sutun_no;
-                if (!sutunGruplari[s]) sutunGruplari[s] = [];
-                sutunGruplari[s].push({ kategori: k.kategori, sira_no: k.sira_no });
-            }
-        });
-
-        menuContainer.innerHTML = '';
-        Object.keys(sutunGruplari).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(s => {
-            const col = document.createElement('div');
-            col.className = 'column';
-            const kats = sutunGruplari[s].sort((a,b)=>a.sira_no - b.sira_no);
-            
-            kats.forEach(({kategori}) => {
-                const baslik = document.createElement('div');
-                baslik.className = 'kategori-baslik';
-                baslik.textContent = kategori;
-                col.appendChild(baslik);
-
-                const header = document.createElement('div');
-                header.className = 'header-row';
-                let headerHtml = '<span>Product</span>';
-                
-                // GÜNCELLEME 3: "auto" yerine "1fr" kullanıyoruz ki isim alanı esnek olsun
-                let gridTemplateColumns = '1fr'; 
-
-                const upperKategori = kategori.toUpperCase();
-
-                // GÜNCELLEME 4: Fiyat sütunları 70px'den 60px'e düşürüldü. Yer kazanıldı.
-                if (upperKategori.includes('WEED')) {
-                    headerHtml += '<span>1 GR</span><span>2.5 GR</span><span>5 GR</span>';
-                    gridTemplateColumns += ' 60px 60px 60px';
-                } else if (upperKategori.includes('JOINTS')) {
-                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span><span>15 ST</span>';
-                    gridTemplateColumns += ' 60px 60px 60px 60px';
-                } else if (upperKategori.includes('EDIBLES')) {
-                    headerHtml += '<span>1 ST</span><span>5 ST</span><span>10 ST</span>';
-                    gridTemplateColumns += ' 60px 60px 60px';
-                } else if (upperKategori.includes('HASH')) {
-                    headerHtml += '<span>0.5 GR</span><span>1 GR</span><span>5 GR</span>';
-                    gridTemplateColumns += ' 60px 60px 60px';
-                } else {
-                    headerHtml += '<span>Fiyat 1</span><span>Fiyat 2</span>'; 
-                    gridTemplateColumns += ' 60px 60px';
-                }
-                
-                header.innerHTML = headerHtml;
-                header.style.gridTemplateColumns = gridTemplateColumns;
-                col.appendChild(header);
-
-                const liste = kategoriler[kategori];
-                if (liste && liste.length > 0) {
-                    liste.forEach(urun => {
-                        const div = document.createElement('div');
-                        let cls = 'urun';
-                        if (urun.yeni_mi === true) cls += ' new';
-                        if (urun.korting === true || urun.korting === 'true' || urun.korting === 1) cls += ' korting';
-                        div.className = cls;
-                        div.style.gridTemplateColumns = gridTemplateColumns;
-
-                        // Ürün Adı ve Renk Noktası Düzenlemesi
-                        const urunRengi = renkler[urun.marka] || '#999999';
-                        let urunHtml = `<span><span class="renk-noktasi" style="background-color:${urunRengi}"></span>${urun.urun_adi || 'İsimsiz Ürün'}</span>`;
-
-                        if (upperKategori.includes('WEED') || upperKategori.includes('HASH')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                        } else if (upperKategori.includes('JOINTS')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span><span>${formatPrice(urun.fiyat_4)}</span>`;
-                        } else if (upperKategori.includes('EDIBLES')) {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.thc_orani)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                        } else {
-                            urunHtml += `<span>${formatPrice(urun.fiyat_1gr)}</span><span>${formatPrice(urun.fiyat_5gr)}</span>`;
-                        }
-
-                        div.innerHTML = urunHtml;
-                        col.appendChild(div);
-                    });
-                } else {
-                    const y = document.createElement('div');
-                    y.textContent = 'Soon...';
-                    y.style.textAlign = 'center';
-                    y.style.padding = '1rem 0';
-                    y.style.fontSize = '0.9rem';
-                    y.style.color = '#aaa';
-                    col.appendChild(y);
-                }
-            });
-            menuContainer.appendChild(col);
-        });
-
-        if (!isUpdate || legendContainer.innerHTML.trim() === '') {
-            legendContainer.innerHTML = '';
-            const tumMarkalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
-            tumMarkalar.forEach(marka => {
-                const item = document.createElement('div');
-                item.className = 'legend-item';
-                const renk = renkler[marka] || '#999999';
-                item.innerHTML = `<span class="legend-color" style="background-color:${renk};"></span>${marka}`;
-                legendContainer.appendChild(item);
-            });
-        }
-
-      } catch (error) {
-        console.error("Hata:", error);
+    /* Kategorilere ürün doldur */
+    const kategoriler = {};
+    siralamaData.forEach(k => { if (k?.kategori) kategoriler[k.kategori] = []; });
+    menuData.forEach(item => {
+      if (item?.ana_kategori && Object.prototype.hasOwnProperty.call(kategoriler, item.ana_kategori) && item.stok_var_mi !== false) {
+        kategoriler[item.ana_kategori].push(item);
       }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      new Swiper('.gallery-swiper', {
-        effect: 'slide', centeredSlides: true, slidesPerView: 'auto',
-        loop: true, spaceBetween: 10,
-        autoplay: { delay: 3500, disableOnInteraction: false },
-        allowTouchMove: false, speed: 600
-      });
-
-      createMenu().then(() => {
-          setInterval(async () => {
-              try { await createMenu(true); } catch (e) {}
-          }, UPDATE_INTERVAL);
-      });
     });
-  </script>
+
+    /* Sütun grupları */
+    const cols = {};
+    siralamaData.forEach(k => {
+      if (k?.sutun_no && k.sira_no && k.kategori) {
+        if (!cols[k.sutun_no]) cols[k.sutun_no] = [];
+        cols[k.sutun_no].push({ kategori: k.kategori, sira: k.sira_no });
+      }
+    });
+
+    const sorted = Object.keys(cols).sort((a,b) => +a - +b);
+
+    sorted.forEach((sutunNo, idx) => {
+      const el = document.getElementById(`col-${idx + 1}`);
+      if (!el) return;
+      const kats = cols[sutunNo].sort((a,b) => a.sira - b.sira);
+      el.innerHTML = kats.map(({ kategori }) =>
+        buildBlock(kategori, kategoriler[kategori], renkler)
+      ).join('');
+    });
+
+    /* Sidebar & footer markalar */
+    const markalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
+
+    document.getElementById('sidebar-brands').innerHTML = markalar.map(m => {
+      const r = renkler[m] || '#888';
+      return `<div class="brand-item">
+        <div class="brand-dot" style="background:${r};box-shadow:0 0 5px ${r}80;"></div>
+        ${m}
+      </div>`;
+    }).join('');
+
+    document.getElementById('footer-brands').innerHTML = markalar.map(m => {
+      const r = renkler[m] || '#888';
+      return `<div class="brand-pill">
+        <div class="brand-pill-dot" style="background:${r};box-shadow:0 0 5px ${r};"></div>
+        ${m}
+      </div>`;
+    }).join('');
+  }
+
+  /* ── Saat ── */
+  function tick() {
+    const n = new Date();
+    document.getElementById('clock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+
+  /* ── Scale ── */
+  function scaleMenu() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    document.body.style.transform = `scale(${s})`;
+    document.body.style.marginLeft = (window.innerWidth  - 1920 * s) / 2 + 'px';
+    document.body.style.marginTop  = (window.innerHeight - 1080 * s) / 2 + 'px';
+  }
+
+  /* ── Bootstrap ── */
+  scaleMenu();
+  window.addEventListener('resize', scaleMenu);
+  tick();
+  setInterval(tick, 1000);
+  renderMenu().catch(console.error);
+  setInterval(() => renderMenu().catch(console.error), UPDATE_MS);
+</script>
+
 </body>
 </html>
