@@ -64,7 +64,7 @@
     header {
       position: relative; z-index: 10;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 40px 12px;
+      padding: 10px 40px 10px;
       border-bottom: 1px solid var(--border-glow);
       box-shadow: 0 1px 30px rgba(0,245,255,0.08);
     }
@@ -90,7 +90,7 @@
       position: relative; z-index: 10;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
-      height: calc(1080px - 67px - 48px);
+      height: calc(1080px - 61px - 48px);
     }
 
 
@@ -100,13 +100,13 @@
     }
     .menu-col:last-child { border-right: none; }
 
-    .cat-block { flex-shrink: 0; padding: 12px 18px 6px; }
+    .cat-block { flex-shrink: 0; padding: 8px 14px 4px; }
     .cat-block + .cat-block { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 0; }
 
     .cat-title {
       font-family: 'Orbitron', monospace;
-      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.12em;
-      margin-bottom: 7px;
+      font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em;
+      margin-bottom: 4px;
       display: flex; align-items: center; gap: 10px;
     }
     .cat-title::after {
@@ -121,18 +121,18 @@
 
     .tbl-head {
       display: grid;
-      font-family: 'Orbitron', monospace; font-size: 0.78rem; letter-spacing: 0.07em;
+      font-family: 'Orbitron', monospace; font-size: 0.66rem; letter-spacing: 0.06em;
       color: var(--text-dim);
-      padding: 0 4px 4px;
+      padding: 0 4px 2px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 1px;
+      margin-bottom: 0px;
     }
     .tbl-head span { text-align: right; }
     .tbl-head span:first-child { text-align: left; }
 
     .prod-row {
       display: grid; align-items: center;
-      min-height: 29px; padding: 2px 6px; border-radius: 3px;
+      min-height: 25px; padding: 1px 5px; border-radius: 3px;
       transition: background 0.15s;
     }
     .prod-row:hover { background: rgba(0,245,255,0.05); }
@@ -140,13 +140,13 @@
 
     .prod-name {
       display: flex; align-items: center; gap: 6px;
-      font-size: 1.05rem; font-weight: 600;
+      font-size: 0.92rem; font-weight: 600;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       transition: color 0.15s;
     }
     .prod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .prod-price {
-      font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+      font-family: 'Orbitron', monospace; font-size: 0.88rem; font-weight: 700;
       text-align: right; color: var(--neon-amber);
       text-shadow: 0 0 5px rgba(255,183,0,0.5);
     }
@@ -200,7 +200,7 @@
       color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan); flex-shrink: 0;
     }
     .brand-pills { display: flex; gap: 12px; }
-    .brand-pill { display: flex; align-items: center; gap: 5px; font-size: 1.05rem; font-weight: 600; }
+    .brand-pill { display: flex; align-items: center; gap: 5px; font-size: 0.92rem; font-weight: 600; }
     .brand-pill-dot { width: 10px; height: 10px; border-radius: 50%; }
     .footer-right {
       margin-left: auto; font-family: 'Orbitron', monospace;
