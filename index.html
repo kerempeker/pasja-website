@@ -4,41 +4,203 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pasja — Digital Menu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Limelight&family=Cormorant+SC:wght@400;500;700&family=Lora:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
+    /* ════════════════════════════════════════════
+     *  TEMA: CYBER (default)
+     * ════════════════════════════════════════════ */
     :root {
-      --neon-green:  #39ff14;
-      --neon-cyan:   #00f5ff;
-      --neon-pink:   #ff2d78;
-      --neon-amber:  #ffb700;
-      --neon-purple: #bf5fff;
-      --bg-dark:     #050508;
-      --border-glow: rgba(0,245,255,0.25);
-      --text-main:   #e8eaf6;
-      --text-dim:    #7986a3;
+      --bg-base:        #050508;
+      --bg-elevated:    rgba(255,255,255,0.02);
+      --text-main:      #e8eaf6;
+      --text-dim:       #7986a3;
+      --border-color:   rgba(0,245,255,0.25);
+      --border-soft:    rgba(255,255,255,0.07);
+      --accent-1:       #39ff14;
+      --accent-2:       #00f5ff;
+      --accent-3:       #ff2d78;
+      --accent-4:       #ffb700;
+      --accent-5:       #bf5fff;
+      --logo-color:     var(--accent-2);
+      --time-color:     var(--accent-4);
+      --price-color:    #ffffff;
+      --badge-new-bg:   var(--accent-1);
+      --badge-new-fg:   #000;
+      --badge-sale-bg:  var(--accent-3);
+      --badge-sale-fg:  #fff;
+      --special-bg:     #ffeb3b;
+      --special-fg:     #1a1a00;
+      --font-display:   'Orbitron', monospace;
+      --font-body:      'Rajdhani', sans-serif;
+      --glow-strength:  10px;
+      --row-hover-bg:   rgba(0,245,255,0.05);
+      --row-hover-fg:   var(--accent-2);
     }
 
+    /* ── APOTHECARY: vintage dispensary, dark green + gold ── */
+    [data-theme="apothecary"] {
+      --bg-base:        #1a2620;
+      --bg-elevated:    rgba(201,169,97,0.04);
+      --text-main:      #f0e6d2;
+      --text-dim:       #8a7d65;
+      --border-color:   rgba(201,169,97,0.35);
+      --border-soft:    rgba(201,169,97,0.12);
+      --accent-1:       #c9a961;
+      --accent-2:       #7a9b6a;
+      --accent-3:       #b85c4a;
+      --accent-4:       #d4b87a;
+      --accent-5:       #a86b3c;
+      --logo-color:     #c9a961;
+      --time-color:     #c9a961;
+      --price-color:    #f0e6d2;
+      --badge-new-bg:   #c9a961;
+      --badge-new-fg:   #1a2620;
+      --badge-sale-bg:  #b85c4a;
+      --badge-sale-fg:  #f0e6d2;
+      --special-bg:     #d4af37;
+      --special-fg:     #1a2620;
+      --font-display:   'Playfair Display', serif;
+      --font-body:      'Cormorant Garamond', serif;
+      --glow-strength:  0px;
+      --row-hover-bg:   rgba(201,169,97,0.07);
+      --row-hover-fg:   #c9a961;
+    }
+
+    /* ── EDITORIAL: white gallery, single accent ── */
+    [data-theme="editorial"] {
+      --bg-base:        #fafaf7;
+      --bg-elevated:    #ffffff;
+      --text-main:      #0a0a0a;
+      --text-dim:       #6b6b6b;
+      --border-color:   rgba(10,10,10,0.18);
+      --border-soft:    rgba(10,10,10,0.08);
+      --accent-1:       #d62828;
+      --accent-2:       #0a0a0a;
+      --accent-3:       #1d3557;
+      --accent-4:       #b08900;
+      --accent-5:       #2d5016;
+      --logo-color:     #0a0a0a;
+      --time-color:     #d62828;
+      --price-color:    #0a0a0a;
+      --badge-new-bg:   #0a0a0a;
+      --badge-new-fg:   #fafaf7;
+      --badge-sale-bg:  #d62828;
+      --badge-sale-fg:  #fff;
+      --special-bg:     #b08900;
+      --special-fg:     #fafaf7;
+      --font-display:   'Inter', sans-serif;
+      --font-body:      'Inter', sans-serif;
+      --glow-strength:  0px;
+      --row-hover-bg:   rgba(10,10,10,0.04);
+      --row-hover-fg:   #d62828;
+    }
+
+    /* ── VINTAGE AMSTERDAM: sepia, warm amber, classic coffeeshop ── */
+    [data-theme="vintage"] {
+      --bg-base:        #2d1810;
+      --bg-elevated:    rgba(244,228,193,0.04);
+      --text-main:      #f4e4c1;
+      --text-dim:       #b8a07a;
+      --border-color:   rgba(212,163,115,0.35);
+      --border-soft:    rgba(244,228,193,0.1);
+      --accent-1:       #d4a373;
+      --accent-2:       #e9c46a;
+      --accent-3:       #c9573b;
+      --accent-4:       #ddb771;
+      --accent-5:       #a37b4f;
+      --logo-color:     #e9c46a;
+      --time-color:     #d4a373;
+      --price-color:    #f4e4c1;
+      --badge-new-bg:   #e9c46a;
+      --badge-new-fg:   #2d1810;
+      --badge-sale-bg:  #c9573b;
+      --badge-sale-fg:  #f4e4c1;
+      --special-bg:     #f4c430;
+      --special-fg:     #2d1810;
+      --font-display:   'Limelight', cursive;
+      --font-body:      'Cormorant SC', serif;
+      --glow-strength:  0px;
+      --row-hover-bg:   rgba(212,163,115,0.08);
+      --row-hover-fg:   #e9c46a;
+    }
+
+    /* ── BOTANICAL: cream, sage green, terracotta ── */
+    [data-theme="botanical"] {
+      --bg-base:        #f5f1e8;
+      --bg-elevated:    #ffffff;
+      --text-main:      #2d4a2b;
+      --text-dim:       #7a8b6c;
+      --border-color:   rgba(74,107,58,0.3);
+      --border-soft:    rgba(74,107,58,0.1);
+      --accent-1:       #4a6b3a;
+      --accent-2:       #c97b50;
+      --accent-3:       #2d4a2b;
+      --accent-4:       #c9a961;
+      --accent-5:       #8b3a2a;
+      --logo-color:     #4a6b3a;
+      --time-color:     #c97b50;
+      --price-color:    #2d4a2b;
+      --badge-new-bg:   #4a6b3a;
+      --badge-new-fg:   #f5f1e8;
+      --badge-sale-bg:  #c97b50;
+      --badge-sale-fg:  #fff;
+      --special-bg:     #d97706;
+      --special-fg:     #fff;
+      --font-display:   'Cormorant Garamond', serif;
+      --font-body:      'Lora', serif;
+      --glow-strength:  0px;
+      --row-hover-bg:   rgba(74,107,58,0.06);
+      --row-hover-fg:   #4a6b3a;
+    }
+
+    /* ════════════════════════════════════════════
+     *  BASE LAYOUT
+     * ════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { width: 100%; height: 100%; overflow: hidden; background: #000; }
-
     body {
       width: 1920px; height: 1080px;
       overflow: hidden;
-      background: var(--bg-dark);
-      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg-base);
+      font-family: var(--font-body);
       color: var(--text-main);
       transform-origin: top left;
+      transition: background 0.5s, color 0.5s;
     }
 
+    /* ── Decorations: only show on cyber theme ── */
+    .grid-bg, .glow-tl, .glow-br { display: none; }
+    [data-theme="cyber"] .grid-bg,
+    [data-theme="cyber"] .glow-tl,
+    [data-theme="cyber"] .glow-br { display: block; }
+
+    /* Scanlines: cyber + vintage (subtle) */
     body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
-      );
+      content: ''; position: fixed; inset: 0;
       pointer-events: none; z-index: 999;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    }
+    [data-theme="apothecary"] body::before,
+    [data-theme="editorial"] body::before,
+    [data-theme="botanical"] body::before { display: none; }
+
+    /* Theme-specific paper/texture overlays */
+    [data-theme="apothecary"] body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 998;
+      background: radial-gradient(ellipse at top, rgba(201,169,97,0.05) 0%, transparent 60%),
+                  radial-gradient(ellipse at bottom, rgba(0,0,0,0.25) 0%, transparent 60%);
+    }
+    [data-theme="vintage"] body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 998;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+      mix-blend-mode: multiply;
+    }
+    [data-theme="botanical"] body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle at 10% 10%, rgba(74,107,58,0.06) 0%, transparent 30%),
+                  radial-gradient(circle at 90% 90%, rgba(201,123,80,0.06) 0%, transparent 30%);
     }
 
     .grid-bg {
@@ -56,36 +218,77 @@
       border-radius: 50%; pointer-events: none; z-index: 0;
       filter: blur(120px); opacity: 0.12;
     }
-    .glow-tl { top: -200px; left: -200px; background: var(--neon-cyan); }
-    .glow-br { bottom: -200px; right: -200px; background: var(--neon-pink);
-      animation: pulseBR 5s ease-in-out infinite alternate; }
+    .glow-tl { top: -200px; left: -200px; background: var(--accent-2); }
+    .glow-br {
+      bottom: -200px; right: -200px; background: var(--accent-3);
+      animation: pulseBR 5s ease-in-out infinite alternate;
+    }
     @keyframes pulseBR { from { opacity: 0.08; } to { opacity: 0.18; } }
 
+    /* ════════════════════════════════════════════
+     *  HEADER
+     * ════════════════════════════════════════════ */
     header {
       position: relative; z-index: 10;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 40px 10px;
-      border-bottom: 1px solid var(--border-glow);
-      box-shadow: 0 1px 30px rgba(0,245,255,0.08);
+      padding: 10px 40px;
+      border-bottom: 1px solid var(--border-color);
     }
+    [data-theme="cyber"] header { box-shadow: 0 1px 30px rgba(0,245,255,0.08); }
+
     .logo-text {
-      font-family: 'Orbitron', monospace;
+      font-family: var(--font-display);
       font-size: 3rem; font-weight: 900; letter-spacing: 0.25em;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0,245,255,0.5);
+      color: var(--logo-color);
+    }
+    [data-theme="cyber"] .logo-text {
+      text-shadow: 0 0 10px var(--logo-color), 0 0 30px rgba(0,245,255,0.5);
       animation: flicker 8s infinite;
     }
+    [data-theme="vintage"] .logo-text { letter-spacing: 0.15em; }
+    [data-theme="editorial"] .logo-text { letter-spacing: 0.4em; font-weight: 800; }
+    [data-theme="botanical"] .logo-text { letter-spacing: 0.3em; font-style: italic; font-weight: 700; }
+    [data-theme="apothecary"] .logo-text { letter-spacing: 0.2em; font-style: italic; }
+
     @keyframes flicker {
       0%,95%,100% { opacity: 1; }
       96% { opacity: 0.7; } 97% { opacity: 1; } 98% { opacity: 0.6; }
     }
-    .header-tagline { font-size: 1.1rem; letter-spacing: 0.35em; color: var(--text-dim); }
-    .header-time {
-      font-family: 'Orbitron', monospace;
-      font-size: 2rem; font-weight: 700;
-      color: var(--neon-amber); text-shadow: 0 0 8px var(--neon-amber);
-    }
 
+    .header-tagline {
+      font-size: 1.1rem; letter-spacing: 0.35em; color: var(--text-dim);
+      font-family: var(--font-body);
+    }
+    [data-theme="editorial"] .header-tagline { letter-spacing: 0.2em; font-weight: 500; }
+
+    .header-time {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 700;
+      color: var(--time-color);
+    }
+    [data-theme="cyber"] .header-time { text-shadow: 0 0 8px var(--time-color); }
+
+    .header-center {
+      text-align: center;
+    }
+    .header-center-label {
+      font-size: 0.85rem; letter-spacing: 0.25em; color: var(--text-dim); margin-bottom: 4px;
+    }
+    .header-stats { display: flex; gap: 16px; align-items: center; justify-content: center; }
+    .header-stat-num {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+    }
+    [data-theme="cyber"] .header-stat-num.live { color: var(--accent-1); text-shadow: 0 0 8px var(--accent-1); }
+    [data-theme="cyber"] .header-stat-num.age  { color: var(--accent-4); text-shadow: 0 0 8px var(--accent-4); }
+    .header-stat-num.live { color: var(--accent-1); }
+    .header-stat-num.age  { color: var(--accent-4); }
+    .header-stat-label { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--text-dim); }
+    .header-divider { width: 1px; height: 28px; background: var(--border-color); }
+
+    /* ════════════════════════════════════════════
+     *  MENU GRID
+     * ════════════════════════════════════════════ */
     #app {
       position: relative; z-index: 10;
       display: grid;
@@ -93,50 +296,59 @@
       height: calc(1080px - 61px - 48px);
     }
 
-
     .menu-col {
-      border-right: 1px solid var(--border-glow);
+      border-right: 1px solid var(--border-color);
       display: flex; flex-direction: column; overflow: hidden;
     }
     .menu-col:last-child { border-right: none; }
 
     .cat-block { flex-shrink: 0; padding: 8px 14px 4px; }
-    .cat-block + .cat-block { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 0; }
+    .cat-block + .cat-block { border-top: 1px solid var(--border-soft); }
 
     .cat-title {
-      font-family: 'Orbitron', monospace;
+      font-family: var(--font-display);
       font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em;
       margin-bottom: 4px;
       display: flex; align-items: center; gap: 10px;
     }
+    [data-theme="apothecary"] .cat-title,
+    [data-theme="vintage"] .cat-title { font-size: 1.2rem; letter-spacing: 0.15em; }
+    [data-theme="botanical"] .cat-title { font-size: 1.25rem; font-weight: 600; font-style: italic; letter-spacing: 0.05em; }
+    [data-theme="editorial"] .cat-title { font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.85rem; }
+
     .cat-title::after {
       content: ''; flex: 1; height: 1px;
       background: linear-gradient(90deg, currentColor, transparent); opacity: 0.35;
     }
-    .cc0 { color: var(--neon-green);  text-shadow: 0 0 10px rgba(57,255,20,0.6); }
-    .cc1 { color: var(--neon-cyan);   text-shadow: 0 0 10px rgba(0,245,255,0.6); }
-    .cc2 { color: var(--neon-pink);   text-shadow: 0 0 10px rgba(255,45,120,0.6); }
-    .cc3 { color: var(--neon-amber);  text-shadow: 0 0 10px rgba(255,183,0,0.6); }
-    .cc4 { color: var(--neon-purple); text-shadow: 0 0 10px rgba(191,95,255,0.6); }
+    .cc0 { color: var(--accent-1); }
+    .cc1 { color: var(--accent-2); }
+    .cc2 { color: var(--accent-3); }
+    .cc3 { color: var(--accent-4); }
+    .cc4 { color: var(--accent-5); }
+    [data-theme="cyber"] .cc0 { text-shadow: 0 0 10px rgba(57,255,20,0.6); }
+    [data-theme="cyber"] .cc1 { text-shadow: 0 0 10px rgba(0,245,255,0.6); }
+    [data-theme="cyber"] .cc2 { text-shadow: 0 0 10px rgba(255,45,120,0.6); }
+    [data-theme="cyber"] .cc3 { text-shadow: 0 0 10px rgba(255,183,0,0.6); }
+    [data-theme="cyber"] .cc4 { text-shadow: 0 0 10px rgba(191,95,255,0.6); }
 
     .tbl-head {
       display: grid;
-      font-family: 'Orbitron', monospace; font-size: 0.66rem; letter-spacing: 0.06em;
+      font-family: var(--font-display); font-size: 0.66rem; letter-spacing: 0.06em;
       color: var(--text-dim);
       padding: 0 4px 2px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 0px;
+      border-bottom: 1px solid var(--border-soft);
     }
+    [data-theme="editorial"] .tbl-head { font-weight: 600; text-transform: uppercase; }
     .tbl-head span { text-align: right; }
     .tbl-head span:first-child { text-align: left; }
 
     .prod-row {
       display: grid; align-items: center;
       min-height: 25px; padding: 1px 5px; border-radius: 3px;
-      transition: background 0.15s;
+      transition: background 0.15s, color 0.15s;
     }
-    .prod-row:hover { background: rgba(0,245,255,0.05); }
-    .prod-row:hover .prod-name { color: var(--neon-cyan); }
+    .prod-row:hover { background: var(--row-hover-bg); }
+    .prod-row:hover .prod-name { color: var(--row-hover-fg); }
 
     .prod-name {
       display: flex; align-items: center; gap: 6px;
@@ -144,71 +356,109 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       transition: color 0.15s;
     }
-    .prod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .prod-price {
-      font-family: 'Orbitron', monospace; font-size: 0.88rem; font-weight: 700;
-      text-align: right; color: var(--white);
-      text-shadow: 0 0 5px rgba(255,255,255,0.5);
-    }
-    .prod-price.empty { color: rgba(255,255,255,0.1); font-size: 0.78rem; }
+    [data-theme="apothecary"] .prod-name,
+    [data-theme="vintage"] .prod-name { font-size: 1.05rem; font-weight: 500; }
+    [data-theme="botanical"] .prod-name { font-size: 1.05rem; font-weight: 500; }
+    [data-theme="editorial"] .prod-name { font-weight: 500; }
 
-    .badge-new {
-      display: inline-flex; align-items: center;
-      font-family: 'Orbitron', monospace; font-size: 0.5rem; font-weight: 900;
-      padding: 1px 4px; border-radius: 2px;
-      background: var(--neon-green); color: #000; margin-left: 2px; flex-shrink: 0;
-      animation: newPulse 2.5s ease-in-out infinite;
+    .prod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .prod-price {
+      font-family: var(--font-display); font-size: 0.88rem; font-weight: 700;
+      text-align: right; color: var(--price-color);
     }
+    [data-theme="cyber"] .prod-price { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+    [data-theme="apothecary"] .prod-price,
+    [data-theme="vintage"] .prod-price { font-size: 1rem; }
+    [data-theme="botanical"] .prod-price { font-family: var(--font-body); font-weight: 700; }
+    [data-theme="editorial"] .prod-price { font-weight: 700; }
+
+    .prod-price.empty { color: var(--text-dim); opacity: 0.4; font-size: 0.78rem; }
+
+    .badge-new, .badge-sale, .badge-special {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-display); font-size: 0.5rem; font-weight: 900;
+      padding: 1px 4px; border-radius: 2px;
+      margin-left: 2px; flex-shrink: 0; letter-spacing: 0.05em;
+    }
+    .badge-new { background: var(--badge-new-bg); color: var(--badge-new-fg); }
+    .badge-sale { background: var(--badge-sale-bg); color: var(--badge-sale-fg); }
+    .badge-special { background: var(--special-bg); color: var(--special-fg); }
+    [data-theme="cyber"] .badge-new { animation: newPulse 2.5s ease-in-out infinite; }
+    [data-theme="cyber"] .badge-sale { animation: salePulse 2.5s ease-in-out infinite; }
+    [data-theme="cyber"] .badge-special { animation: specialPulse 2.5s ease-in-out infinite; }
     @keyframes newPulse {
-      0%,100% { box-shadow: 0 0 4px var(--neon-green); }
-      50% { box-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(57,255,20,0.4); }
-    }
-    .badge-sale {
-      display: inline-flex; align-items: center;
-      font-family: 'Orbitron', monospace; font-size: 0.5rem; font-weight: 900;
-      padding: 1px 4px; border-radius: 2px;
-      background: var(--neon-pink); color: #fff; margin-left: 2px; flex-shrink: 0;
-      animation: salePulse 2.5s ease-in-out infinite;
+      0%,100% { box-shadow: 0 0 4px var(--accent-1); }
+      50% { box-shadow: 0 0 10px var(--accent-1), 0 0 20px rgba(57,255,20,0.4); }
     }
     @keyframes salePulse {
-      0%,100% { box-shadow: 0 0 4px var(--neon-pink); }
-      50% { box-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255,45,120,0.4); }
+      0%,100% { box-shadow: 0 0 4px var(--accent-3); }
+      50% { box-shadow: 0 0 10px var(--accent-3), 0 0 20px rgba(255,45,120,0.4); }
+    }
+    @keyframes specialPulse {
+      0%,100% { box-shadow: 0 0 4px var(--special-bg); }
+      50% { box-shadow: 0 0 12px var(--special-bg), 0 0 24px var(--special-bg); }
+    }
+
+    /* Pasja Special: ürün adı tema rengiyle vurgulanır */
+    .prod-row.is-special .prod-name {
+      color: var(--special-bg);
+      font-weight: 700;
+    }
+    [data-theme="cyber"] .prod-row.is-special .prod-name {
+      text-shadow: 0 0 6px var(--special-bg);
+    }
+    [data-theme="apothecary"] .prod-row.is-special .prod-name,
+    [data-theme="vintage"] .prod-row.is-special .prod-name {
+      font-style: italic;
     }
 
     .soon-text {
-      font-family: 'Orbitron', monospace; font-size: 0.85rem; letter-spacing: 0.25em;
+      font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.25em;
       color: var(--text-dim); text-align: center; padding: 8px 0;
     }
+
     .loading-msg {
       display: flex; align-items: center; justify-content: center;
       height: 100%; color: var(--text-dim);
-      font-family: 'Orbitron', monospace; font-size: 0.65rem; letter-spacing: 0.2em;
+      font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.2em;
       animation: loadPulse 1.5s ease-in-out infinite;
     }
     @keyframes loadPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
 
+    /* ════════════════════════════════════════════
+     *  FOOTER
+     * ════════════════════════════════════════════ */
     footer {
       position: fixed; bottom: 0; left: 0; right: 0; height: 48px;
-      background: rgba(5,5,8,0.97);
-      border-top: 1px solid var(--border-glow);
+      background: var(--bg-base);
+      border-top: 1px solid var(--border-color);
       display: flex; align-items: center;
       padding: 0 48px; z-index: 100; gap: 24px;
-      box-shadow: 0 -1px 20px rgba(0,245,255,0.08);
     }
+    [data-theme="cyber"] footer { box-shadow: 0 -1px 20px rgba(0,245,255,0.08); }
+
     .footer-label {
-      font-family: 'Orbitron', monospace; font-size: 0.9rem; letter-spacing: 0.2em;
-      color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan); flex-shrink: 0;
+      font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.2em;
+      color: var(--accent-2); flex-shrink: 0;
     }
-    .brand-pills { display: flex; gap: 12px; }
-    .brand-pill { display: flex; align-items: center; gap: 5px; font-size: 0.92rem; font-weight: 600; }
+    [data-theme="cyber"] .footer-label { text-shadow: 0 0 6px var(--accent-2); }
+    [data-theme="editorial"] .footer-label { color: var(--text-main); font-weight: 700; }
+
+    .brand-pills { display: flex; gap: 12px; flex-wrap: wrap; }
+    .brand-pill { display: flex; align-items: center; gap: 5px; font-size: 0.92rem; font-weight: 600; color: var(--text-main); }
+    [data-theme="apothecary"] .brand-pill,
+    [data-theme="vintage"] .brand-pill,
+    [data-theme="botanical"] .brand-pill { font-size: 1rem; font-weight: 500; }
     .brand-pill-dot { width: 10px; height: 10px; border-radius: 50%; }
+
     .footer-right {
-      margin-left: auto; font-family: 'Orbitron', monospace;
+      margin-left: auto; font-family: var(--font-display);
       font-size: 0.85rem; letter-spacing: 0.18em; color: var(--text-dim);
     }
   </style>
 </head>
-<body>
+<body data-theme="cyber">
 
 <div class="grid-bg"></div>
 <div class="glow-tl"></div>
@@ -219,17 +469,17 @@
     <div class="logo-text">PASJA</div>
     <div class="header-tagline">Tilburg · Premium Cannabis Menu</div>
   </div>
-  <div style="text-align:center;">
-    <div style="font-size:0.85rem;letter-spacing:0.25em;color:var(--text-dim);margin-bottom:4px;">QUALITY SELECTION</div>
-    <div style="display:flex;gap:16px;align-items:center;">
+  <div class="header-center">
+    <div class="header-center-label">QUALITY SELECTION</div>
+    <div class="header-stats">
       <div>
-        <div style="font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--neon-green);text-shadow:0 0 8px var(--neon-green);">LIVE</div>
-        <div style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text-dim);">MENU</div>
+        <div class="header-stat-num live">LIVE</div>
+        <div class="header-stat-label">MENU</div>
       </div>
-      <div style="width:1px;height:28px;background:var(--border-glow);"></div>
+      <div class="header-divider"></div>
       <div>
-        <div style="font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--neon-amber);text-shadow:0 0 8px var(--neon-amber);">18+</div>
-        <div style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text-dim);">ONLY</div>
+        <div class="header-stat-num age">18+</div>
+        <div class="header-stat-label">ONLY</div>
       </div>
     </div>
   </div>
@@ -253,15 +503,31 @@
   /* ══════════════════════════════════════════
    *  CONFIG
    * ══════════════════════════════════════════ */
-  const BASE_URL  = 'https://script.google.com/macros/s/AKfycbzVO1YH0O5qgk9rSiFr0Lcc3uojOeHJiNWlLE04i5Ampc-e4zmLOocy5-QorgowvJnz/exec';
+  const BASE_URL  = 'https://script.google.com/macros/s/AKfycbzYsU4OerGcs6LcHKI0MPTCYuypcqKOV97qlvUg0jkpIKhOrNDd-eZXfD8E3Nd4iJU/exec';
   const MENU_URL  = BASE_URL;
   const RENK_URL  = BASE_URL + '?action=renkler';
   const SIRA_URL  = BASE_URL + '?action=sirala';
-  const UPDATE_MS = 10000; // 10 sn
+  const TEMA_URL  = BASE_URL + '?action=tema';
+  const UPDATE_MS = 10000;
 
-  /* Kategori renk sınıfları — sırayla dönüyor */
+  const VALID_THEMES = ['cyber', 'apothecary', 'editorial', 'vintage', 'botanical'];
   const CAT_COLORS = ['cc0','cc1','cc2','cc3','cc4'];
   let colorIdx = 0;
+
+  /* ── Tema'yı uygula (localStorage cache + server) ── */
+  function applyTheme(theme) {
+    if (!VALID_THEMES.includes(theme)) theme = 'cyber';
+    document.body.setAttribute('data-theme', theme);
+    try { localStorage.setItem('pasja_theme', theme); } catch(e) {}
+  }
+
+  /* Sayfa açılır açılmaz cache'den yükle (flash önler) */
+  try {
+    const cached = localStorage.getItem('pasja_theme');
+    if (cached && VALID_THEMES.includes(cached)) {
+      document.body.setAttribute('data-theme', cached);
+    }
+  } catch(e) {}
 
   /* ── Fiyat formatla ── */
   function fmt(v) {
@@ -276,45 +542,57 @@
     return r.json();
   }
 
-  /* ── Kategori tipine göre sütun config ── */
-  function getConfig(kat) {
-    const u = kat.toUpperCase();
-    // JOINT önce kontrol edilmeli — "WEED JOINTS" WEED dalına girmesin
-    if (u.includes('JOINT')) return {
-      headers : ['Product','1ST','5ST','10ST','15ST'],
-      grid    : '1fr 52px 52px 62px 62px',
-      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr','fiyat_4']
+  /* ── Kategori tipine göre sütun config ──
+   *  Öncelik: admin'den girilen header_1..4 değerleri.
+   *  Eğer hepsi boşsa kategori adı keyword'üyle default seçilir.
+   *  4 fiyat alanı: fiyat_1gr | thc_orani | fiyat_5gr | fiyat_4
+   */
+  function getDefaultHeaders(kat) {
+    const u = (kat || '').toUpperCase();
+    if (u.includes('JOINT'))  return ['1ST','5ST','10ST','15ST'];
+    if (u.includes('WEED'))   return ['1GR','2.5GR','5GR',''];
+    if (u.includes('EDIBLE')) return ['1ST','5ST','10ST',''];
+    if (u.includes('HASH'))   return ['0.5GR','1GR','5GR',''];
+    if (u.includes('VAPE'))   return ['Price 1','Price 2','',''];
+    return ['Price 1','Price 2','',''];
+  }
+
+  function getConfig(kategori, catRow) {
+    const customHeaders = catRow
+      ? [catRow.header_1, catRow.header_2, catRow.header_3, catRow.header_4]
+          .map(h => h ? String(h).trim() : '')
+      : ['','','',''];
+    const hasCustom = customHeaders.some(h => h);
+    const headers = hasCustom ? customHeaders : getDefaultHeaders(kategori);
+
+    const allKeys = ['fiyat_1gr','thc_orani','fiyat_5gr','fiyat_4'];
+    const finalHeaders = ['Product'];
+    const finalKeys = [];
+
+    headers.forEach((h, i) => {
+      if (h) { finalHeaders.push(h); finalKeys.push(allKeys[i]); }
+    });
+
+    /* Görünür sütun sayısına göre genişlik */
+    const widthRecipes = {
+      0: [],
+      1: ['140px'],
+      2: ['88px','88px'],
+      3: ['68px','68px','68px'],
+      4: ['52px','52px','62px','62px']
     };
-    if (u.includes('WEED')) return {
-      headers : ['Product','1GR','2.5GR','5GR'],
-      grid    : '1fr 68px 68px 68px',
-      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
-    };
-    if (u.includes('EDIBLE')) return {
-      headers : ['Product','1ST','5ST','10ST'],
-      grid    : '1fr 68px 68px 68px',
-      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
-    };
-    if (u.includes('HASH')) return {
-      headers : ['Product','0.5GR','1GR','5GR'],
-      grid    : '1fr 68px 68px 68px',
-      keys    : ['fiyat_1gr','thc_orani','fiyat_5gr']
-    };
-    if (u.includes('VAPE')) return {
-      headers : ['Product','Price 1','Price 2'],
-      grid    : '1fr 88px 88px',
-      keys    : ['fiyat_1gr','fiyat_5gr']
-    };
+    const widths = widthRecipes[finalKeys.length] || ['68px','68px','68px'];
+
     return {
-      headers : ['Product','Price 1','Price 2'],
-      grid    : '1fr 88px 88px',
-      keys    : ['fiyat_1gr','fiyat_5gr']
+      headers: finalHeaders,
+      keys: finalKeys,
+      grid: '1fr ' + widths.join(' ')
     };
   }
 
   /* ── Tek bir kategori bloğu oluştur ── */
-  function buildBlock(kategori, urunler, renkler) {
-    const cfg   = getConfig(kategori);
+  function buildBlock(kategori, urunler, renkler, catRow) {
+    const cfg   = getConfig(kategori, catRow);
     const color = CAT_COLORS[colorIdx++ % CAT_COLORS.length];
 
     const headerCells = cfg.headers.map((h,i) =>
@@ -326,8 +604,10 @@
       rows = `<div class="soon-text">// SOON //</div>`;
     } else {
       rows = urunler.map(u => {
-        const renk   = renkler[u.marka] || '#888';
-        const badges = [
+        const renk    = renkler[u.marka] || '#888';
+        const special = u.pasja_speciaal === true || u.pasja_speciaal === 'TRUE' || u.pasja_speciaal === 'true';
+        const badges  = [
+          special ? '<span class="badge-special">PASJA</span>' : '',
           u.yeni_mi === true ? '<span class="badge-new">NEW</span>' : '',
           (u.korting === true || u.korting === 'true' || u.korting === 1)
             ? '<span class="badge-sale">SALE</span>' : ''
@@ -340,7 +620,7 @@
             : `<div class="prod-price empty">—</div>`;
         }).join('');
 
-        return `<div class="prod-row" style="grid-template-columns:${cfg.grid}">
+        return `<div class="prod-row${special ? ' is-special' : ''}" style="grid-template-columns:${cfg.grid}">
           <div class="prod-name">
             <div class="prod-dot" style="background:${renk};box-shadow:0 0 4px ${renk}70;"></div>
             ${u.urun_adi || '?'}${badges}
@@ -361,11 +641,15 @@
   async function renderMenu() {
     colorIdx = 0;
 
-    const [menuData, renkler, siralamaData] = await Promise.all([
+    const [menuData, renkler, siralamaData, temaData] = await Promise.all([
       fetchJSON(MENU_URL),
       fetchJSON(RENK_URL),
-      fetchJSON(SIRA_URL)
+      fetchJSON(SIRA_URL),
+      fetchJSON(TEMA_URL).catch(() => ({ tema: 'cyber' }))
     ]);
+
+    /* Tema uygula */
+    if (temaData && temaData.tema) applyTheme(temaData.tema);
 
     /* Kategorilere ürün doldur */
     const kategoriler = {};
@@ -387,18 +671,21 @@
 
     const sorted = Object.keys(cols).sort((a,b) => +a - +b);
 
+    /* Kategori → satır lookup map */
+    const catRowMap = {};
+    siralamaData.forEach(s => { if (s?.kategori) catRowMap[s.kategori] = s; });
+
     sorted.forEach((sutunNo, idx) => {
       const el = document.getElementById(`col-${idx + 1}`);
       if (!el) return;
       const kats = cols[sutunNo].sort((a,b) => a.sira - b.sira);
       el.innerHTML = kats.map(({ kategori }) =>
-        buildBlock(kategori, kategoriler[kategori], renkler)
+        buildBlock(kategori, kategoriler[kategori], renkler, catRowMap[kategori])
       ).join('');
     });
 
-    /* Sidebar & footer markalar */
+    /* Footer markalar */
     const markalar = [...new Set(menuData.map(i => i.marka).filter(Boolean))].sort();
-
     document.getElementById('footer-brands').innerHTML = markalar.map(m => {
       const r = renkler[m] || '#888';
       return `<div class="brand-pill">

@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasja Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0f1115;
+      --bg-card:   #181b22;
+      --bg-input:  #20242c;
+      --bg-hover:  #252a33;
+      --border:    #2a2f38;
+      --border-strong: #3a4150;
+      --text:      #e8eaf0;
+      --text-dim:  #8a93a3;
+      --text-faint:#5a6275;
+      --primary:   #00d8a8;
+      --primary-d: #00b890;
+      --danger:    #ef4444;
+      --warn:      #f59e0b;
+      --success:   #10b981;
+      --gold:      #f4c430;
+      --radius:    10px;
+      --radius-sm: 6px;
+      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; }
+    input, select, textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+    label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    /* ════════════ LOGIN ════════════ */
+    #login-screen {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+      z-index: 1000;
+    }
+    .login-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      width: 360px; max-width: 90vw;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .login-logo {
+      font-size: 28px; font-weight: 800; letter-spacing: 0.2em;
+      text-align: center; color: var(--primary); margin-bottom: 4px;
+    }
+    .login-sub {
+      text-align: center; color: var(--text-dim);
+      font-size: 12px; letter-spacing: 0.15em; margin-bottom: 28px;
+    }
+    .login-form { display: flex; flex-direction: column; gap: 14px; }
+    .login-error {
+      color: var(--danger); font-size: 13px; text-align: center;
+      min-height: 18px;
+    }
+    .login-lang {
+      position: absolute; top: 14px; right: 14px;
+      display: flex; gap: 2px;
+    }
+
+    /* ════════════ APP LAYOUT ════════════ */
+    #admin-app { display: none; min-height: 100vh; }
+    #admin-app.active { display: flex; flex-direction: column; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+      gap: 12px;
+    }
+    .topbar-logo { font-weight: 800; letter-spacing: 0.2em; color: var(--primary); font-size: 18px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .topbar-status { font-size: 12px; color: var(--text-dim); }
+
+    .lang-toggle {
+      display: flex; gap: 0;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px;
+    }
+    .lang-btn {
+      background: none; border: none; color: var(--text-dim);
+      padding: 4px 12px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em;
+      border-radius: 999px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lang-btn.active {
+      background: var(--primary); color: #07120e;
+    }
+
+    .tabs {
+      display: flex; gap: 4px;
+      padding: 0 24px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none; border: none; color: var(--text-dim);
+      padding: 14px 18px;
+      cursor: pointer; font-weight: 600;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    main { padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+    }
+    .panel-title { font-size: 22px; font-weight: 700; }
+
+    /* ════════════ BUTTONS ════════════ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--primary); color: #07120e;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-d); border-color: var(--primary-d); }
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .btn-ghost:hover:not(:disabled) { background: var(--bg-hover); }
+    .btn-danger {
+      background: transparent; color: var(--danger);
+      border-color: var(--danger);
+    }
+    .btn-danger:hover:not(:disabled) { background: var(--danger); color: #fff; }
+    .btn-icon {
+      padding: 6px 8px; font-size: 12px; min-width: 32px;
+    }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+    /* ════════════ SEARCH ════════════ */
+    .search-row {
+      display: flex; gap: 10px; margin-bottom: 14px; align-items: center;
+    }
+    .search-wrap {
+      flex: 1; position: relative;
+    }
+    .search-wrap input {
+      padding-left: 38px;
+    }
+    .search-wrap::before {
+      content: '⌕'; position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim); font-size: 18px; pointer-events: none;
+    }
+    .search-clear {
+      position: absolute; right: 8px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-dim); cursor: pointer;
+      padding: 4px 8px; font-size: 16px;
+      display: none;
+    }
+    .search-clear.visible { display: block; }
+    .search-clear:hover { color: var(--text); }
+
+    /* ════════════ FILTERS ════════════ */
+    .filters {
+      display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .filter-chip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 6px 12px; border-radius: 999px; cursor: pointer;
+      font-size: 13px; font-weight: 600;
+    }
+    .filter-chip:hover { color: var(--text); }
+    .filter-chip.active { background: var(--primary); color: #07120e; border-color: var(--primary); }
+
+    /* ════════════ PRODUCT LIST ════════════ */
+    .product-list { display: flex; flex-direction: column; gap: 8px; }
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 8px 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      transition: border-color 0.15s;
+    }
+    .product-card:hover { border-color: var(--border-strong); }
+    .product-card.special { border-left-width: 3px; border-left-color: var(--gold); }
+    .product-color {
+      width: 8px; height: 100%; min-height: 36px;
+      border-radius: 4px;
+    }
+    .product-info .product-name {
+      font-weight: 600; font-size: 15px; margin-bottom: 2px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .product-meta {
+      font-size: 12px; color: var(--text-dim);
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .product-meta strong { color: var(--text); }
+    .product-prices { display: flex; gap: 8px; font-size: 13px; color: var(--text-dim); }
+    .product-prices b { color: var(--text); font-weight: 700; }
+    .product-actions { display: flex; gap: 6px; }
+
+    .pill {
+      display: inline-flex; align-items: center;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 6px; border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+    .pill-new { background: var(--success); color: #fff; }
+    .pill-sale { background: var(--warn); color: #1a1305; }
+    .pill-special { background: var(--gold); color: #1a1a00; }
+    .pill-out { background: var(--bg-input); color: var(--text-faint); border: 1px solid var(--border); }
+
+    /* ════════════ BRANDS ════════════ */
+    .brand-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+    .brand-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brand-swatch {
+      width: 36px; height: 36px; border-radius: 8px;
+      flex-shrink: 0;
+      border: 1px solid var(--border-strong);
+    }
+    .brand-info { flex: 1; min-width: 0; }
+    .brand-name { font-weight: 600; }
+    .brand-color-hex { font-size: 12px; color: var(--text-dim); font-family: monospace; }
+    .brand-actions { display: flex; gap: 4px; }
+
+    /* ════════════ CATEGORIES ════════════ */
+    .cat-columns {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    @media (max-width: 900px) { .cat-columns { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .cat-columns { grid-template-columns: 1fr; } }
+    .cat-column {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    .cat-column-title {
+      font-size: 12px; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .cat-item {
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      cursor: grab;
+      user-select: none;
+      transition: box-shadow 0.1s, opacity 0.15s, transform 0.1s;
+    }
+    .cat-item:active { cursor: grabbing; }
+    .cat-item.dragging {
+      opacity: 0.4;
+      transform: scale(0.98);
+    }
+    .cat-item.drop-above { box-shadow: 0 -2px 0 var(--primary); }
+    .cat-item.drop-below { box-shadow: 0 2px 0 var(--primary); }
+    .cat-item-handle {
+      color: var(--text-faint);
+      font-size: 16px; line-height: 1;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+    .cat-item-main { flex: 1; min-width: 0; }
+    .cat-item-name { font-weight: 600; }
+    .cat-item-actions { display: flex; gap: 4px; }
+    .cat-column.drop-target {
+      background: rgba(0, 216, 168, 0.06);
+      border-color: var(--primary);
+    }
+    .cat-column-empty {
+      color: var(--text-faint); font-size: 12px;
+      padding: 12px 4px; text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* ════════════ THEME PICKER ════════════ */
+    .theme-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;
+    }
+    .theme-card {
+      background: var(--bg-card); border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer; overflow: hidden;
+      transition: all 0.2s;
+    }
+    .theme-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+    .theme-card.active { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,216,168,0.2); }
+    .theme-preview {
+      height: 140px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 14px;
+      position: relative; overflow: hidden;
+    }
+    .theme-preview-title {
+      font-size: 18px; font-weight: 800; letter-spacing: 0.2em;
+    }
+    .theme-preview-row {
+      display: flex; gap: 6px; align-items: center;
+      font-size: 12px;
+    }
+    .theme-preview-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .theme-info {
+      padding: 12px 14px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .theme-name { font-weight: 700; }
+    .theme-desc { font-size: 12px; color: var(--text-dim); }
+    .theme-active-tag {
+      font-size: 10px; font-weight: 700;
+      background: var(--primary); color: #07120e;
+      padding: 2px 8px; border-radius: 3px;
+    }
+
+    .theme-prev-cyber      { background: #050508; color: #00f5ff; }
+    .theme-prev-apothecary { background: #1a2620; color: #c9a961; }
+    .theme-prev-editorial  { background: #fafaf7; color: #0a0a0a; }
+    .theme-prev-vintage    { background: #2d1810; color: #e9c46a; }
+    .theme-prev-botanical  { background: #f5f1e8; color: #4a6b3a; }
+
+    /* ════════════ MODAL ════════════ */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none; align-items: center; justify-content: center;
+      z-index: 200; padding: 20px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      width: 540px; max-width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-close {
+      background: none; border: none; color: var(--text-dim);
+      font-size: 24px; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .modal-body { padding: 20px; }
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; justify-content: flex-end;
+    }
+    .form-row { margin-bottom: 14px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-input); border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      cursor: pointer; user-select: none;
+    }
+    .checkbox-row input[type="checkbox"] { width: auto; margin: 0; }
+    .checkbox-row.special-check {
+      border-color: var(--gold);
+      background: rgba(244,196,48,0.08);
+    }
+    .checkbox-row.special-check span { color: var(--gold); font-weight: 600; }
+
+    /* ════════════ TOAST ════════════ */
+    #toast-stack {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 999;
+    }
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-left: 3px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      min-width: 240px;
+      box-shadow: var(--shadow);
+      animation: slideIn 0.2s ease-out;
+    }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warn  { border-left-color: var(--warn); }
+    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px;
+      color: var(--text-dim);
+    }
+    .empty-state-icon { font-size: 48px; opacity: 0.4; margin-bottom: 12px; }
+
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,17,21,0.6);
+      display: none; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 12px 16px; }
+      main { padding: 16px; }
+      .product-card { grid-template-columns: 6px 1fr; gap: 10px; }
+      .product-card .product-prices,
+      .product-card .product-actions { grid-column: 2; }
+      .product-actions { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-lang">
+      <button class="lang-btn" data-lang="tr">TR</button>
+      <button class="lang-btn" data-lang="nl">NL</button>
+    </div>
+    <div class="login-logo">PASJA</div>
+    <div class="login-sub" data-i18n="login.sub"></div>
+    <form class="login-form" id="login-form">
+      <div>
+        <label data-i18n="login.password"></label>
+        <input type="password" id="login-password" autocomplete="current-password" autofocus>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%" data-i18n="login.submit"></button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="admin-app">
+  <div class="topbar">
+    <div class="topbar-logo">PASJA · ADMIN</div>
+    <div class="topbar-right">
+      <span class="topbar-status" id="topbar-status"></span>
+      <div class="lang-toggle">
+        <button class="lang-btn" data-lang="tr">TR</button>
+        <button class="lang-btn" data-lang="nl">NL</button>
+      </div>
+      <a href="index.html" target="_blank" class="btn btn-ghost btn-sm" data-i18n="topbar.menu"></a>
+      <button class="btn btn-ghost btn-sm" id="logout-btn" data-i18n="topbar.logout"></button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products" data-i18n="tab.products"></button>
+    <button class="tab-btn" data-tab="brands" data-i18n="tab.brands"></button>
+    <button class="tab-btn" data-tab="categories" data-i18n="tab.categories"></button>
+    <button class="tab-btn" data-tab="theme" data-i18n="tab.theme"></button>
+  </div>
+
+  <main>
+    <!-- ──────── PRODUCTS ──────── -->
+    <div class="tab-panel active" id="panel-products">
+      <div class="panel-header">
+        <div class="panel-title" data-i18n="products.title"></div>
+        <button class="btn btn-primary" id="add-product-btn" data-i18n="products.add"></button>
+      </div>
+      <div class="search-row">
+        <div class="search-wrap">
+          <input type="text" id="product-search" data-i18n-attr="placeholder:products.search" autocomplete="off">
+          <button class="search-clear" id="search-clear" type="button">×</button>
+        </div>
+      </div>
+      <div class="filters" id="product-filters"></div>
+      <div class="product-list" id="product-list">
+        <div class="empty-state">
+          <div class="empty-state-icon">⏳</div>
+          <span data-i18n="common.loading"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── BRANDS ──────── -->
+    <div class="tab-panel" id="panel-brands">
+      <div class="panel-header">
+        <div class="panel-title" data-i18n="brands.title"></div>
+        <button class="btn btn-primary" id="add-brand-btn" data-i18n="brands.add"></button>
+      </div>
+      <div class="brand-list" id="brand-list"></div>
+    </div>
+
+    <!-- ──────── CATEGORIES ──────── -->
+    <div class="tab-panel" id="panel-categories">
+      <div class="panel-header">
+        <div class="panel-title" data-i18n="categories.title"></div>
+        <button class="btn btn-primary" id="add-category-btn" data-i18n="categories.add"></button>
+      </div>
+      <p style="color:var(--text-dim);margin-bottom:14px;font-size:13px;" data-i18n="categories.subtitle"></p>
+      <div class="cat-columns" id="cat-columns"></div>
+    </div>
+
+    <!-- ──────── THEME ──────── -->
+    <div class="tab-panel" id="panel-theme">
+      <div class="panel-header">
+        <div class="panel-title" data-i18n="theme.title"></div>
+      </div>
+      <p style="color:var(--text-dim);margin-bottom:18px;font-size:13px;" data-i18n="theme.subtitle"></p>
+      <div class="theme-grid" id="theme-grid"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" id="modal-close">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel" data-i18n="modal.cancel"></button>
+      <button class="btn btn-primary" id="modal-save" data-i18n="modal.save"></button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-stack"></div>
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<script>
+  /* ══════════════════════════════════════════
+   *  CONFIG
+   * ══════════════════════════════════════════ */
+  const BASE_URL = 'https://script.google.com/macros/s/AKfycbzYsU4OerGcs6LcHKI0MPTCYuypcqKOV97qlvUg0jkpIKhOrNDd-eZXfD8E3Nd4iJU/exec';
+
+  const THEMES = [
+    { id: 'cyber',      name: { tr: 'Cyber',              nl: 'Cyber' },             desc: { tr: 'Neon · Cyberpunk',         nl: 'Neon · Cyberpunk' } },
+    { id: 'apothecary', name: { tr: 'Apothecary',         nl: 'Apothecary' },        desc: { tr: 'Yeşil · Altın · Klasik',   nl: 'Groen · Goud · Klassiek' } },
+    { id: 'editorial',  name: { tr: 'Editorial',          nl: 'Editorial' },         desc: { tr: 'Beyaz · Minimal · Galeri', nl: 'Wit · Minimaal · Galerie' } },
+    { id: 'vintage',    name: { tr: 'Vintage Amsterdam',  nl: 'Vintage Amsterdam' }, desc: { tr: 'Sepia · Sıcak · Retro',    nl: 'Sepia · Warm · Retro' } },
+    { id: 'botanical',  name: { tr: 'Botanical',          nl: 'Botanical' },         desc: { tr: 'Krem · Adaçayı · Doğal',   nl: 'Crème · Salie · Natuurlijk' } }
+  ];
+
+  /* ══════════════════════════════════════════
+   *  i18n
+   * ══════════════════════════════════════════ */
+  const I18N = {
+    tr: {
+      'login.sub': 'ADMIN PANEL',
+      'login.password': 'Şifre',
+      'login.submit': 'Giriş Yap',
+      'login.error.empty': 'Şifre gerekli',
+      'login.error.wrong': 'Hatalı şifre',
+
+      'topbar.menu': 'Menü →',
+      'topbar.logout': 'Çıkış',
+      'topbar.ready': 'Hazır · {0} ürün',
+      'topbar.loading': 'Yükleniyor…',
+      'topbar.error': 'Hata',
+
+      'tab.products': 'Ürünler',
+      'tab.brands': 'Markalar',
+      'tab.categories': 'Kategoriler',
+      'tab.theme': 'Tema',
+
+      'common.loading': 'Yükleniyor…',
+      'common.required': '*',
+
+      'products.title': 'Ürünler',
+      'products.add': '+ Yeni Ürün',
+      'products.search': 'Ürün, marka veya kategori ara…',
+      'products.all': 'Tümü',
+      'products.empty': 'Bu kategoride ürün yok',
+      'products.empty_search': 'Aramaya uygun ürün bulunamadı',
+      'products.confirm_delete': '"{0}" silinsin mi?',
+      'products.toast.added': 'Ürün eklendi',
+      'products.toast.updated': 'Ürün güncellendi',
+      'products.toast.deleted': 'Ürün silindi',
+      'products.toast.in_stock': 'Stoğa alındı',
+      'products.toast.out_of_stock': 'Stoktan çıkarıldı',
+      'products.action.in_stock': 'Stoğa Al',
+      'products.action.out_of_stock': 'Stoktan Çıkar',
+
+      'product.field.name': 'Ürün Adı',
+      'product.field.brand': 'Marka',
+      'product.field.category': 'Ana Kategori',
+      'product.field.price1': 'Fiyat 1 (1gr / 1st / 0.5gr)',
+      'product.field.thc': 'THC Oranı / 2.GR / 5ST',
+      'product.field.price2': 'Fiyat 2 (5gr / 10st / 5gr)',
+      'product.field.price3': 'Fiyat 3 (15st — sadece JOINT)',
+      'product.field.new': 'NEW etiketi',
+      'product.field.sale': 'SALE etiketi',
+      'product.field.special': 'Pasja\'ya özel mi? (Is speciaal voor Pasja?)',
+      'product.field.in_stock': 'Stokta var (kapalıysa menüde görünmez)',
+
+      'modal.edit_product': 'Ürünü Düzenle',
+      'modal.new_product': 'Yeni Ürün',
+      'modal.edit_brand': 'Markayı Düzenle',
+      'modal.new_brand': 'Yeni Marka',
+      'modal.edit_category': 'Kategoriyi Düzenle',
+      'modal.new_category': 'Yeni Kategori',
+      'modal.cancel': 'İptal',
+      'modal.save': 'Kaydet',
+
+      'brands.title': 'Markalar & Renkler',
+      'brands.add': '+ Yeni Marka',
+      'brands.empty': 'Marka eklenmemiş',
+      'brands.confirm_delete': '"{0}" markası silinsin mi?',
+      'brands.toast.added': 'Marka eklendi',
+      'brands.toast.updated': 'Marka güncellendi',
+      'brands.toast.deleted': 'Marka silindi',
+
+      'brand.field.name': 'Marka Adı',
+      'brand.field.color': 'Renk',
+
+      'categories.title': 'Kategori Düzeni',
+      'categories.add': '+ Yeni Kategori',
+      'categories.subtitle': 'Menüdeki 4 sütunun düzeni. Kategori bloklarını sürükleyerek sıralayabilir, kolonlar arası taşıyabilirsin. Sıra numarası küçük olan üstte gösterilir.',
+      'categories.column': 'Sütun',
+      'categories.empty': '— buraya sürükle —',
+      'categories.order_label': 'sıra',
+      'categories.confirm_delete': '"{0}" kategorisi silinsin mi? (Bu kategorideki ürünler menüde görünmez olur)',
+      'categories.toast.added': 'Kategori eklendi',
+      'categories.toast.updated': 'Kategori güncellendi',
+      'categories.toast.deleted': 'Kategori silindi',
+      'categories.toast.reordered': 'Sıralama güncellendi',
+
+      'category.field.name': 'Kategori Adı',
+      'category.field.column': 'Sütun (1-4)',
+      'category.field.order': 'Sıra No',
+      'category.field.headers_title': 'Fiyat Sütun Başlıkları',
+      'category.field.headers_hint': 'Menüde fiyatların üstünde gösterilir. Hepsini boş bırakırsan kategori adına göre otomatik seçilir. Boş bırakılan sütun gizlenir.',
+      'category.field.header_1': 'Sütun 1 başlığı',
+      'category.field.header_2': 'Sütun 2 başlığı',
+      'category.field.header_3': 'Sütun 3 başlığı',
+      'category.field.header_4': 'Sütun 4 başlığı',
+      'category.field.header_placeholder': 'örn: 1GR',
+
+      'theme.title': 'Görsel Tema',
+      'theme.subtitle': 'Seçtiğin tema canlı menüye 10 saniye içinde uygulanır.',
+      'theme.active': 'AKTİF',
+      'theme.toast.changed': 'Tema değişti: {0}',
+
+      'tooltip.edit': 'Düzenle',
+      'tooltip.delete': 'Sil',
+      'tooltip.up': 'Yukarı',
+      'tooltip.down': 'Aşağı',
+
+      'err.required_fields': 'Zorunlu alanlar boş',
+      'err.brand_required': 'Marka adı gerekli',
+      'err.category_required': 'Kategori adı gerekli',
+      'err.invalid_color': 'Geçersiz renk (örnek: #39ff14)',
+
+      'pill.new': 'NEW',
+      'pill.sale': 'SALE',
+      'pill.special': 'PASJA',
+      'pill.out': 'STOK YOK'
+    },
+    nl: {
+      'login.sub': 'BEHEERPANEEL',
+      'login.password': 'Wachtwoord',
+      'login.submit': 'Inloggen',
+      'login.error.empty': 'Wachtwoord vereist',
+      'login.error.wrong': 'Onjuist wachtwoord',
+
+      'topbar.menu': 'Menu →',
+      'topbar.logout': 'Uitloggen',
+      'topbar.ready': 'Klaar · {0} producten',
+      'topbar.loading': 'Laden…',
+      'topbar.error': 'Fout',
+
+      'tab.products': 'Producten',
+      'tab.brands': 'Merken',
+      'tab.categories': 'Categorieën',
+      'tab.theme': 'Thema',
+
+      'common.loading': 'Laden…',
+      'common.required': '*',
+
+      'products.title': 'Producten',
+      'products.add': '+ Nieuw Product',
+      'products.search': 'Zoek product, merk of categorie…',
+      'products.all': 'Alles',
+      'products.empty': 'Geen producten in deze categorie',
+      'products.empty_search': 'Geen producten gevonden',
+      'products.confirm_delete': 'Verwijder "{0}"?',
+      'products.toast.added': 'Product toegevoegd',
+      'products.toast.updated': 'Product bijgewerkt',
+      'products.toast.deleted': 'Product verwijderd',
+      'products.toast.in_stock': 'Op voorraad gezet',
+      'products.toast.out_of_stock': 'Uit voorraad gehaald',
+      'products.action.in_stock': 'Op voorraad',
+      'products.action.out_of_stock': 'Uit voorraad',
+
+      'product.field.name': 'Productnaam',
+      'product.field.brand': 'Merk',
+      'product.field.category': 'Hoofdcategorie',
+      'product.field.price1': 'Prijs 1 (1gr / 1st / 0.5gr)',
+      'product.field.thc': 'THC Gehalte / 2.GR / 5ST',
+      'product.field.price2': 'Prijs 2 (5gr / 10st / 5gr)',
+      'product.field.price3': 'Prijs 3 (15st — alleen JOINT)',
+      'product.field.new': 'NEW label',
+      'product.field.sale': 'SALE label',
+      'product.field.special': 'Is speciaal voor Pasja?',
+      'product.field.in_stock': 'Op voorraad (uit = niet zichtbaar in menu)',
+
+      'modal.edit_product': 'Product Bewerken',
+      'modal.new_product': 'Nieuw Product',
+      'modal.edit_brand': 'Merk Bewerken',
+      'modal.new_brand': 'Nieuw Merk',
+      'modal.edit_category': 'Categorie Bewerken',
+      'modal.new_category': 'Nieuwe Categorie',
+      'modal.cancel': 'Annuleren',
+      'modal.save': 'Opslaan',
+
+      'brands.title': 'Merken & Kleuren',
+      'brands.add': '+ Nieuw Merk',
+      'brands.empty': 'Geen merken toegevoegd',
+      'brands.confirm_delete': 'Verwijder merk "{0}"?',
+      'brands.toast.added': 'Merk toegevoegd',
+      'brands.toast.updated': 'Merk bijgewerkt',
+      'brands.toast.deleted': 'Merk verwijderd',
+
+      'brand.field.name': 'Merknaam',
+      'brand.field.color': 'Kleur',
+
+      'categories.title': 'Categorie Indeling',
+      'categories.add': '+ Nieuwe Categorie',
+      'categories.subtitle': 'De indeling van de 4 kolommen in het menu. Sleep categorieblokken om te sorteren of tussen kolommen te verplaatsen. Lager volgordenummer staat bovenaan.',
+      'categories.column': 'Kolom',
+      'categories.empty': '— sleep hierheen —',
+      'categories.order_label': 'volgorde',
+      'categories.confirm_delete': 'Verwijder categorie "{0}"? (Producten in deze categorie worden onzichtbaar in het menu)',
+      'categories.toast.added': 'Categorie toegevoegd',
+      'categories.toast.updated': 'Categorie bijgewerkt',
+      'categories.toast.deleted': 'Categorie verwijderd',
+      'categories.toast.reordered': 'Volgorde bijgewerkt',
+
+      'category.field.name': 'Categorienaam',
+      'category.field.column': 'Kolom (1-4)',
+      'category.field.order': 'Volgordenummer',
+      'category.field.headers_title': 'Prijs Kolomtitels',
+      'category.field.headers_hint': 'Wordt boven de prijzen in het menu getoond. Laat alles leeg voor automatische keuze op basis van categorienaam. Lege kolommen worden verborgen.',
+      'category.field.header_1': 'Kolom 1 titel',
+      'category.field.header_2': 'Kolom 2 titel',
+      'category.field.header_3': 'Kolom 3 titel',
+      'category.field.header_4': 'Kolom 4 titel',
+      'category.field.header_placeholder': 'bijv: 1GR',
+
+      'theme.title': 'Visueel Thema',
+      'theme.subtitle': 'Het gekozen thema wordt binnen 10 seconden toegepast op het menu.',
+      'theme.active': 'ACTIEF',
+      'theme.toast.changed': 'Thema gewijzigd: {0}',
+
+      'tooltip.edit': 'Bewerken',
+      'tooltip.delete': 'Verwijderen',
+      'tooltip.up': 'Omhoog',
+      'tooltip.down': 'Omlaag',
+
+      'err.required_fields': 'Verplichte velden zijn leeg',
+      'err.brand_required': 'Merknaam vereist',
+      'err.category_required': 'Categorienaam vereist',
+      'err.invalid_color': 'Ongeldige kleur (voorbeeld: #39ff14)',
+
+      'pill.new': 'NEW',
+      'pill.sale': 'SALE',
+      'pill.special': 'PASJA',
+      'pill.out': 'NIET OP VOORRAAD'
+    }
+  };
+
+  function t(key, ...args) {
+    let s = (I18N[state.lang] && I18N[state.lang][key]) || I18N.tr[key] || key;
+    args.forEach((v, i) => s = s.replace(`{${i}}`, v));
+    return s;
+  }
+
+  function applyI18n(root = document) {
+    /* Text content */
+    root.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    /* Attributes: data-i18n-attr="placeholder:key" */
+    root.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      el.dataset.i18nAttr.split(',').forEach(pair => {
+        const [attr, key] = pair.split(':');
+        if (attr && key) el.setAttribute(attr.trim(), t(key.trim()));
+      });
+    });
+    document.documentElement.lang = state.lang;
+  }
+
+  function setLang(lang) {
+    if (!I18N[lang]) return;
+    state.lang = lang;
+    try { localStorage.setItem('pasja_admin_lang', lang); } catch(e) {}
+    document.querySelectorAll('.lang-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    applyI18n();
+    /* Re-render dynamic panels */
+    if (state.products.length || state.categories.length || Object.keys(state.brands).length) {
+      renderProducts();
+      renderBrands();
+      renderCategories();
+      renderThemes();
+      setStatus(t('topbar.ready', state.products.length));
+    }
+  }
+
+  /* ══════════════════════════════════════════
+   *  STATE
+   * ══════════════════════════════════════════ */
+  let state = {
+    lang: 'tr',
+    password: null,
+    products: [],
+    brands: {},
+    categories: [],
+    theme: 'cyber',
+    activeFilter: 'all',
+    searchQuery: '',
+    editing: null,
+    draggedKategori: null
+  };
+
+  try {
+    const cachedLang = localStorage.getItem('pasja_admin_lang');
+    if (cachedLang && I18N[cachedLang]) state.lang = cachedLang;
+  } catch(e) {}
+
+  /* ══════════════════════════════════════════
+   *  API
+   * ══════════════════════════════════════════ */
+  async function apiGet(action) {
+    const url = action ? `${BASE_URL}?action=${action}` : BASE_URL;
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  }
+
+  async function apiPost(action, payload = {}) {
+    const body = JSON.stringify({ action, password: state.password, ...payload });
+    const r = await fetch(BASE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    return j;
+  }
+
+  /* ══════════════════════════════════════════
+   *  TOAST / LOADING
+   * ══════════════════════════════════════════ */
+  function toast(msg, type = '') {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    document.getElementById('toast-stack').appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  function loading(on) {
+    document.getElementById('loading-overlay').classList.toggle('active', on);
+  }
+
+  function setStatus(text) {
+    document.getElementById('topbar-status').textContent = text;
+  }
+
+  /* ══════════════════════════════════════════
+   *  LOGIN
+   * ══════════════════════════════════════════ */
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pw = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = '';
+    if (!pw) { errEl.textContent = t('login.error.empty'); return; }
+    loading(true);
+    try {
+      state.password = pw;
+      await apiPost('login');
+      try { sessionStorage.setItem('pasja_admin_pw', pw); } catch(e) {}
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-app').classList.add('active');
+      await loadAll();
+    } catch (err) {
+      state.password = null;
+      errEl.textContent = err.message.includes('unauthorized') ? t('login.error.wrong') : err.message;
+    } finally {
+      loading(false);
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    state.password = null;
+    try { sessionStorage.removeItem('pasja_admin_pw'); } catch(e) {}
+    location.reload();
+  });
+
+  /* ══════════════════════════════════════════
+   *  DATA LOAD
+   * ══════════════════════════════════════════ */
+  async function loadAll() {
+    setStatus(t('topbar.loading'));
+    try {
+      const [products, brands, categories, themeData] = await Promise.all([
+        apiGet(),
+        apiGet('renkler'),
+        apiGet('sirala'),
+        apiGet('tema').catch(() => ({ tema: 'cyber' }))
+      ]);
+      state.products = products || [];
+      state.brands = brands || {};
+      state.categories = categories || [];
+      state.theme = (themeData && themeData.tema) || 'cyber';
+      renderProducts();
+      renderBrands();
+      renderCategories();
+      renderThemes();
+      setStatus(t('topbar.ready', state.products.length));
+    } catch (err) {
+      setStatus(t('topbar.error'));
+      toast(err.message, 'error');
+    }
+  }
+
+  /* ══════════════════════════════════════════
+   *  TABS
+   * ══════════════════════════════════════════ */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+    });
+  });
+
+  /* ══════════════════════════════════════════
+   *  PRODUCTS
+   * ══════════════════════════════════════════ */
+  document.getElementById('product-search').addEventListener('input', (e) => {
+    state.searchQuery = e.target.value;
+    document.getElementById('search-clear').classList.toggle('visible', !!state.searchQuery);
+    renderProducts();
+  });
+  document.getElementById('search-clear').addEventListener('click', () => {
+    document.getElementById('product-search').value = '';
+    state.searchQuery = '';
+    document.getElementById('search-clear').classList.remove('visible');
+    renderProducts();
+  });
+
+  function matchesSearch(p, q) {
+    if (!q) return true;
+    const needle = q.toLowerCase();
+    return (p.urun_adi && String(p.urun_adi).toLowerCase().includes(needle)) ||
+           (p.marka && String(p.marka).toLowerCase().includes(needle)) ||
+           (p.ana_kategori && String(p.ana_kategori).toLowerCase().includes(needle));
+  }
+
+  function renderProducts() {
+    const cats = [...new Set(state.products.map(p => p.ana_kategori).filter(Boolean))].sort();
+    const fEl = document.getElementById('product-filters');
+    fEl.innerHTML = `<div class="filter-chip ${state.activeFilter === 'all' ? 'active' : ''}" data-f="all">${t('products.all')} (${state.products.length})</div>`
+      + cats.map(c => {
+          const n = state.products.filter(p => p.ana_kategori === c).length;
+          return `<div class="filter-chip ${state.activeFilter === c ? 'active' : ''}" data-f="${escapeHtml(c)}">${escapeHtml(c)} (${n})</div>`;
+        }).join('');
+    fEl.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => { state.activeFilter = chip.dataset.f; renderProducts(); });
+    });
+
+    let filtered = state.activeFilter === 'all'
+      ? state.products
+      : state.products.filter(p => p.ana_kategori === state.activeFilter);
+
+    filtered = filtered.filter(p => matchesSearch(p, state.searchQuery));
+
+    const list = document.getElementById('product-list');
+    if (filtered.length === 0) {
+      const msg = state.searchQuery ? t('products.empty_search') : t('products.empty');
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div>${msg}</div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(p => {
+      const realIdx = state.products.indexOf(p);
+      const renk = state.brands[p.marka] || '#666';
+      const prices = [
+        p.fiyat_1gr ? `<span><b>€${p.fiyat_1gr}</b></span>` : '',
+        p.fiyat_5gr ? `<span><b>€${p.fiyat_5gr}</b></span>` : '',
+        p.fiyat_4   ? `<span><b>€${p.fiyat_4}</b></span>`   : '',
+        p.thc_orani ? `<span>THC ${p.thc_orani}</span>`     : ''
+      ].filter(Boolean).join(' · ');
+      const pills = [
+        p.pasja_speciaal ? `<span class="pill pill-special">${t('pill.special')}</span>` : '',
+        p.yeni_mi        ? `<span class="pill pill-new">${t('pill.new')}</span>` : '',
+        p.korting        ? `<span class="pill pill-sale">${t('pill.sale')}</span>` : '',
+        p.stok_var_mi === false ? `<span class="pill pill-out">${t('pill.out')}</span>` : ''
+      ].join('');
+      const stockBtnLabel = p.stok_var_mi === false ? t('products.action.in_stock') : t('products.action.out_of_stock');
+      return `<div class="product-card${p.pasja_speciaal ? ' special' : ''}">
+        <div class="product-color" style="background:${renk}"></div>
+        <div class="product-info">
+          <div class="product-name">${escapeHtml(p.urun_adi || '?')} ${pills}</div>
+          <div class="product-meta">
+            <span><strong>${escapeHtml(p.marka || '—')}</strong></span>
+            <span>${escapeHtml(p.ana_kategori || '—')}</span>
+          </div>
+          ${prices ? `<div class="product-prices" style="margin-top:6px">${prices}</div>` : ''}
+        </div>
+        <div class="product-actions">
+          <button class="btn btn-ghost btn-sm" data-act="toggle-stock" data-i="${realIdx}">${stockBtnLabel}</button>
+          <button class="btn btn-ghost btn-icon" data-act="edit" data-i="${realIdx}" title="${t('tooltip.edit')}">✎</button>
+          <button class="btn btn-danger btn-icon" data-act="delete" data-i="${realIdx}" title="${t('tooltip.delete')}">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('button[data-act]').forEach(b => {
+      b.addEventListener('click', () => productAction(b.dataset.act, +b.dataset.i));
+    });
+  }
+
+  document.getElementById('add-product-btn').addEventListener('click', () => openProductModal(null));
+
+  async function productAction(act, idx) {
+    const p = state.products[idx];
+    if (!p) return;
+    if (act === 'edit') {
+      openProductModal(p);
+    } else if (act === 'delete') {
+      if (!confirm(t('products.confirm_delete', p.urun_adi))) return;
+      loading(true);
+      try {
+        await apiPost('deleteUrun', { urun_adi: p.urun_adi, marka: p.marka });
+        toast(t('products.toast.deleted'));
+        await loadAll();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { loading(false); }
+    } else if (act === 'toggle-stock') {
+      loading(true);
+      try {
+        await apiPost('updateUrun', {
+          original: { urun_adi: p.urun_adi, marka: p.marka },
+          urun: { ...p, stok_var_mi: p.stok_var_mi === false }
+        });
+        toast(p.stok_var_mi === false ? t('products.toast.in_stock') : t('products.toast.out_of_stock'));
+        await loadAll();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { loading(false); }
+    }
+  }
+
+  function openProductModal(p) {
+    state.editing = p ? { type: 'product', original: { urun_adi: p.urun_adi, marka: p.marka } } : { type: 'product', original: null };
+    const cats = [...new Set(state.products.map(x => x.ana_kategori).filter(Boolean))].sort();
+    const brands = Object.keys(state.brands).sort();
+
+    document.getElementById('modal-title').textContent = p ? t('modal.edit_product') : t('modal.new_product');
+    document.getElementById('modal-body').innerHTML = `
+      <div class="form-row">
+        <label>${t('product.field.name')} *</label>
+        <input id="f-urun_adi" value="${esc(p?.urun_adi)}" required>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>${t('product.field.brand')} *</label>
+          <input id="f-marka" list="brand-list-dl" value="${esc(p?.marka)}" required>
+          <datalist id="brand-list-dl">${brands.map(b => `<option value="${esc(b)}">`).join('')}</datalist>
+        </div>
+        <div class="form-row">
+          <label>${t('product.field.category')} *</label>
+          <input id="f-ana_kategori" list="cat-list-dl" value="${esc(p?.ana_kategori)}" required>
+          <datalist id="cat-list-dl">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>${t('product.field.price1')}</label>
+          <input id="f-fiyat_1gr" type="number" step="0.01" value="${esc(p?.fiyat_1gr)}">
+        </div>
+        <div class="form-row">
+          <label>${t('product.field.thc')}</label>
+          <input id="f-thc_orani" value="${esc(p?.thc_orani)}">
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>${t('product.field.price2')}</label>
+          <input id="f-fiyat_5gr" type="number" step="0.01" value="${esc(p?.fiyat_5gr)}">
+        </div>
+        <div class="form-row">
+          <label>${t('product.field.price3')}</label>
+          <input id="f-fiyat_4" type="number" step="0.01" value="${esc(p?.fiyat_4)}">
+        </div>
+      </div>
+      <label class="checkbox-row special-check" style="margin-top:8px">
+        <input type="checkbox" id="f-pasja_speciaal" ${p?.pasja_speciaal ? 'checked' : ''}>
+        <span>★ ${t('product.field.special')}</span>
+      </label>
+      <div class="form-grid-2" style="margin-top:8px">
+        <label class="checkbox-row">
+          <input type="checkbox" id="f-yeni_mi" ${p?.yeni_mi ? 'checked' : ''}>
+          <span>${t('product.field.new')}</span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="f-korting" ${p?.korting ? 'checked' : ''}>
+          <span>${t('product.field.sale')}</span>
+        </label>
+      </div>
+      <label class="checkbox-row" style="margin-top:8px">
+        <input type="checkbox" id="f-stok_var_mi" ${p?.stok_var_mi !== false ? 'checked' : ''}>
+        <span>${t('product.field.in_stock')}</span>
+      </label>
+    `;
+    openModal();
+  }
+
+  /* ══════════════════════════════════════════
+   *  BRANDS
+   * ══════════════════════════════════════════ */
+  function renderBrands() {
+    const list = document.getElementById('brand-list');
+    const items = Object.entries(state.brands).sort((a, b) => a[0].localeCompare(b[0]));
+    if (items.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🎨</div>${t('brands.empty')}</div>`;
+      return;
+    }
+    list.innerHTML = items.map(([name, color]) => `
+      <div class="brand-card">
+        <div class="brand-swatch" style="background:${escapeHtml(color)}"></div>
+        <div class="brand-info">
+          <div class="brand-name">${escapeHtml(name)}</div>
+          <div class="brand-color-hex">${escapeHtml(color)}</div>
+        </div>
+        <div class="brand-actions">
+          <button class="btn btn-ghost btn-icon" data-act="edit-brand" data-name="${escapeHtml(name)}" title="${t('tooltip.edit')}">✎</button>
+          <button class="btn btn-danger btn-icon" data-act="delete-brand" data-name="${escapeHtml(name)}" title="${t('tooltip.delete')}">🗑</button>
+        </div>
+      </div>
+    `).join('');
+    list.querySelectorAll('button[data-act]').forEach(b => {
+      b.addEventListener('click', () => brandAction(b.dataset.act, b.dataset.name));
+    });
+  }
+
+  document.getElementById('add-brand-btn').addEventListener('click', () => openBrandModal(null));
+
+  async function brandAction(act, name) {
+    if (act === 'edit-brand') {
+      openBrandModal({ name, color: state.brands[name] });
+    } else if (act === 'delete-brand') {
+      if (!confirm(t('brands.confirm_delete', name))) return;
+      loading(true);
+      try {
+        await apiPost('deleteMarka', { marka: name });
+        toast(t('brands.toast.deleted'));
+        await loadAll();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { loading(false); }
+    }
+  }
+
+  function openBrandModal(b) {
+    state.editing = { type: 'brand', original: b };
+    document.getElementById('modal-title').textContent = b ? t('modal.edit_brand') : t('modal.new_brand');
+    document.getElementById('modal-body').innerHTML = `
+      <div class="form-row">
+        <label>${t('brand.field.name')} *</label>
+        <input id="f-marka-name" value="${esc(b?.name)}" required>
+      </div>
+      <div class="form-row">
+        <label>${t('brand.field.color')}</label>
+        <div style="display:flex;gap:10px">
+          <input id="f-marka-color" type="color" value="${esc(b?.color || '#39ff14')}" style="width:60px;height:42px;padding:2px;cursor:pointer">
+          <input id="f-marka-hex" value="${esc(b?.color || '#39ff14')}" placeholder="#hex">
+        </div>
+      </div>
+    `;
+    const colorInput = document.getElementById('f-marka-color');
+    const hexInput = document.getElementById('f-marka-hex');
+    colorInput.addEventListener('input', () => hexInput.value = colorInput.value);
+    hexInput.addEventListener('input', () => {
+      if (/^#[0-9a-f]{6}$/i.test(hexInput.value)) colorInput.value = hexInput.value;
+    });
+    openModal();
+  }
+
+  /* ══════════════════════════════════════════
+   *  CATEGORIES
+   * ══════════════════════════════════════════ */
+  function renderCategories() {
+    const root = document.getElementById('cat-columns');
+    const cols = [1, 2, 3, 4];
+    root.innerHTML = cols.map(n => {
+      const items = state.categories
+        .filter(c => +c.sutun_no === n)
+        .sort((a, b) => a.sira_no - b.sira_no);
+      return `<div class="cat-column" data-col="${n}">
+        <div class="cat-column-title">${t('categories.column')} ${n}</div>
+        ${items.length === 0 ? `<div class="cat-column-empty">${t('categories.empty')}</div>` : ''}
+        ${items.map(c => `
+          <div class="cat-item" draggable="true" data-kategori="${escapeHtml(c.kategori)}">
+            <div class="cat-item-handle" aria-hidden="true">⋮⋮</div>
+            <div class="cat-item-main">
+              <div class="cat-item-name">${escapeHtml(c.kategori)}</div>
+              <div style="font-size:11px;color:var(--text-dim)">${t('categories.order_label')} ${c.sira_no}</div>
+            </div>
+            <div class="cat-item-actions">
+              <button class="btn btn-ghost btn-icon" data-act="up" data-k="${escapeHtml(c.kategori)}" title="${t('tooltip.up')}">↑</button>
+              <button class="btn btn-ghost btn-icon" data-act="down" data-k="${escapeHtml(c.kategori)}" title="${t('tooltip.down')}">↓</button>
+              <button class="btn btn-ghost btn-icon" data-act="edit-cat" data-k="${escapeHtml(c.kategori)}" title="${t('tooltip.edit')}">✎</button>
+              <button class="btn btn-danger btn-icon" data-act="delete-cat" data-k="${escapeHtml(c.kategori)}" title="${t('tooltip.delete')}">🗑</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    }).join('');
+    root.querySelectorAll('button[data-act]').forEach(b => {
+      b.addEventListener('click', () => categoryAction(b.dataset.act, b.dataset.k));
+    });
+    attachDragHandlers();
+  }
+
+  document.getElementById('add-category-btn').addEventListener('click', () => openCategoryModal(null));
+
+  async function categoryAction(act, name) {
+    const c = state.categories.find(x => x.kategori === name);
+    if (!c) return;
+
+    if (act === 'edit-cat') {
+      openCategoryModal(c);
+    } else if (act === 'delete-cat') {
+      if (!confirm(t('categories.confirm_delete', name))) return;
+      loading(true);
+      try {
+        await apiPost('deleteKategori', { kategori: name });
+        toast(t('categories.toast.deleted'));
+        await loadAll();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { loading(false); }
+    } else if (act === 'up' || act === 'down') {
+      const sameCol = state.categories
+        .filter(x => +x.sutun_no === +c.sutun_no)
+        .sort((a, b) => a.sira_no - b.sira_no);
+      const idx = sameCol.findIndex(x => x.kategori === name);
+      const swapWith = act === 'up' ? sameCol[idx - 1] : sameCol[idx + 1];
+      if (!swapWith) return;
+      loading(true);
+      try {
+        await apiPost('updateKategori', {
+          original: { kategori: c.kategori },
+          kategori: { ...c, sira_no: swapWith.sira_no }
+        });
+        await apiPost('updateKategori', {
+          original: { kategori: swapWith.kategori },
+          kategori: { ...swapWith, sira_no: c.sira_no }
+        });
+        await loadAll();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { loading(false); }
+    }
+  }
+
+  /* ══════════════════════════════════════════
+   *  CATEGORY DRAG-DROP
+   * ══════════════════════════════════════════ */
+  function attachDragHandlers() {
+    document.querySelectorAll('.cat-item').forEach(item => {
+      item.addEventListener('dragstart', onDragStart);
+      item.addEventListener('dragend',   onDragEnd);
+      item.addEventListener('dragover',  onItemDragOver);
+      item.addEventListener('dragleave', onItemDragLeave);
+      item.addEventListener('drop',      onItemDrop);
+    });
+    document.querySelectorAll('.cat-column').forEach(col => {
+      col.addEventListener('dragover',  onColumnDragOver);
+      col.addEventListener('dragleave', onColumnDragLeave);
+      col.addEventListener('drop',      onColumnDrop);
+    });
+  }
+
+  function clearDropIndicators() {
+    document.querySelectorAll('.cat-item.drop-above, .cat-item.drop-below').forEach(el => {
+      el.classList.remove('drop-above', 'drop-below');
+    });
+    document.querySelectorAll('.cat-column.drop-target').forEach(el => {
+      el.classList.remove('drop-target');
+    });
+  }
+
+  function onDragStart(e) {
+    if (e.target.closest('.btn')) { e.preventDefault(); return; }
+    state.draggedKategori = e.currentTarget.dataset.kategori;
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', state.draggedKategori); } catch(_) {}
+  }
+
+  function onDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    clearDropIndicators();
+    state.draggedKategori = null;
+  }
+
+  function onItemDragOver(e) {
+    if (!state.draggedKategori) return;
+    const item = e.currentTarget;
+    if (item.dataset.kategori === state.draggedKategori) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'move';
+    const rect = item.getBoundingClientRect();
+    const upperHalf = (e.clientY - rect.top) < rect.height / 2;
+    clearDropIndicators();
+    item.classList.add(upperHalf ? 'drop-above' : 'drop-below');
+  }
+
+  function onItemDragLeave(e) {
+    e.currentTarget.classList.remove('drop-above', 'drop-below');
+  }
+
+  function onItemDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!state.draggedKategori) return;
+    const item = e.currentTarget;
+    if (item.dataset.kategori === state.draggedKategori) {
+      clearDropIndicators(); return;
+    }
+    const colEl = item.closest('.cat-column');
+    if (!colEl) return;
+    const targetCol = +colEl.dataset.col;
+    const newIdx = computeDropIndex(targetCol, e.clientY);
+    handleDrop(targetCol, newIdx);
+    clearDropIndicators();
+  }
+
+  function onColumnDragOver(e) {
+    if (!state.draggedKategori) return;
+    /* Sadece item'ların dışındaki boşluğa düşürmek için */
+    if (e.target.closest('.cat-item')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drop-target');
+  }
+
+  function onColumnDragLeave(e) {
+    if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return;
+    e.currentTarget.classList.remove('drop-target');
+  }
+
+  function onColumnDrop(e) {
+    if (!state.draggedKategori) return;
+    if (e.target.closest('.cat-item')) return; /* item handler hallediyor */
+    e.preventDefault();
+    const targetCol = +e.currentTarget.dataset.col;
+    const newIdx = computeDropIndex(targetCol, e.clientY);
+    handleDrop(targetCol, newIdx);
+    clearDropIndicators();
+  }
+
+  function computeDropIndex(targetCol, clientY) {
+    const colEl = document.querySelector(`.cat-column[data-col="${targetCol}"]`);
+    if (!colEl) return 0;
+    const items = [...colEl.querySelectorAll('.cat-item')]
+      .filter(el => el.dataset.kategori !== state.draggedKategori);
+    for (let i = 0; i < items.length; i++) {
+      const r = items[i].getBoundingClientRect();
+      if (clientY < r.top + r.height / 2) return i;
+    }
+    return items.length;
+  }
+
+  async function handleDrop(targetCol, newIdx) {
+    const draggedKat = state.draggedKategori;
+    const dragged = state.categories.find(c => c.kategori === draggedKat);
+    if (!dragged) return;
+
+    /* Kategorileri sütunlara böl, sürüklenen hariç */
+    const cols = { 1: [], 2: [], 3: [], 4: [] };
+    state.categories.forEach(c => {
+      if (c.kategori === draggedKat) return;
+      cols[+c.sutun_no || 1].push(c);
+    });
+    Object.keys(cols).forEach(k => cols[k].sort((a, b) => a.sira_no - b.sira_no));
+
+    /* Hedef sütuna ekle */
+    const list = cols[targetCol] || (cols[targetCol] = []);
+    list.splice(Math.max(0, Math.min(newIdx, list.length)), 0, dragged);
+
+    /* Değişen item'ları topla */
+    const updates = [];
+    [1, 2, 3, 4].forEach(s => {
+      cols[s].forEach((c, i) => {
+        const newSira = i + 1;
+        if (+c.sutun_no !== s || +c.sira_no !== newSira) {
+          updates.push({ kategori: c.kategori, sutun_no: s, sira_no: newSira });
+        }
+      });
+    });
+    if (updates.length === 0) return;
+
+    /* Optimistic UI */
+    updates.forEach(u => {
+      const c = state.categories.find(x => x.kategori === u.kategori);
+      if (c) { c.sutun_no = u.sutun_no; c.sira_no = u.sira_no; }
+    });
+    renderCategories();
+
+    /* Sunucuya gönder */
+    try {
+      await apiPost('reorderKategoriler', { items: updates });
+      toast(t('categories.toast.reordered'));
+    } catch (err) {
+      toast(err.message, 'error');
+      await loadAll();
+    }
+  }
+
+  function openCategoryModal(c) {
+    state.editing = { type: 'category', original: c ? { kategori: c.kategori } : null };
+    document.getElementById('modal-title').textContent = c ? t('modal.edit_category') : t('modal.new_category');
+    const ph = t('category.field.header_placeholder');
+    document.getElementById('modal-body').innerHTML = `
+      <div class="form-row">
+        <label>${t('category.field.name')} *</label>
+        <input id="f-kat-name" value="${esc(c?.kategori)}" required>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>${t('category.field.column')}</label>
+          <select id="f-kat-sutun">
+            <option value="1" ${c?.sutun_no == 1 ? 'selected' : ''}>1</option>
+            <option value="2" ${c?.sutun_no == 2 ? 'selected' : ''}>2</option>
+            <option value="3" ${c?.sutun_no == 3 ? 'selected' : ''}>3</option>
+            <option value="4" ${c?.sutun_no == 4 ? 'selected' : ''}>4</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>${t('category.field.order')}</label>
+          <input id="f-kat-sira" type="number" value="${c?.sira_no ?? 1}">
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:6px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">${t('category.field.headers_title')}</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;line-height:1.4">${t('category.field.headers_hint')}</div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>${t('category.field.header_1')}</label>
+            <input id="f-kat-h1" placeholder="${esc(ph)}" value="${esc(c?.header_1)}">
+          </div>
+          <div class="form-row">
+            <label>${t('category.field.header_2')}</label>
+            <input id="f-kat-h2" placeholder="${esc(ph)}" value="${esc(c?.header_2)}">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>${t('category.field.header_3')}</label>
+            <input id="f-kat-h3" placeholder="${esc(ph)}" value="${esc(c?.header_3)}">
+          </div>
+          <div class="form-row">
+            <label>${t('category.field.header_4')}</label>
+            <input id="f-kat-h4" placeholder="${esc(ph)}" value="${esc(c?.header_4)}">
+          </div>
+        </div>
+      </div>
+    `;
+    openModal();
+  }
+
+  /* ══════════════════════════════════════════
+   *  THEME
+   * ══════════════════════════════════════════ */
+  function renderThemes() {
+    const grid = document.getElementById('theme-grid');
+    grid.innerHTML = THEMES.map(th => `
+      <div class="theme-card ${state.theme === th.id ? 'active' : ''}" data-theme="${th.id}">
+        <div class="theme-preview theme-prev-${th.id}">
+          <div class="theme-preview-title">PASJA</div>
+          <div class="theme-preview-row">
+            <span class="theme-preview-dot" style="background:currentColor"></span>
+            <span style="opacity:0.8">Sample · €12</span>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div>
+            <div class="theme-name">${escapeHtml(th.name[state.lang])}</div>
+            <div class="theme-desc">${escapeHtml(th.desc[state.lang])}</div>
+          </div>
+          ${state.theme === th.id ? `<span class="theme-active-tag">${t('theme.active')}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+    grid.querySelectorAll('.theme-card').forEach(card => {
+      card.addEventListener('click', () => setTheme(card.dataset.theme));
+    });
+  }
+
+  async function setTheme(theme) {
+    if (theme === state.theme) return;
+    loading(true);
+    try {
+      await apiPost('setTema', { tema: theme });
+      state.theme = theme;
+      renderThemes();
+      const themeName = (THEMES.find(x => x.id === theme) || {}).name?.[state.lang] || theme;
+      toast(t('theme.toast.changed', themeName));
+    } catch (e) {
+      toast(e.message, 'error');
+    } finally { loading(false); }
+  }
+
+  /* ══════════════════════════════════════════
+   *  MODAL
+   * ══════════════════════════════════════════ */
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  function openModal() { modalBackdrop.classList.add('active'); }
+  function closeModal() { modalBackdrop.classList.remove('active'); state.editing = null; }
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+
+  document.getElementById('modal-save').addEventListener('click', async () => {
+    if (!state.editing) return;
+    loading(true);
+    try {
+      if (state.editing.type === 'product') {
+        const u = {
+          urun_adi:       val('f-urun_adi'),
+          marka:          val('f-marka'),
+          ana_kategori:   val('f-ana_kategori'),
+          fiyat_1gr:      numOrEmpty('f-fiyat_1gr'),
+          thc_orani:      val('f-thc_orani'),
+          fiyat_5gr:      numOrEmpty('f-fiyat_5gr'),
+          fiyat_4:        numOrEmpty('f-fiyat_4'),
+          stok_var_mi:    document.getElementById('f-stok_var_mi').checked,
+          yeni_mi:        document.getElementById('f-yeni_mi').checked,
+          korting:        document.getElementById('f-korting').checked,
+          pasja_speciaal: document.getElementById('f-pasja_speciaal').checked
+        };
+        if (!u.urun_adi || !u.marka || !u.ana_kategori) throw new Error(t('err.required_fields'));
+        if (state.editing.original) {
+          await apiPost('updateUrun', { original: state.editing.original, urun: u });
+          toast(t('products.toast.updated'));
+        } else {
+          await apiPost('addUrun', { urun: u });
+          toast(t('products.toast.added'));
+        }
+      }
+      else if (state.editing.type === 'brand') {
+        const name = val('f-marka-name');
+        const color = val('f-marka-hex');
+        if (!name) throw new Error(t('err.brand_required'));
+        if (!/^#[0-9a-f]{6}$/i.test(color)) throw new Error(t('err.invalid_color'));
+        if (state.editing.original) {
+          await apiPost('updateMarka', { original: state.editing.original.name, marka: name, renk: color });
+          toast(t('brands.toast.updated'));
+        } else {
+          await apiPost('addMarka', { marka: name, renk: color });
+          toast(t('brands.toast.added'));
+        }
+      }
+      else if (state.editing.type === 'category') {
+        const k = {
+          kategori: val('f-kat-name'),
+          sutun_no: +val('f-kat-sutun'),
+          sira_no:  +val('f-kat-sira'),
+          header_1: val('f-kat-h1'),
+          header_2: val('f-kat-h2'),
+          header_3: val('f-kat-h3'),
+          header_4: val('f-kat-h4')
+        };
+        if (!k.kategori) throw new Error(t('err.category_required'));
+        if (state.editing.original) {
+          await apiPost('updateKategori', { original: state.editing.original, kategori: k });
+          toast(t('categories.toast.updated'));
+        } else {
+          await apiPost('addKategori', { kategori: k });
+          toast(t('categories.toast.added'));
+        }
+      }
+      closeModal();
+      await loadAll();
+    } catch (e) {
+      toast(e.message, 'error');
+    } finally { loading(false); }
+  });
+
+  /* ══════════════════════════════════════════
+   *  HELPERS
+   * ══════════════════════════════════════════ */
+  function val(id) { return (document.getElementById(id).value || '').trim(); }
+  function numOrEmpty(id) {
+    const v = val(id);
+    if (v === '' || isNaN(+v)) return '';
+    return +v;
+  }
+  function esc(v) {
+    if (v === undefined || v === null) return '';
+    return String(v).replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+  function escapeHtml(v) {
+    if (v === undefined || v === null) return '';
+    return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* ══════════════════════════════════════════
+   *  LANGUAGE TOGGLES
+   * ══════════════════════════════════════════ */
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
+
+  /* Initial language apply */
+  setLang(state.lang);
+
+  /* ══════════════════════════════════════════
+   *  AUTO-LOGIN (sessionStorage)
+   * ══════════════════════════════════════════ */
+  (async function autoLogin() {
+    let cached = null;
+    try { cached = sessionStorage.getItem('pasja_admin_pw'); } catch(e) {}
+    if (!cached) return;
+    state.password = cached;
+    loading(true);
+    try {
+      await apiPost('login');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-app').classList.add('active');
+      await loadAll();
+    } catch {
+      state.password = null;
+      try { sessionStorage.removeItem('pasja_admin_pw'); } catch(e) {}
+    } finally { loading(false); }
+  })();
+</script>
+
+</body>
+</html>
